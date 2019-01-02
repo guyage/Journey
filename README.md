@@ -27,7 +27,9 @@
   * vue-router 3.0.1
   * vuex 3.0.1
 ## 部分功能展示
-
+![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/1.png)
+![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/2.png)
+![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/3.png)
 ## 使用交流
 * QQ群：521745114
 
