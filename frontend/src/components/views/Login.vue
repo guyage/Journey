@@ -3,7 +3,7 @@
         
         <div class="login-title">
             <img src="../../assets/logo.png">
-            <h3 class="logintitletext">Welcome to SQL_Platform</h3>
+            <h3 class="logintitletext">Welcome to Journey SQL平台</h3>
         </div>
         <div class="login-form">
             <el-tabs v-model="activeName" type="card">
@@ -185,13 +185,21 @@ export default {
 .login .login-form {
     margin: 120px auto;
     max-width: 100%;
-    padding: 35px 35px 15px;
+    padding: 10px 35px 15px;
     right: 0;
     width: 400px;
-    margin-top: 1px;
+    margin-top: 0.1em;
 }
 .login .loginbutton {
     width: 400px;
+}
+.login .el-button--primary {
+    background-color:#1ab394;
+    border-color: #1ab394
+}
+.login .el-button--primary:focus, .el-button--primary:hover{
+    background-color:#56c0a5;
+    border-color: #56c0a5;
 }
 .login .logintitletext {
     font-size: 20px;
