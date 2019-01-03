@@ -1,3 +1,4 @@
+![Image text](https://github.com/guyage/Journey/blob/master/frontend/src/assets/logo2.png)
 # Journey SQL平台
 ![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/build-release-brightgreen.svg)
 ![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/version-0.1.0-brightgreen.svg)
