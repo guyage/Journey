@@ -12,7 +12,7 @@ const AdminMenus = [
         name: 'SQL_Platform',      // 菜单唯一名字
         alias: 'SQL_Platform',     // 菜单显示名字
         url: '/dashboard',                  // 菜单对应路由
-        icon: 'icon-appstore',     // 菜单图标(阿里svg图标名字)
+        icon: 'icon-dashboard',     // 菜单图标(阿里svg图标名字)
         state: 'ENABLE',           // 菜单是否启用
         roles: 'admin',        
         childs: null               // 菜单是否有子菜单，有则列出，无则为null
@@ -24,7 +24,7 @@ const AdminMenus = [
         alias: '用户',
         state: 'ENABLE',
         url: '/home',
-        icon: 'icon-database',
+        icon: 'icon-houtaiyonghuguanli',
         childs: [
             {   
                 id: 3, 
@@ -33,7 +33,7 @@ const AdminMenus = [
                 alias: '用户管理', 
                 state: 'ENABLE',
                 url: '/user', 
-                icon: 'icon-database', 
+                icon: 'icon-yonghuguanli', 
                 childs: null
             },
         ]
@@ -54,7 +54,7 @@ const AdminMenus = [
                 name: 'dbmanger', 
                 alias: '数据库管理', 
                 url: '/db', 
-                icon: 'icon-database', 
+                icon: 'icon-suyaniconchanpinleibufenzuodaohangbufen84', 
                 state: 'ENABLE',
                 roles: 'admin',
                 childs: null
@@ -65,7 +65,7 @@ const AdminMenus = [
                 name: 'dbuser', 
                 alias: '数据库用户管理', 
                 url: '/dbuser', 
-                icon: 'icon-database', 
+                icon: 'icon-erji-yonghuguanli', 
                 state: 'ENABLE',
                 roles: 'dev',
                 childs: null
@@ -76,7 +76,7 @@ const AdminMenus = [
                 name: 'dbmeta', 
                 alias: '数据库元数据', 
                 url: '/dbmeta', 
-                icon: 'icon-database', 
+                icon: 'icon-shujukushili', 
                 state: 'ENABLE',
                 roles: 'admin',
                 childs: null
@@ -89,7 +89,7 @@ const AdminMenus = [
         name: 'SQL',      // 菜单唯一名字
         alias: 'SQL',     // 菜单显示名字
         url: '/sql',                  // 菜单对应路由
-        icon: 'icon-appstore',     // 菜单图标(阿里svg图标名字)
+        icon: 'icon-SQLshujuji',     // 菜单图标(阿里svg图标名字)
         state: 'ENABLE',           // 菜单是否启用
         childs: [
             {   
@@ -99,7 +99,7 @@ const AdminMenus = [
                 alias: 'Query', 
                 state: 'ENABLE',
                 url: '/query', 
-                icon: 'icon-database', 
+                icon: 'icon-chaxun', 
                 childs: null
             },
             {   
@@ -109,7 +109,7 @@ const AdminMenus = [
                 alias: 'Query2', 
                 state: 'ENABLE',
                 url: '/query2', 
-                icon: 'icon-database', 
+                icon: 'icon-chaxun', 
                 childs: null
             },
             {   
@@ -119,7 +119,7 @@ const AdminMenus = [
                 alias: 'SQLSoar', 
                 state: 'ENABLE',
                 url: '/sqlsoar', 
-                icon: 'icon-database', 
+                icon: 'icon-SQLshenhe', 
                 childs: null
             },
         ]              

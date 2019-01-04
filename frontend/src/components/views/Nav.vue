@@ -1,7 +1,7 @@
 <template>
     <div id="nav" class="nav">
       <el-container>       
-        <el-aside >
+        <el-aside :class="{collapse:isCollapse}">
           <el-scrollbar style="height:100%;">
             <el-menu 
             :default-active="$router.path" 
@@ -9,14 +9,17 @@
             text-color="#fff" 
             active-text-color="#ffd04b"
             ref="navmenu" 
-            router>
+            router
+            class="el-menu-vertical-demo"
+            :collapse="isCollapse">
               <NavMenu></NavMenu>
-              
             </el-menu>
           </el-scrollbar>
         </el-aside>
-        <el-container>
+        <el-container :class="{collapse:isCollapse}">
             <el-header>
+            <icon-svg v-if="!isCollapse" @click.native="isCollapse=true" class="nav-header-icon" iconClass="icon-menu"></icon-svg>
+            <icon-svg v-if="isCollapse" @click.native="isCollapse=false" class="nav-header-icon" iconClass="icon-menu-y"></icon-svg>
             <Breadcrumb></Breadcrumb>
             <TagsView></TagsView>
             </el-header>
@@ -26,7 +29,6 @@
                 <router-view></router-view>
               </keep-alive>
             </transition>
-            
           </el-main>
         </el-container>
       </el-container>
@@ -45,6 +47,7 @@ export default {
       return {
         msg: '',
         transitionName: 'slide-fade',
+        isCollapse: false
         // breads: []
       }
     },
@@ -86,34 +89,56 @@ export default {
   
 }
   
-  .el-aside {
-    color: #333;
-    text-align: center;
-    line-height: 200px;
-    width: 200px!important;
-    height: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 999;
-    background-color: rgb(84, 92, 100);
-    overflow: hidden;
-  }
+.el-aside {
+  color: #333;
+  text-align: center;
+  line-height: 200px;
+  width: 200px!important;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  background-color: rgb(84, 92, 100);
+  overflow: hidden;
+}
   
-  .el-main {
-    background-color: #ffffff;
-    color: #333;
-    text-align: center;
-    /* line-height: 160px; */
-  }
-  .is-vertical{
-    margin-left:200px;
-    position: relative;
-    min-height: 100%;
-  }
+.el-main {
+  background-color: #f0f2f5;
+  color: #333;
+  text-align: center;
+  /* line-height: 160px; */
+}
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+    width: 200px;
+    min-height: 400px;
+    
+}
+
+.is-vertical{
+  margin-left:200px;
+  position: relative;
+  min-height: 100%;
+}
 
 .el-scrollbar__wrap {
    overflow-x: hidden;
+}
+.nav-header-icon.svg-icon { 
+  float: left;
+  margin-top: 0.8em;
+  margin-right: 1em;
+  width: 20px;
+  height: 20px;
+}
+.el-menu--vertical{
+  left: 50px!important;
+}
+.el-aside.collapse{
+  width: 50px!important;
+}
+.el-container.is-vertical.collapse{
+  margin-left: 50px;
 }
 /* 可以设置不同的进入和离开动画 */
 /* 设置持续时间和动画函数 */

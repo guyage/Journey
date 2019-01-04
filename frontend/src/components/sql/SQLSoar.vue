@@ -51,7 +51,6 @@ export default {
     },
     methods: {
         handlesql(soar_type) {
-            console.log('code',this.$refs.sqleditor.code);
             this.sql = this.$refs.sqleditor.code
             var soar_data = {}
             if (this.selectdb.length > 0 && this.sql.length> 0 ) {
@@ -109,7 +108,7 @@ export default {
 }
 .sqlsoar .sqlsoar-results{
     float: right;
-    width: 63%;
+    width: 64%;
 }
 .sqlsoar .sqlsoar-input-codemirror{
     float: left;
@@ -129,12 +128,12 @@ export default {
 }
 .sqlsoar .sqlsoar-input{
     float: left;
-    width: 35%; 
+    width: 35%;
 }
-.sqlsoar .el-textarea__inner{
-    height: 500px;
+/* .sqlsoar .el-textarea__inner{
+    height: 800px;
     margin-top: 20px;
-}
+} */
 /* soar结果样式 */
 .sqlsoar .sqlsoar-results-report h1{
     margin-top: 1em;
@@ -167,7 +166,9 @@ export default {
     padding: 8px;
     font-size: 11px;
 }
-
+.sqlsoar .sqlsoar-results-report code{
+    white-space: pre-wrap;
+}
 .sqlsoar .sqlsoar-results-report h2{
     margin-top: 1em;
     font-size: 20px;

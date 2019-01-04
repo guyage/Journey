@@ -50,7 +50,6 @@ export default {
 </script>
 
 <style>
-
 .breadcrumb .el-breadcrumb{
     line-height: 45px;
     border-bottom: 1px solid #ebeef5;
