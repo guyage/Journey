@@ -12,6 +12,8 @@ import { getCookies } from '@/utils/auth.js'
 
 // axios 全局参数
 axios.defaults.baseURL = baseurl;
+// 请求超时时间，默认5分钟
+axios.defaults.timeout = 300000;
 
 
 /**
@@ -23,6 +25,7 @@ axios.defaults.baseURL = baseurl;
 axios.interceptors.request.use(
   config => {
     // Do something before request is sent
+    // store.dispatch('SetLoading',true)
     if (store.getters.token) {
       // 让每个请求携带token-- ['Authorization']为自定义key 请根据实际情况自行修改
       config.headers['Authorization'] = 'JWT ' + getCookies('Authorization')
@@ -44,9 +47,20 @@ axios.interceptors.request.use(
 
 axios.interceptors.response.use(response => {
   // loadinginstace.close();  // 响应成功关闭loading
+  // store.dispatch('SetLoading',false);
   return response
 }, error => {
-  return Promise.resolve(error.response)
+  if (error.response) {
+    // store.dispatch('SetLoading',false)
+    return Promise.resolve(error.response)
+  }
+  else if (error.request) {
+    // store.dispatch('SetLoading',false)
+    // console.log(error.request);
+    return Promise.resolve(error.request);
+    // return Promise.resolve(error.request)
+  }
+  
 });
 
 /**
@@ -198,7 +212,7 @@ export default {
       method: 'post',
       url,
       data: data,
-      timeout: 5000,
+      // timeout: 50000,
       // headers: {
       //   'X-Requested-With': 'XMLHttpRequest',
       //   'Content-Type': 'application/json; charset=UTF-8'
@@ -218,7 +232,7 @@ export default {
       method: 'patch',
       url,
       data, data,
-      timeout: 5000, 
+      // timeout: 5000, 
     }).then(
       (response) => {
         return checkStatus(response)
@@ -234,7 +248,7 @@ export default {
       method: 'delete',
       url,
       params, params,
-      timeout: 5000, 
+      // timeout: 5000, 
     }).then(
       (response) => {
         return checkStatus(response)
@@ -250,7 +264,7 @@ export default {
       method: 'get',
       url,
       params, // get 请求时带的参数
-      timeout: 5000,
+      // timeout: 5000,
       headers: {
         'X-Requested-With': 'XMLHttpRequest'
       }

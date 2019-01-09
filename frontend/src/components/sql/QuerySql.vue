@@ -110,10 +110,19 @@ export default {
             tabIndex: 1
         }
     },
+    // computed: {
+    //     listenLoading() {
+    //         return this.$store.getters.loading
+    //     }
+    // },
     watch: {
         filterText (val) {
             this.$refs.tree.filter(val);
         },
+        // listenLoading (val) {
+        //     console.log('123',val);
+        //     this.storeloading = val
+        // }
     },
     methods: {
         handleNodeClick(data) {
@@ -225,41 +234,52 @@ export default {
                 return wbout
                 
             }
+            else {
+                this.$notify({title: '提示',message:'无数据，导出Excel异常！',type: 'warning'})
+            }
             
         },
         requestSQL(querydata) {
             this.loading = true
             Axios.oPost('/query',querydata).then((response)=>{
-                if (response) {
-                    console.log('111',response.data.results);
-                    
+                if (response.data) {
                     this.sqltabs[this.currenttab].col = response.data.col
                     this.sqltabs[this.currenttab].results = response.data.results
                     this.loading = false
-                }                        
+                }
+                else if (response.readyState ==4 )  {
+                    this.loading = false
+                    this.$notify({title: '提示',message:'查询超时，请重新查询！',type: 'error'})
+                }                  
             }).catch((error) => {
                 console.log(error);
             })
         },
         execSQL() {
-            if(this.sqltabs[this.currenttab].selectdb.length > 0) {
+            if(this.sqltabs[this.currenttab].selectdb.length > 0 && this.sqltabs[this.currenttab].sql>0) {
                 this.sql =  this.sqltabs[this.currenttab].sql
                 var querydata = {}
                 querydata.sql = this.sql
                 querydata.dbname = this.sqltabs[this.currenttab].selectdb
                 querydata.exectype = 'exec'
                 this.requestSQL(querydata)
-            }  
+            }
+            else {
+                this.$notify({title: '提示',message:'数据库和SQL语句不能为空！',type: 'warning'})
+            }
         },
         explainSQL() {
-            if(this.sqltabs[this.currenttab].selectdb.length > 0) {
+            if(this.sqltabs[this.currenttab].selectdb.length > 0 && this.sqltabs[this.currenttab].sql>0) {
                 this.sql =  this.sqltabs[this.currenttab].sql
                 var querydata = {}
                 querydata.sql = this.sql
                 querydata.dbname = this.sqltabs[this.currenttab].selectdb
                 querydata.exectype = 'explain'
                 this.requestSQL(querydata)
-            }  
+            }
+            else {
+                this.$notify({title: '提示',message:'数据库和SQL语句不能为空！',type: 'warning'})
+            } 
         },
         handleCurrentChange(currentPage){
             this.currentPage = currentPage;
@@ -323,6 +343,7 @@ export default {
     mounted() {
         this.getDbList()
     },
+    
 }
 </script>
 

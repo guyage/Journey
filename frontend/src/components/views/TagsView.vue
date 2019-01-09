@@ -92,7 +92,10 @@ export default {
             this.$store.dispatch('delOthersViews', this.selectedTag).then(() => {
             })
         },
-    }
+    },
+    mounted() {
+        this.addViewTags()
+    },
 }
 </script>
 

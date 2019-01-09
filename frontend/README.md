@@ -1,4 +1,4 @@
-# sql_web
+# journey
 
 > A Vue.js project
 

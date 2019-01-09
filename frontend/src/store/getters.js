@@ -6,6 +6,7 @@ const getters = {
     routers: state => state.user.routers,
     visitedViews: state => state.tagsview.visitedViews,
     cachedViews: state => state.tagsview.cachedViews,
+    loading: state => state.user.loading,
 }
 
 

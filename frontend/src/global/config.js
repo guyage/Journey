@@ -9,8 +9,8 @@ const AdminMenus = [
     {
         id: 1,                     // 菜单id，逐步递增
         parentMenuId: 0,           // 父菜单id，无父菜单，填写
-        name: 'SQL_Platform',      // 菜单唯一名字
-        alias: 'SQL_Platform',     // 菜单显示名字
+        name: 'Dashboard',      // 菜单唯一名字
+        alias: 'Dashboard',     // 菜单显示名字
         url: '/dashboard',                  // 菜单对应路由
         icon: 'icon-dashboard',     // 菜单图标(阿里svg图标名字)
         state: 'ENABLE',           // 菜单是否启用
@@ -132,8 +132,8 @@ const NoramalMenus = [
     {
         id: 1,                     // 菜单id，逐步递增
         parentMenuId: 0,           // 父菜单id，无父菜单，填写
-        name: 'SQL_Platform',      // 菜单唯一名字
-        alias: 'SQL_Platform',     // 菜单显示名字
+        name: 'Dashboard',      // 菜单唯一名字
+        alias: 'Dashboard',     // 菜单显示名字
         url: '/dashboard',                  // 菜单对应路由
         icon: 'icon-appstore',     // 菜单图标(阿里svg图标名字)
         state: 'ENABLE',           // 菜单是否启用

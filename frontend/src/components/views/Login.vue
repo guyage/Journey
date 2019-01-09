@@ -2,8 +2,8 @@
     <div id="login" class="login">
         
         <div class="login-title">
-            <img src="../../assets/logo.png">
-            <h3 class="logintitletext">Welcome to Journey SQL平台</h3>
+            <img src="../../assets/logo4.png">
+            <h3 class="logintitletext">Welcome to Journey DB平台</h3>
         </div>
         <div class="login-form">
             <el-tabs v-model="activeName" type="card">
@@ -180,7 +180,7 @@ export default {
 .login .login-title {
     margin: 0 auto;
     text-align: center;
-    margin-top: 5%;
+    margin-top: 7%;
 }
 .login .login-form {
     margin: 120px auto;

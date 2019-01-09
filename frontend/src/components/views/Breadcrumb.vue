@@ -6,8 +6,8 @@
         <!-- <el-breadcrumb-item v-for="(bread,key) in currentPath" :key="key" >{{bread}}</el-breadcrumb-item> -->
         <!-- <icon-svg iconClass="icon-Logout"></icon-svg> -->
             <div class="right-header" id="right-header">
-                <el-button title="个人中心" class="userinfo-button" @click="handleLoginOut" size="mini" circle>
-                    <icon-svg class="right-header-icon" iconClass="icon-user"></icon-svg>
+                <el-button title="个人中心" class="userinfo-button" @click="handleOpengit" size="mini" circle>
+                    <icon-svg class="right-header-icon" iconClass="icon-github"></icon-svg>
                 </el-button>
                 <el-button title="退出" class="logout-button" @click="handleLoginOut" size="mini" circle >
                     <icon-svg class="right-header-icon" iconClass="icon-Logout"></icon-svg>
@@ -42,6 +42,18 @@ export default {
                 }).catch((error) => {
                     console.log(error);
                 })
+            }).catch(() =>{   
+            })
+        },
+        handleOpengit () {
+            this.$confirm('是否打开项目GitHub？如有帮助，请start支持下。', '提示', {
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
+                type: 'warning',
+                dangerouslyUseHTMLString: true
+            })
+            .then(() => {
+                window.open("https://github.com/guyage/Journey");  
             }).catch(() =>{   
             })
         }

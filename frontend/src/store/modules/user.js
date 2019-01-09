@@ -15,7 +15,8 @@ const user = {
         usergroup: '',
         token: getCookies(TokenKey),
         menus: '',
-        routers: []
+        routers: [],
+        loading: false
     },
 
 
@@ -34,6 +35,9 @@ const user = {
         },
         SET_MENUS: (state, menus) => {
             state.menus = menus
+        },
+        SET_LOADING: (state,loading) => {
+            state.loading = loading
         }
     },
 
@@ -142,6 +146,9 @@ const user = {
                 
                 resolve()
             })
+        },
+        SetLoading ({commit}, isloading) {
+            commit('SET_LOADING',isloading)
         }
     }
 }
