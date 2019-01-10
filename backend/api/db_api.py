@@ -73,13 +73,28 @@ class db_api():
     def exec_cmd(self,cmd):
         res = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         return res.stdout.read()
-    
-    def sql_soar(self,flag,sql,dsn):
+
+    def soar_sql_file(self, sql,username):
+        file_time = time.strftime('%Y%m%d%H%M%S',time.localtime())
+        soar_file_tmp = config.get_conf('soar','soar_file_tmp')
+        soar_sql__tmpfile = soar_file_tmp + username + '.txt'
+        try:
+            f = open(soar_sql__tmpfile,'w')
+            f.write(sql)
+        except OSError as e:
+            return e
+        finally:
+            if f in locals():
+                f.close()
+            return soar_sql__tmpfile
+
+    def sql_soar(self,flag,sql,dsn,username):
         soar_path = config.get_conf('soar','soar_path')
         soar_log = config.get_conf('soar','soar_log')
+        soar_sql_file = self.soar_sql_file(sql,username)
         if (flag ==1):
             # soar_cmd = 'echo ' + '\'' +sql + '\'' + ' | ' + soar_path + ' -test-dsn=' + dsn + ' -allow-online-as-test=true'
-            soar_cmd = soar_path + ' -query ' + 'D:\soft\soar\\test.sql' + ' -test-dsn=' + dsn + ' -allow-online-as-test=true'
-            print (soar_cmd)
+            #soar_cmd = soar_path + ' -query ' + 'D:\soft\soar\\test.sql' + ' -test-dsn=' + dsn + ' -allow-online-as-test=true'
+            soar_cmd = soar_path + ' -query ' + soar_sql_file + ' -test-dsn=' + dsn + ' -allow-online-as-test=true'
             re = self.exec_cmd(soar_cmd)
         return re

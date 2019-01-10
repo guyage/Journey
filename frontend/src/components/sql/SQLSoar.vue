@@ -17,7 +17,7 @@
             </div>
             <div class="sqlsoar-button">
                 <!-- <el-button type="primary" @click="handlesql('pretty')">语句美化</el-button> -->
-                <el-button type="primary" @click="handlesql('optimize')">优化建议</el-button>
+                <el-button :loading="loading" type="primary" @click="handlesql('optimize')">优化建议</el-button>
             </div>
         </div>
         <div class="sqlsoar-results">
@@ -33,6 +33,7 @@
 </template>
 
 <script>
+import store from '@/store/store.js';
 import marked from 'marked';
 import Axios from '@/utils/axios.js';
 import SQLEditor from './SQLEditor.vue';
@@ -46,7 +47,8 @@ export default {
             dblist: [],
             selectdb: '',
             results: '',
-            sql: ''
+            sql: '',
+            loading: false
         }
     },
     methods: {
@@ -54,6 +56,7 @@ export default {
             this.sql = this.$refs.sqleditor.code
             var soar_data = {}
             if (this.selectdb.length > 0 && this.sql.length> 0 ) {
+                soar_data.username = this.$store.getters.username
                 soar_data.dbname = this.selectdb
                 soar_data.sql = this.sql
                 if (soar_type === 'optimize') {
@@ -66,9 +69,11 @@ export default {
             }
         },
         execSQLSoar(soar_data) {
+            this.loading = true
             Axios.oPost('sqlsoar',soar_data).then((response)=>{
                 if (response) {
                     this.results = marked(response.data.results, { sanitize: true })
+                    this.loading = false
                 }                        
             }).catch((error) => {
                 console.log(error);

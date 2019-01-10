@@ -49,12 +49,13 @@ class SQLQueryViewSet(APIView):
 class SQLSoarViewSet(APIView):
     def post(self,request,format=None):
         dbapi = db_api()
+        username = request.data['username']
         dbname = request.data['dbname']
         sql = request.data['sql']
         soartype = request.data['soartype']
         dbinfo = MySQLDatabase.objects.get(Q(dbname=dbname))
         dsn = dbinfo.adminuser + ':' + dbinfo.password + '@' + dbinfo.host + ':' + str(dbinfo.port) + '/' + dbname
         if (soartype == 'optimize'):
-            soar_results = dbapi.sql_soar(1,sql,dsn)
+            soar_results = dbapi.sql_soar(1,sql,dsn,username)
             re = {'results':soar_results}
         return Response(re)
