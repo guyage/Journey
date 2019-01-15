@@ -138,7 +138,7 @@ server {
         }
 
         location ~.*\.(js|css|png|jpg)$ {
-            root /xs/app/Journey/dist;
+            root /app/Journey/dist;
             expires 3h;
         }
 }
