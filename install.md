@@ -173,7 +173,7 @@ Modules/constants.c:365: 错误：‘LDAP_CONTROL_RELAX’ 未声明 (在此函�
 error: Setup script exited with error: command 'gcc' failed with exit status 1
 
 原因是版本不兼容，centos默认装了个2.3的。以下指令好使
-
+```bash
 yum install openldap
 yum install openldap24-libs
 yum install openldap-clients
@@ -185,5 +185,5 @@ export LIBRARY_PATH=/usr/lib/openldap24/     (以上为安装openldap)
 pip install python-ldap
 
 pip install django_auth_django(依赖python_ldap)
-
+```
 验证OK了
