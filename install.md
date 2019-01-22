@@ -155,3 +155,38 @@ server {
 访问http://journey.xs.jf
 使用前面创建的用户登陆系统
 
+
+## 可能遇到的问题
+#### centos安装django-auth-ldap遇到的问题
+安装django_auth_ldap需要依赖python_ldap,  openldap
+
+     CentOS要实现openLDAP必须先安装openldap,  openldap-servers,  openldap-clients三个包。第一个默认已经安装好了。
+
+     默认easy_install或者pip install很容易遇到这个错误
+
+
+/usr/include/sasl/sasl.h:349: 警告：函数声明不是一个原型
+Modules/ldapcontrol.c: In function ‘encode_assertion_control’:
+Modules/ldapcontrol.c:352: 警告：隐式声明函数 ‘ldap_create_assertion_control_value’
+Modules/constants.c: In function ‘LDAPinit_constants’:
+Modules/constants.c:155: 错误：‘LDAP_OPT_DIAGNOSTIC_MESSAGE’ 未声明 (在此函数内第一次使用)
+Modules/constants.c:155: 错误：(即使在一个函数内多次出现，每个未声明的标识符在其
+Modules/constants.c:155: 错误：所在的函数内只报告一次。)
+Modules/constants.c:365: 错误：‘LDAP_CONTROL_RELAX’ 未声明 (在此函数内第一次使用)
+error: Setup script exited with error: command 'gcc' failed with exit status 1
+
+原因是版本不兼容，centos默认装了个2.3的。以下指令好使
+
+yum install openldap
+yum install openldap24-libs
+yum install openldap-clients
+yum install openldap-devel
+yum install openssl-devel
+yum install openldap24-libs-devel
+export CPATH=/usr/include/openldap24
+export LIBRARY_PATH=/usr/lib/openldap24/     (以上为安装openldap)
+pip install python-ldap
+
+pip install django_auth_django(依赖python_ldap)
+
+验证OK了
