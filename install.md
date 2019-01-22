@@ -86,6 +86,7 @@ proc_name = 'Journey'
 ```
 6. 创建用户后并启动后端Django服务，确认是否启动成功
 这里测试的时候可以通过python manage.py runserver 0.0.0.0:8888启动，生产建议用下面方式启动
+
 创建用户
 ```bash
 cd /app/Journey
