@@ -84,8 +84,15 @@ accesslog = '/logs/Journey/gunicorn.access.log'
 #loglevel = 'debug'
 proc_name = 'Journey'
 ```
-6. 启动后端Django服务，确认是否启动成功
+6. 创建用户后并启动后端Django服务，确认是否启动成功
 这里测试的时候可以通过python manage.py runserver 0.0.0.0:8888启动，生产建议用下面方式启动
+创建用户
+```bash
+cd /app/Journey
+python manage.py createsuperuser
+根据提示创建用户，用户后续使用普通登录方式
+```
+启动后端Django服务
 ```bash
 cd /app/Journey
 gunicorn Journey.wsgi:application -c ./Journey/gunicorn_config.py
@@ -145,4 +152,5 @@ server {
 ```
 配置完后，启动nginx
 访问http://journey.xs.jf
+使用前面创建的用户登陆系统
 
