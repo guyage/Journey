@@ -159,11 +159,8 @@ server {
 ## 可能遇到的问题
 #### centos安装django-auth-ldap遇到的问题
 安装django_auth_ldap需要依赖python_ldap,  openldap
-
-     CentOS要实现openLDAP必须先安装openldap,  openldap-servers,  openldap-clients三个包。第一个默认已经安装好了。
-
-     默认easy_install或者pip install很容易遇到这个错误
-
+CentOS要实现openLDAP必须先安装openldap,  openldap-servers,  openldap-clients三个包。第一个默认已经安装好了。
+默认easy_install或者pip install很容易遇到这个错误
 
 /usr/include/sasl/sasl.h:349: 警告：函数声明不是一个原型
 Modules/ldapcontrol.c: In function ‘encode_assertion_control’:
