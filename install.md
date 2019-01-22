@@ -184,6 +184,6 @@ export CPATH=/usr/include/openldap24
 export LIBRARY_PATH=/usr/lib/openldap24/     (以上为安装openldap)
 pip install python-ldap
 
-pip install django_auth_ldap(依赖python_ldap)
+pip install django-auth-ldap(依赖python_ldap)
 ```
 验证OK了
