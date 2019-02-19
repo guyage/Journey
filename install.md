@@ -117,6 +117,8 @@ npm run dev
 ### 生产模式下：
 生产模式需要先部署nginx
 ```bash
+安装vue脚手架
+npm install -g vue-cli
 打包前端vue项目
 cd /tmp/Journey/frontend
 npm install
