@@ -101,6 +101,11 @@ gunicorn Journey.wsgi:application -c ./Journey/gunicorn_config.py
 通过访问http://xxx.xxx.xxx.xxx:8888/ 确认是否安装成功
 7. 前端项目
 这里需要node环境，先安装node
+node版本需要注意一下，可能会出现版本问题
+```bash
+node -v
+v8.11.3
+```
 ### 开发模式下：
 需注意，前端项目服务器需要配置hosts，解析journey.api(可修改，前端项目config下dev.env.js文件中)域名到后端Django实际ip
 127.0.0.1(后端Django实际ip) journey.api
