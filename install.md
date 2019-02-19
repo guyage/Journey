@@ -105,7 +105,10 @@ gunicorn Journey.wsgi:application -c ./Journey/gunicorn_config.py
 需注意，前端项目服务器需要配置hosts，解析journey.api(可修改，前端项目config下dev.env.js文件中)域名到后端Django实际ip
 127.0.0.1(后端Django实际ip) journey.api
 ```bash
-这里需要注意一点，需要
+这里需要注意一点，最好提前安装vue脚手架，因为可能存在后续安装依赖包出现环境问题
+安装vue脚手架
+npm install -g vue-cli
+然后安装项目依赖
 cd /tmp/Journey/frontend
 npm install
 npm run dev
