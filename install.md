@@ -68,6 +68,12 @@ soar_path = /app/soar/soar
 soar_log = /app/soar/soar.log
 soar_file_tmp = /app/soar/sqltempfile/
 ```
+配置完配置文件后初始化django models到数据库
+```bash
+cd /app/Journey
+python manage.py makemigrations
+python manage.py migrate
+```
 5. 配置gunicorn
 ```bash
 cd /app/Journey/Journey
