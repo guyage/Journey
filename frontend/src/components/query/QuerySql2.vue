@@ -1,26 +1,17 @@
 <template>
 
-    <div id="querysql" class="querysql">
-        <div id="query-sql" class="query-sql">
-            <div id="query-db" class="query-db">
-            <el-input
-            class="dbmeta-filterinput"
-            placeholder="输入关键字进行过滤"
-            v-model="filterText">
-            </el-input>
-            <el-tree
-            class="filter-tree"
-            ref="tree"
-            :data="treedata"
-            lazy
-            accordion
-            :load="loadTreeData"
-            highlight-current
-            :props="treeprops"
-            :filter-node-method="filterNode"
-            @node-click="handleNodeClick">
-            </el-tree>
+    <div id="query" class="query">
+        <div id="query-db" class="query-db">
+            <el-select v-model="selectdb" placeholder="请选择查询数据库" @change="handleSelect" @visible-change="handleDropDown($event)">
+                <el-option 
+                v-for="item in dblist" 
+                :key="item.id"
+                :label="item.dbname"
+                :value="item.dbname">
+                </el-option>
+            </el-select>
         </div>
+        <div id="query-sql" class="query-sql">
             <el-tabs v-model="sqltabsvalue" type="border-card" editable @edit="handleTabsEdit" @tab-click="handleClick">
                 <el-tab-pane 
                 v-for="(item,index) in sqltabs"
@@ -32,7 +23,7 @@
                         </el-input>
                         <div class="query-sql-help">
                             <el-alert title="SQL查询注意事项:" :closable="false" type="warning"></el-alert>
-                            <el-alert title="Query标签可添加，最多添加3个" :closable="false" type="warning" show-icon></el-alert>
+                            <el-alert title="Query标签可添加，最多添加5个" :closable="false" type="warning" show-icon></el-alert>
                             <el-alert title="支持单条语句查询" :closable="false" type="warning" show-icon></el-alert>
                             <el-alert title="查询语句默认添加limit 100，也可指定limit" :closable="false" type="warning" show-icon></el-alert>
                             <el-alert title="建议在所有的表名前加上库名限定，如dbname.tablename" :closable="false" type="warning" show-icon></el-alert>
@@ -52,7 +43,7 @@
                         </el-button>
                     </div>
                     <div  class="query-sql-results-table">
-                        <el-table element-loading-text="拼命加载中" v-loading="loading" style="width: 100%" highlight-current-row height="500" border :data="item.results.slice((currentPage-1)*pagesize,currentPage*pagesize)">
+                        <el-table :element-loading-text="loadingtext" v-loading="loading" style="width: 100%" highlight-current-row max-height="500" border :data="item.results.slice((currentPage-1)*pagesize,currentPage*pagesize)">
                             <el-table-column  align="center" v-for="(val, key) in item.col" :fixed="key===0?true:false" :key="key" :label="val" :prop="val">
                                 <!-- <template slot-scope="scope">
                                     <span v-if="scope.row[val] == null ">NULL</span>
@@ -84,17 +75,10 @@ import FileSaver from 'file-saver'
 import XLSX from 'xlsx'
 import Axios from '@/utils/axios.js';
 export default {
-    name: 'query',
     data() {
         return {
             loading: false,
-            // tree组件参数
-            treeprops: {
-                children: 'children',
-                label: 'label'
-            },
-            treedata: [],
-            filterText: '',
+            loadingtext: '拼命加载中...',
             // 分页参数
             total: 0,
             currentPage: 1,
@@ -115,98 +99,13 @@ export default {
     //         return this.$store.getters.loading
     //     }
     // },
-    watch: {
-        filterText (val) {
-            this.$refs.tree.filter(val);
-        },
-        // listenLoading (val) {
-        //     console.log('123',val);
-        //     this.storeloading = val
-        // }
-    },
+    // watch: {
+    //     listenLoading (val) {
+    //         console.log('123',val);
+    //         this.loading = val
+    //     }
+    // },
     methods: {
-        handleNodeClick(data) {
-            if (!data.id) {
-                this.sqltabs[this.currenttab].selectdb = data.label
-                this.sqltabs[this.currenttab].title = '@' + data.label 
-            }
-        },
-        filterNode(value, data) {
-            if (!value) return true;
-            return data.label.indexOf(value) !== -1;
-        },
-        loadTreeData (node,resolve) {
-            if (node.level ==1) {
-                var treetable = []
-                var meta_data = {}
-                meta_data.type = 'db'
-                meta_data.dbname = node.data.label
-                Axios.oPost('/dbmeta/',meta_data).then((respone) => {
-                    if(respone) {
-                        var colname = respone.data.col[0]
-                        for (var i = 0; i< respone.data.results.length; i++) {
-                            var treetablenode = {}
-                            treetablenode.id = i + 1
-                            treetablenode.label = respone.data.results[i][colname]
-                            treetable.push(treetablenode)
-                        }
-                        return resolve(treetable)
-                    }
-                }).catch((error) => {
-                    console.log(error);
-                })
-            }
-            else if (node.level ==2) {
-                return resolve([{id:1,label:"列"},{id:2,label:"索引"}]) 
-            }
-            else if (node.level ==3) {
-                if (node.data.id == 1) {
-                    var treecolumn = []
-                    var meta_data = {}
-                    meta_data.type = 'column'
-                    meta_data.dbname = node.parent.parent.data.label
-                    meta_data.tablename = node.parent.data.label
-                    Axios.oPost('/dbmeta/',meta_data).then((respone) => {
-                        if(respone) {
-                            var colname = respone.data.col[0]
-                            for (var i = 0; i< respone.data.results.length; i++) {
-                                var treetablenode = {}
-                                treetablenode.id = i + 1
-                                treetablenode.label = respone.data.results[i][colname]
-                                treecolumn.push(treetablenode)
-                            }
-                            return resolve(treecolumn);
-                        }
-                    }).catch((error) => {
-                        console.log(error);
-                    })
-                }
-                else if (node.data.id == 2) {
-                    var treeindex = []
-                    var meta_data = {}
-                    meta_data.type = 'index'
-                    meta_data.dbname = node.parent.parent.data.label
-                    meta_data.tablename = node.parent.data.label
-                    Axios.oPost('/dbmeta/',meta_data).then((respone) => {
-                        if(respone) {
-                            var colname = respone.data.col[0]
-                            for (var i = 0; i< respone.data.results.length; i++) {
-                                var treetablenode = {}
-                                treetablenode.id = i + 1
-                                treetablenode.label = respone.data.results[i][colname]
-                                treeindex.push(treetablenode)
-                            }
-                            return resolve(treeindex);
-                        }
-                    }).catch((error) => {
-                        console.log(error);
-                    })
-                }
-            }
-            else {
-                return resolve([])
-            }
-        },
         generateExcelFileName(){
             var username = this.$store.getters.username
             var myDate = new Date();
@@ -232,7 +131,6 @@ export default {
                         console.log(e, wbout)
                 }
                 return wbout
-                
             }
             else {
                 this.$notify({title: '提示',message:'无数据，导出Excel异常！',type: 'warning'})
@@ -250,36 +148,55 @@ export default {
                 else if (response.readyState ==4 )  {
                     this.loading = false
                     this.$notify({title: '提示',message:'查询超时，请重新查询！',type: 'error'})
-                }                  
+                }                     
             }).catch((error) => {
                 console.log(error);
             })
         },
         execSQL() {
-            if(this.sqltabs[this.currenttab].selectdb.length > 0 && this.sqltabs[this.currenttab].sql>0) {
+            if(this.sqltabs[this.currenttab].selectdb.length > 0) {
                 this.sql =  this.sqltabs[this.currenttab].sql
-                var querydata = {}
-                querydata.sql = this.sql
-                querydata.dbname = this.sqltabs[this.currenttab].selectdb
-                querydata.exectype = 'exec'
-                this.requestSQL(querydata)
+                if (this.sql.length > 0) {
+                    var querydata = {}
+                    querydata.sql = this.sql
+                    querydata.dbname = this.sqltabs[this.currenttab].selectdb
+                    querydata.exectype = 'exec'
+                    this.requestSQL(querydata)
+                }
+                else {
+                    this.$notify({title: '提示',message:'数据库和SQL语句不能为空！',type: 'warning'})
+                }
             }
             else {
                 this.$notify({title: '提示',message:'数据库和SQL语句不能为空！',type: 'warning'})
             }
+            
         },
         explainSQL() {
-            if(this.sqltabs[this.currenttab].selectdb.length > 0 && this.sqltabs[this.currenttab].sql>0) {
+            if(this.sqltabs[this.currenttab].selectdb.length > 0) {
                 this.sql =  this.sqltabs[this.currenttab].sql
-                var querydata = {}
-                querydata.sql = this.sql
-                querydata.dbname = this.sqltabs[this.currenttab].selectdb
-                querydata.exectype = 'explain'
-                this.requestSQL(querydata)
+                if (this.sql.length > 0) {
+                    var querydata = {}
+                    querydata.sql = this.sql
+                    querydata.dbname = this.sqltabs[this.currenttab].selectdb
+                    querydata.exectype = 'explain'
+                    this.requestSQL(querydata)
+                }
+                else {
+                    this.$notify({title: '提示',message:'数据库和SQL语句不能为空！',type: 'warning'})
+                }
             }
             else {
                 this.$notify({title: '提示',message:'数据库和SQL语句不能为空！',type: 'warning'})
-            } 
+            }
+             
+        },
+        handleDropDown(event){
+            if (event) {
+                if (!this.dblist[0].dbname) {
+                    this.$notify({title: '提示',message:'请先联系管理员配置可访问数据库！',type: 'warning'})
+                }
+            }
         },
         handleCurrentChange(currentPage){
             this.currentPage = currentPage;
@@ -287,12 +204,12 @@ export default {
         handleSizeChange(val){
             this.pagesize = val;
         },
-        // handleSelect(val){
-        //     this.sqltabs[this.currenttab].selectdb = val
-        // },
+        handleSelect(val){
+            this.sqltabs[this.currenttab].selectdb = val
+        },
         handleTabsEdit(targetName, action) {
             if(action === 'add') {
-                if (this.sqltabs.length <3) {
+                if (this.sqltabs.length <5) {
                     let newTabName = ++this.tabIndex + ''
                     let newTitle = 'Query'
                     this.sqltabs.push({title:newTitle,name:newTabName,sql:'',selectdb:'',col:[], results: []})   
@@ -313,10 +230,10 @@ export default {
                         });
                     }
                     this.sqltabsvalue = activeName
+                    this.selectdb = this.sqltabs[this.sqltabsvalue -1 ].selectdb
                     this.sqltabs = tabs.filter(tab => tab.name !== targetName)
                 }   
             }
-            
         },
         handleClick(tab) {
             this.currenttab = tab.index
@@ -327,18 +244,18 @@ export default {
             var url = '/userinfo/' + this.$store.getters.username + '/'
             Axios.oGet(url).then((response)=>{
                 if (response) {
-                    // this.treedata.push(response.data.accessdb.split(","))
                     var dblist = response.data.accessdb.split(",")
                     for (var i =0; i< dblist.length;i++) {
-                        var treedb = {}
-                        treedb.label = dblist[i]
-                        this.treedata.push(treedb)
+                        var useraccessdb = {}
+                        useraccessdb.id = i
+                        useraccessdb.dbname = dblist[i]
+                        this.dblist.push(useraccessdb)
                     }
                 }                        
             }).catch((error) => {
                 console.log(error);
             })
-        },
+        }
     },
     mounted() {
         this.getDbList()
@@ -348,122 +265,74 @@ export default {
 </script>
 
 <style>
-/* 设置滚动条的样式 */
-.querysql .query-db::-webkit-scrollbar {
-    width: 4px;
-    height: 6px;
-}
-/* 滚动槽 */
-.querysql .query-db::-webkit-scrollbar-track{
-    border-radius: 2px;
-    /* background: hsla(220,4%,58%,.3); */
-    /* background: rgba(0, 0, 0, 0.3); */
-}
-/* 滚动条滑块 */
-.querysql .query-db::-webkit-scrollbar-thumb{
-    border-radius: 2px;
-    background: hsla(220,4%,58%,.3);
-    /* background: rgba(0, 0, 0, 0.3); */
-}
-.querysql .el-alert__title{
-    display: block;
-    text-align: left;
-}
-.querysql .el-tree-node>.el-tree-node__children{
-    overflow: inherit;
-    
-}
-.querysql .query-sql-input-help{
-   height: 190px; 
-}
-.querysql .el-tree{
-    /* border: 1px solid #dcdfe6; */
-    height: 700px;
-    margin-left: 1px;
-}
-.querysql .el-tree-node__content{
-    position: relative;
-}
-.querysql .el-tree-node__label{
-    font-size: 17px;
-    position: absolute;
-    padding-left: 30px;
-}
-.querysql .el-tree-node__content>.el-tree-node__expand-icon{
-    position: absolute;
-    top:4px;
-}
-.querysql .query-db{
-    height: 750px;
-    overflow:auto;
-    float: left;
-    margin-top: 55px;
-    width: 250px;
-}
-.querysql .el-table .cell{
+.query .el-table .cell{
     word-break:normal;
     white-space: nowrap;
 }
-.querysql .el-tabs__new-tab{
+.query .el-tabs__new-tab{
     position: absolute;
-    /* left: 24%; */
     z-index: 999;
 }
-.querysql .el-alert--warning {
+.query .el-alert--warning {
     background-color: #fef0f0;
     color: #f56c6c;
-    padding: 7px 16px;
+    padding: 5px 16px;
 }
-.querysql .el-alert__title {
+.query .el-alert__title {
     font-size: 14px;
 }
-.querysql .query-sql-help{
-    /* position: absolute; */
-    top: 18px;
-    /* margin-left: 720px; */
+.query .query-sql-input-help{
+   height: 190px; 
+}
+.query .el-textarea{
     float: left;
     width: 50%;
+}
+.query .query-sql-help{
+    /* position: absolute; */
+    top: 18px;
+    /* margin-left: 820px; */
+    float: left;
 
 }
-/* .querysql .el-select-dropdown .el-scrollbar .el-scrollbar__wrap{
+.el-select-dropdown .el-scrollbar .el-scrollbar__wrap{
     overflow: scroll;
-} */
-.querysql .query-sql-button-exec.el-button{
+}
+.query .query-sql-button-exec.el-button{
     border: 0px;
     margin-left: 0px;
 }
-.querysql .query-sql-button-exec-icon.svg-icon{
+.query .query-sql-button-exec-icon.svg-icon{
     width:30px;
     height:30px;
 }
-.querysql .query-sql-button{
+.query .query-db{
     float: left;
-    /* margin-top: 10px; */
-    /* position: absolute; */
+    margin-top: 10px
 }
-.querysql .el-textarea__inner{
+.query .query-sql-button{
+    float: left;
+    /* margin-top: 10px;
+    position: absolute; */
+}
+.query .el-textarea__inner{
     height: 190px;
     /* width: 50%; */
     float: left;
-}
-.querysql .el-textarea{
-    float: left;
-    width: 50%;
 }
 /* .query-sql-input{
     width: 50%;
     float: left;
 } */
-.querysql .query-sql{
-    width: 98%;
+.query .query-sql{
+    width: 96%;
     position: absolute;
-    /* margin-top: 60px; */
-    /* right: 10px; */
+    margin-top: 60px
 }
-.querysql .query-sql-results-table{
+.query .query-sql-results-table{
     margin-top: 50px;
 }
-.querysql .el-tabs__new-tab .el-icon-plus{
+.query .el-tabs__new-tab .el-icon-plus{
     /* font-size: 13px; */
     /* color: #f56c6c; */
     transform: scale(1.3,1.3);

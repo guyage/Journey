@@ -15,9 +15,12 @@ import DbUser from '@/components/db/DbUser.vue';
 import DbMeta from '@/components/db/DbMeta.vue';
 import Login from '@/components/views/Login.vue';
 import User from '@/components/user/User.vue';
-import QuerySql from '@/components/sql/QuerySql.vue';
-import QuerySql2 from '@/components/sql/QuerySql2.vue';
-import SQLSoar from '@/components/sql/SQLSoar.vue';
+import QuerySql from '@/components/query/QuerySql.vue';
+import QuerySql2 from '@/components/query/QuerySql2.vue';
+import SQLSoar from '@/components/query/SQLSoar.vue';
+import MongodbInst from '@/components/mongodb/MongodbInst.vue';
+import MongodbDB from '@/components/mongodb/MongodbDB.vue';
+import QueryMongodb from '@/components/query/QueryMongodb.vue';
 // 调试组件
 import Test from '@/components/test/Test.vue';
 // 引入错误页面组件
@@ -54,7 +57,19 @@ const DynamicRouter = [
                 path: '/db', 
                 component: Db, 
                 name: 'db',
-                meta: { roles: 'admin', tag: '数据库管理', title: ['数据库','数据库管理']},
+                meta: { roles: 'admin', tag: 'MySQL数据库管理', title: ['数据库','MySQL数据库管理']},
+            },
+            { 
+                path: '/mongodbinst', 
+                component: MongodbInst, 
+                name: 'mongodbinst',
+                meta: { roles: 'admin', tag: 'MongodbInst管理', title: ['数据库','MongodbInst管理']},
+            },
+            { 
+                path: '/mongodbdb', 
+                component: MongodbDB, 
+                name: 'mongodbdb',
+                meta: { roles: 'admin', tag: 'MongodbDB管理', title: ['数据库','MongodbDB管理']},
             },
             { 
                 path: '/dbuser', 
@@ -85,6 +100,12 @@ const DynamicRouter = [
                 component: QuerySql2, 
                 name: 'query2',
                 meta: { roles: 'dev', tag: 'Query2', title: ['SQL','Query2']},
+            },
+            { 
+                path: '/querymongodb', 
+                component: QueryMongodb, 
+                name: 'querymongodb',
+                meta: { roles: 'dev', tag: 'QueryMongodb', title: ['SQL','QueryMongodb']},
             },
             { 
                 path: '/sqlsoar', 

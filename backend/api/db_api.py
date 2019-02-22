@@ -4,18 +4,21 @@ import pymysql
 import json,datetime,time
 import subprocess
 from . import config
+from pymongo import MongoClient
+import ply.lex as lex, re
 
 class db_api():
 
     def __init__(self):
         pass
 
-    def mysql_query(self,connectinfo,sql):
+    def mysql_query(self,connectinfo,sql,islimit=None):
         conn_host = connectinfo['conn_host']
         conn_port = connectinfo['conn_port']
         conn_user = connectinfo['conn_user']
         conn_passwd = connectinfo['conn_passwd']
         conn_db = connectinfo['conn_db']
+        default_limit = int(config.get_conf('sqllimit','limit'))
         try:
             conn = pymysql.connect(host=conn_host,port=conn_port,user=conn_user,passwd=conn_passwd,db=conn_db,charset='utf8')
             cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)
@@ -30,7 +33,11 @@ class db_api():
                 cursor.close()
                 conn.close()
                 return (['ok'],''), ['set']
-            results = cursor.fetchall()
+            # results = cursor.fetchall()
+            if islimit:
+                results = cursor.fetchmany(size=default_limit)
+            else:
+                results = cursor.fetchall()
             for i in range(len(results)):
                 for k,v in results[i].items():
                     if (isinstance(v,bytes)):
@@ -98,3 +105,49 @@ class db_api():
             soar_cmd = soar_path + ' -query ' + soar_sql_file + ' -test-dsn=' + dsn + ' -allow-online-as-test=true'
             re = self.exec_cmd(soar_cmd)
         return re
+
+    def mongodb_query(self,flag,connectinfo,sql=None):
+        
+        conn_host = connectinfo['conn_host']
+        conn_port = connectinfo['conn_port']
+        conn_user = connectinfo['conn_user']
+        conn_passwd = connectinfo['conn_passwd']
+        conn_db = connectinfo['conn_db']
+        client = MongoClient(conn_host,conn_port)
+        db_auth = client.admin
+        db_auth.authenticate(conn_user, conn_passwd)
+        db = getattr(client,conn_db)
+        if (flag == 1):
+            re = db.collection_names()
+        elif (flag == 2):
+            print ('111',sql)
+            # re = sql
+            re = db.userDetail.find({"userId":"5512875"})
+            print ('222', re)
+            for i in re:
+                print ('333',i)
+            # re = db.userDetail.find_one()
+            # print ('222', re)
+        return re
+
+    def extract_table_name_from_sql(self,sql_str):
+        # remove the /* */ comments
+        q = re.sub(r"/\*[^*]*\*+(?:[^*/][^*]*\*+)*/", "", sql_str)
+        # remove whole line -- and # comments
+        lines = [line for line in q.splitlines() if not re.match("^\s*(--|#)", line)]
+        # remove trailing -- and # comments
+        q = " ".join([re.split("--|#", line)[0] for line in lines])
+        # split on blanks, parens and semicolons
+        tokens = re.split(r"[\s)(;]+", q)
+        # scan the tokens. if we see a FROM or JOIN, we set the get_next
+        # flag, and grab the next one (unless it's SELECT).
+        result = set()
+        get_next = False
+        for token in tokens:
+            if get_next:
+                if token.lower() not in ["", "select"]:
+                    result.add(token)
+                get_next = False
+            get_next = token.lower() in ["from", "join"]
+
+        return result

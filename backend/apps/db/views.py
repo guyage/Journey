@@ -53,3 +53,25 @@ class MysqlMetaViewSet(APIView):
         re['results'] = results
         return Response(re)
 
+class MongodbInstViewSet(viewsets.ModelViewSet):
+    """
+    数据库列表，分页，查找
+    """
+    queryset = MongodbInst.objects.all().order_by('id')
+    serializer_class = MongodbInstSerializer
+    # pagination_class = PageNumberPagination
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter,)
+    search_fields = ('instname','host','port','version')
+    ordering_fields = ('id',)
+
+class MongodbDBViewSet(viewsets.ModelViewSet):
+    """
+    数据库列表，分页，查找
+    """
+    queryset = MongodbDB.objects.all().order_by('id')
+    serializer_class = MongodbDBSerializer
+    # pagination_class = PageNumberPagination
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter,)
+    search_fields = ('mongodbinst_id','dbname',)
+    ordering_fields = ('id',)
+

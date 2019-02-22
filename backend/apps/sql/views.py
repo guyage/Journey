@@ -10,9 +10,9 @@ import json,datetime,time
 from api.config import get_conf
 
 default_limit = get_conf('sqllimit', 'limit')
+dump_white_list = get_conf('dump_white_list', 'white_list')
 
 class SQLQueryViewSet(APIView):
-
     def post(self,request,format=None):
         dbapi = db_api()
         dbname = request.data['dbname']
@@ -36,7 +36,14 @@ class SQLQueryViewSet(APIView):
             else:
                 limit_sql = sql + ' limit ' + default_limit + ';'
         if (exectype == 'exec'):
-            col,results = dbapi.mysql_query(connectinfo,limit_sql)
+            islimit = 1
+            execsqltables = dbapi.extract_table_name_from_sql(sql)
+            whitelist_tables = set(dump_white_list.split(","))
+            difftables = execsqltables - whitelist_tables
+            if (len(difftables) > 0):
+                col,results = dbapi.mysql_query(connectinfo,limit_sql,islimit)
+            else:
+                col,results = dbapi.mysql_query(connectinfo,limit_sql)
         elif (exectype == 'explain'):
             explain_sql = 'explain %s' % limit_sql
             col,results = dbapi.mysql_query(connectinfo,explain_sql)
@@ -58,4 +65,28 @@ class SQLSoarViewSet(APIView):
         if (soartype == 'optimize'):
             soar_results = dbapi.sql_soar(1,sql,dsn,username)
             re = {'results':soar_results}
+        return Response(re)
+
+class MongodbQueryViewSet(APIView):
+    def post(self,request,format=None):
+        dbapi = db_api()
+        exectype = request.data['exectype']
+        dbname = request.data['dbname']
+        dbinfo = MongodbDB.objects.get(Q(dbname=dbname))
+        instinfo = dbinfo.mongodbinst_id
+        # instinfo = MongodbInst.objects.get(Q(id=instid))
+        connectinfo = {'conn_host':'','conn_port':'','conn_user':'','conn_passwd':'','conn_db':''}
+        connectinfo['conn_host'] = instinfo.host
+        connectinfo['conn_port'] = instinfo.port
+        connectinfo['conn_user'] = instinfo.readuser
+        connectinfo['conn_passwd'] = instinfo.readuserpwd
+        connectinfo['conn_db'] = dbname
+        if (exectype == 'table'):
+            query_results = dbapi.mongodb_query(1, connectinfo)
+        elif (exectype == 'sql'):
+            # username = request.data['username']
+            sql = request.data['sql']
+            query_results = dbapi.mongodb_query(2, connectinfo, sql)
+        # query_results = dbapi.mongodb_query(1, connectinfo)
+        re = {'results':query_results}        
         return Response(re)

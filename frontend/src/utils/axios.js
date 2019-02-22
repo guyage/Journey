@@ -277,5 +277,5 @@ export default {
         return checkCode(res)
       }
     )
-  }
-}
+  },
+};

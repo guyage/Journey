@@ -1,5 +1,5 @@
 <template>
-    <div id="db">
+    <div class="mongodbinst">
         <div class="filter-container" style="overflow:hidden; padding-bottom:10px;">
             <el-button @click="changeUpdateButton" style="float: left;" icon="el-icon-edit" size="small" type="primary">添加</el-button>
             <el-input v-on:change="inputchange" v-model="searchcontent" @keyup.enter.native="searchData" style="width: 200px;float: right;" size="small" placeholder="Search">
@@ -8,49 +8,83 @@
         </div>
         <!-- // 对应table -->
         <Table 
-        ref="datatable" 
+        ref="datatable"
         v-bind:apiurl="api"
         :getDataDetail="getDataDetail"
         :openDataDialog="openDialog"                    
         :removeData="delData" 
-        :TableData="results" 
-        :TableColumn="columns">
+        :TableData="results"
+        :TableColumn="tablecolumns">
         </Table>
-        <DbDialog 
-        ref="datadialog" 
-        :editurl="editapi" 
+        <DataDialog
+        ref="datadialog"
+        :editurl="editapi"
         :editFun="updateData"
         :apiurl="api"
-        :addFun="addData" 
-        :form="dbform" 
-        :rules="dbrules"  
+        :addFun="addData"
+        :form="dataform"
+        :formlabel="dataformlabel"
+        :rules="datarules"
         :show.sync="show">
-        </DbDialog>
+        </DataDialog>
     </div>
 </template>
 
 <script>
-import axios from 'axios'
 import Axios from '@/utils/axios.js';
 import Table from '@/components/views/Table.vue';
-import DbDialog from './DbDialog.vue';
-import { db_columns } from '@/global/config.js';
+import DataDialog from '@/components/views/DataDialog.vue';
 export default {
-    name: 'db',
-    data() {
+    name: 'mongodbinst',
+    data () {
         return {
-            dbform: {
-                dbname: '',
+            show: false,
+            editapi: '',              // 编辑数据接口
+            api: '/mongodbinst/',     // api定义对应后台接口
+            results: [],              // results定义表数据
+            searchcontent: '',        // input搜索框数据
+            // table显示列定义
+            tablecolumns: {           
+                id: 'id',
+                instname: '实例名称',
+                host: 'IP地址',
+                port: '端口',
+                manageuser: '管理用户',
+                readuser: '只读用户',
+                version: '版本',
+                comment: '备注',
+                is_enabled: '是否启用'
+            },
+            resdetail: {},            // 数据明细根据id获取
+            // 添加或修改数据时form表单行定义
+            dataform: {
+                instname: '',
                 host: '',
                 port: '',
-                adminuser: '',
-                password: '',
+                manageuser: '',
+                manageuserpwd: '',
+                readuser: '',
+                readuserpwd: '',
                 version: '',
                 comment: '',
                 is_enabled: ''
             },
-            dbrules: {
-                dbname: [
+            // 添加或修改数据时form表单对应中文别名
+            dataformlabel: {
+                instname: { label: 'Mongodb实例名称', selected: false},
+                host: { label: 'IP地址', selected: false },
+                port: { label: '端口', selected: false },
+                manageuser: { label: '管理用户', selected: false },
+                manageuserpwd: { label: '管理用户密码', selected: false },
+                readuser: { label: '只读用户', selected: false },
+                readuserpwd: { label: '只读用户密码', selected: false },
+                version: { label: '版本', selected: false },
+                comment: { label: '注释', selected: false },
+                is_enabled: { label: '是否启用', selected: false },
+            },
+            // 添加或修改数据时form表单校验定义
+            datarules: {
+                instname: [
                     { required: true, message: '请输入数据库', trigger: 'blur' }
                 ],
                 host: [
@@ -66,27 +100,29 @@ export default {
                     { required: true, message: '请确认是否启用', trigger: 'blur' }
                 ]
             },
-            results: [],
             columns: {},
-            show: false,
-            api: '/db/',
-            resdetail: {},
-            editapi: '',
-            searchcontent: '',
+            
         }
     },
+    components: {
+        Table,
+        DataDialog
+    },
+    mounted () {
+        this.getDataList(this.api)
+    },
     methods: {
-        // 获取database列表
-        getDataList(url) {         
-            Axios.oGet(url).then((response)=>{
+        // 获取mongodbinst列表(方法名定义公共些，方便类似功能复制)
+        getDataList(url) {
+            Axios.oGet(url).then((response) => {
                 if (response) {
                     this.results = response.data
-                }                        
+                }
             }).catch((error) => {
                 console.log(error);
             })
         },
-        // 搜索database
+        // 搜索数据
         searchData() {
             if (this.searchcontent) {
                 var searchurl = this.api + '?search=' + this.searchcontent
@@ -94,10 +130,9 @@ export default {
             }
             else {
                 this.getDataList(this.api)
-            }
-            
+            } 
         },
-        // 添加database
+        // 添加功能
         addData(url,data) {
             Axios.oPost(url,data).then((response)=>{
                 if (response) {
@@ -105,11 +140,10 @@ export default {
                     this.$message.success('数据保存成功!');
                 }
             }).catch((error)=>{
-                console.log(error);
-                
+                console.log(error); 
             })
         },
-        // 获取database明细
+        // 获取明细
         getDataDetail(id) {
             this.$refs.datadialog.isUpdate = true
             var url = this.api + id + '/'
@@ -117,13 +151,13 @@ export default {
             Axios.oGet(url).then((response)=>{
                 if (response) {
                     this.resdetail = response.data          
-                    this.dbform = this.resdetail
+                    this.dataform = this.resdetail
                 }               
             }).catch((error) => {
                 console.log(error);
             }) 
         },
-        // 修改database信息
+        // 修改数据
         updateData(url,data) {
             Axios.oUpdate(url,data).then((response)=>{
                 if (response) {
@@ -153,18 +187,9 @@ export default {
             this.openDialog()
             // this.$refs.dbdialog.resetForm('form');
         }
+        
     },
     
-    created () {
-        this.columns = db_columns;
-    },
-    mounted() {
-        this.getDataList(this.api)       
-    },
-    components:{
-        Table,
-        DbDialog,
-    }
 }
 </script>
 
