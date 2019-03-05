@@ -1,6 +1,6 @@
 <template>
     <div id="login" class="login">
-        
+        <vueCanvasNest :config="backgroundcolor"></vueCanvasNest>
         <div class="login-title">
             <img src="../../assets/logo4.png">
             <h3 class="logintitletext">Welcome to Journey DB平台</h3>
@@ -78,6 +78,7 @@
                 <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
             </span>
             </el-dialog>
+            
         </div>
     </div>
 </template>
@@ -85,9 +86,19 @@
 <script>
 import store from '@/store/store.js'
 import Axios from '@/utils/axios.js';
-export default {   
+import vueCanvasNest from 'vue-canvas-nest';
+
+export default {
+    components: {
+        vueCanvasNest
+    },
     data () {
         return {
+            backgroundcolor: {
+                color: '0,0,0',
+                count: 199,
+                opacity: 0.7,
+            },
             dialogVisible: true,
             activeName: '1',
             api: '/login',

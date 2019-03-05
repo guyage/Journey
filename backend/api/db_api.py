@@ -6,6 +6,7 @@ import subprocess
 from . import config
 from pymongo import MongoClient
 import ply.lex as lex, re
+from bson import json_util
 
 class db_api():
 
@@ -120,12 +121,13 @@ class db_api():
         if (flag == 1):
             re = db.collection_names()
         elif (flag == 2):
-            print ('111',sql)
-            # re = sql
-            re = db.userDetail.find({"userId":"5512875"})
-            print ('222', re)
-            for i in re:
-                print ('333',i)
+            execresults = eval(sql)
+            # re = {'results' : ''}
+            re = []
+            for i in execresults:
+                # re["results"].append(i)
+                print (i)
+                re.append(json_util.dumps(i))
             # re = db.userDetail.find_one()
             # print ('222', re)
         return re

@@ -24,14 +24,23 @@
             <div class="querymongodb-input-results">
                 <div class="querymongodb-input-db">
                     <span>当前选中db：</span>
-                    <el-tag>{{db}}</el-tag>
-                    <span>collection：</span>
-                    <el-tag>{{collection}}</el-tag>
+                    <span>{{db}}</span>
+                    <!-- <el-tag>{{db}}</el-tag> -->
+                </div>
+                <div class="querymongodb-input">
+                    <el-input  v-model="sql" type="textarea" placeholder="输入SQL语句，以分号结束，注意添加schema">
+                    </el-input>
+                    <el-button type="primary" @click="execQuery">查询</el-button>
                 </div>
                 
-                <el-input class="querymongodb-input" v-model="sql" type="textarea" placeholder="输入SQL语句，以分号结束，注意添加schema">
-                </el-input>
-                <el-button @click="execQuery">查询</el-button>
+                <div class="querymongodb-results">
+                    <label v-for="(item, index) in results" :key="index">
+                        <p class="querymongodb-results-index">/* {{index + 1}} */</p>
+                        <pre class="querymongodb-results-content">{{JSON.stringify(JSON.parse(item.replace(/\s*/g,"")), null,4)}}</pre>
+                        <br>
+                    </label>
+                    <!-- <pre v-for="(item, index) in results" :key="index">{{JSON.stringify(JSON.parse(item.replace(/\s*/g,"")), null,4)}}</pre>  -->
+                </div>
             </div>
             
         </div>
@@ -53,7 +62,8 @@ export default {
             filterText: '',
             db: '',
             collection: '',
-            sql: ''
+            sql: '',
+            results: ''
         }
     },
     watch: {
@@ -84,6 +94,8 @@ export default {
                 if(respone) {
                     console.log(respone.data);
                     
+                    // var str_pretty = JSON.stringify(respone.data.results, null, 4)
+                    this.results = respone.data.results
                 }
             }).catch((error) => {
                 console.log(error);
@@ -196,7 +208,30 @@ export default {
     /* float: left; */
     /* height: 190px; */
 }
+.querymongodb .el-textarea__inner{
+    height: 10px;
+    text-decoration:none;
+}
 .querymongodb .querymongodb-input-db{
    float: left;
 }
+/* 结果样式 */
+.querymongodb .querymongodb-results{
+    text-align: left;
+    border:1px solid #dcdfe6;
+    height: 580px;
+    background-color: #494c4e;
+    color: #b7e16b;
+    padding-left: 8px;
+    overflow: auto;
+}
+.querymongodb .querymongodb-results-index{
+    font-size: 5px;
+    padding-bottom: 4px;
+    padding-left: 4px;
+}
+.querymongodb .querymongodb-results-content{
+    /* padding: 1 */
+}
+/* 结果样式 */
 </style>

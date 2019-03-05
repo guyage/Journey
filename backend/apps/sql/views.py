@@ -8,6 +8,10 @@ from api.db_api import db_api
 from db.models import *
 import json,datetime,time
 from api.config import get_conf
+import json
+
+
+
 
 default_limit = get_conf('sqllimit', 'limit')
 dump_white_list = get_conf('dump_white_list', 'white_list')
@@ -88,5 +92,5 @@ class MongodbQueryViewSet(APIView):
             sql = request.data['sql']
             query_results = dbapi.mongodb_query(2, connectinfo, sql)
         # query_results = dbapi.mongodb_query(1, connectinfo)
-        re = {'results':query_results}        
+        re = {'results':query_results}
         return Response(re)

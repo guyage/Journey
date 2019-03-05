@@ -13,7 +13,7 @@ import { getCookies } from '@/utils/auth.js'
 // axios 全局参数
 axios.defaults.baseURL = baseurl;
 // 请求超时时间，默认5分钟
-axios.defaults.timeout = 300000;
+axios.defaults.timeout = 600000;
 
 
 /**
