@@ -94,3 +94,22 @@ class MongodbQueryViewSet(APIView):
         # query_results = dbapi.mongodb_query(1, connectinfo)
         re = {'results':query_results}
         return Response(re)
+
+class RedisdbQueryViewSet(APIView):
+    def post(self,request,format=None):
+        dbapi = db_api()
+        exectype = request.data['exectype']
+        redisname = request.data['selectredis']
+        selectdb = request.data['selectdb']
+        rediskey = request.data['rediskey']
+        dbinfo = RedisDB.objects.get(Q(name=redisname))
+        connectinfo = {'conn_host':'','conn_port':'','conn_passwd':'','conn_db':''}
+        connectinfo['conn_host'] = dbinfo.host
+        connectinfo['conn_port'] = dbinfo.port
+        connectinfo['conn_passwd'] = dbinfo.password
+        connectinfo['conn_db'] = selectdb
+
+        if (exectype == 'getkey'):
+            query_results = dbapi.redis_query(1, connectinfo, rediskey)
+        re = {'results':query_results}
+        return Response(re)

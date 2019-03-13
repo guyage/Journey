@@ -67,3 +67,19 @@ class MongodbDB(CommonInfo):
 
     def __unicode__(self):
         return self.dbname
+
+class RedisDB(CommonInfo):
+    name = models.CharField(max_length=128, blank=False, null=False, verbose_name=u"Redis数据库名")
+    host = models.GenericIPAddressField(blank=True, null=True, verbose_name=u"Redis IP地址")
+    port = models.PositiveIntegerField(blank=True, null=True, default=3306, verbose_name=u"Redis端口")
+    password = models.CharField(max_length=64, blank=False, null=False, verbose_name=u"Redis密码")
+    version = models.CharField(max_length=32,default=5.7,verbose_name=u"Redis版本")
+    is_enabled = models.PositiveSmallIntegerField(choices=IS_ENABLED_CHOICE, verbose_name=u"是否启用")
+    
+    class Meta:
+        verbose_name = u"Redis数据库"
+        verbose_name_plural = verbose_name
+        db_table = 'redis_db'
+
+    def __unicode__(self):
+        return self.name

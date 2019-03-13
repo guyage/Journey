@@ -9,3 +9,4 @@ python-ldap==3.1.0
 django-auth-ldap==1.7.0
 ply==3.11
 pymongo==3.7.2
+redis==3.2.0

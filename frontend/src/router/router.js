@@ -20,7 +20,9 @@ import QuerySql2 from '@/components/query/QuerySql2.vue';
 import SQLSoar from '@/components/query/SQLSoar.vue';
 import MongodbInst from '@/components/mongodb/MongodbInst.vue';
 import MongodbDB from '@/components/mongodb/MongodbDB.vue';
+import RedisDB from '@/components/redisdb/RedisDB.vue';
 import QueryMongodb from '@/components/query/QueryMongodb.vue';
+import QueryRedis from '@/components/query/QueryRedis.vue';
 // 调试组件
 import Test from '@/components/test/Test.vue';
 // 引入错误页面组件
@@ -72,6 +74,12 @@ const DynamicRouter = [
                 meta: { roles: 'admin', tag: 'MongodbDB管理', title: ['数据库','MongodbDB管理']},
             },
             { 
+                path: '/redisdb', 
+                component: RedisDB, 
+                name: 'redisdb',
+                meta: { roles: 'admin', tag: 'RedisDB管理', title: ['数据库','RedisDB管理']},
+            },
+            { 
                 path: '/dbuser', 
                 component: DbUser, 
                 name: 'dbuser',
@@ -106,6 +114,12 @@ const DynamicRouter = [
                 component: QueryMongodb, 
                 name: 'querymongodb',
                 meta: { roles: 'dev', tag: 'QueryMongodb', title: ['SQL','QueryMongodb']},
+            },
+            { 
+                path: '/queryredis', 
+                component: QueryRedis, 
+                name: 'queryredis',
+                meta: { roles: 'dev', tag: 'QueryRedis', title: ['SQL','QueryRedis']},
             },
             { 
                 path: '/sqlsoar', 

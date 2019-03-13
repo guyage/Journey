@@ -75,6 +75,7 @@ import FileSaver from 'file-saver'
 import XLSX from 'xlsx'
 import Axios from '@/utils/axios.js';
 export default {
+    name: 'querysql2',
     data() {
         return {
             loading: false,

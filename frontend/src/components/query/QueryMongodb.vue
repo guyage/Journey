@@ -28,7 +28,7 @@
                     <!-- <el-tag>{{db}}</el-tag> -->
                 </div>
                 <div class="querymongodb-input">
-                    <el-input  v-model="sql" type="textarea" placeholder="输入SQL语句，以分号结束，注意添加schema">
+                    <el-input  v-model="sql" style="width: 90em;" placeholder="输入MongoDB查询">
                     </el-input>
                     <el-button type="primary" @click="execQuery">查询</el-button>
                 </div>

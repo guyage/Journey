@@ -23,6 +23,15 @@ class MongodbInstSerializer(serializers.ModelSerializer):
 
 class MongodbDBSerializer(serializers.ModelSerializer):
     
+    mongodbinst_id = serializers.SlugRelatedField(many=False,read_only=True,slug_field='instname')
+    # mongodbinst_id = serializers.HyperlinkedRelatedField(many=False,read_only=True,view_name='mongodbinst',lookup_field="id")
     class Meta:
         model = MongodbDB
         fields = ('id','mongodbinst_id','dbname','comment','is_enabled')
+
+class RedisDBSerializer(serializers.ModelSerializer):
+    
+    password = serializers.CharField(style={'input_type': 'password'}, write_only=True,)
+    class Meta:
+        model = RedisDB
+        fields = ('id','name','host','port','password','version','comment','is_enabled')

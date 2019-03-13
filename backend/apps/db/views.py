@@ -75,3 +75,14 @@ class MongodbDBViewSet(viewsets.ModelViewSet):
     search_fields = ('mongodbinst_id','dbname',)
     ordering_fields = ('id',)
 
+class RedisDBViewSet(viewsets.ModelViewSet):
+    """
+    RedisDB列表，分页，查找
+    """
+    queryset = RedisDB.objects.all().order_by('id')
+    serializer_class = RedisDBSerializer
+    # pagination_class = PageNumberPagination
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter,)
+    search_fields = ('name','host','port','version')
+    ordering_fields = ('id',)
+

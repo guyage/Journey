@@ -76,18 +76,18 @@ export default {
             this.$refs[formName].resetFields();
         },
         addDataFun() {
-            console.log('123',this.form);
+            // console.log('123',this.form);
             
-            // this.$refs['form'].validate((valid)=>{
-            //     if(valid){
-            //         this.addFun(this.apiurl,this.form)
-            //         this.visible = false
-            //         this.$message.success('数据保存成功!');
-            //     }
-            //     else {
-            //         this.$message.error('数据库不合法!');
-            //     }
-            // })
+            this.$refs['form'].validate((valid)=>{
+                if(valid){
+                    this.addFun(this.apiurl,this.form)
+                    this.visible = false
+                    this.$message.success('数据保存成功!');
+                }
+                else {
+                    this.$message.error('数据库不合法!');
+                }
+            })
                        
         },
         editDataFun() {

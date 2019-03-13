@@ -7,6 +7,7 @@ from . import config
 from pymongo import MongoClient
 import ply.lex as lex, re
 from bson import json_util
+import redis
 
 class db_api():
 
@@ -108,7 +109,6 @@ class db_api():
         return re
 
     def mongodb_query(self,flag,connectinfo,sql=None):
-        
         conn_host = connectinfo['conn_host']
         conn_port = connectinfo['conn_port']
         conn_user = connectinfo['conn_user']
@@ -130,6 +130,17 @@ class db_api():
                 re.append(json_util.dumps(i))
             # re = db.userDetail.find_one()
             # print ('222', re)
+        return re
+
+    def redis_query(self,flag,connectinfo,rediskey=None):
+        conn_host = connectinfo['conn_host']
+        conn_port = connectinfo['conn_port']
+        conn_passwd = connectinfo['conn_passwd']
+        conn_db = connectinfo['conn_db']
+        
+        if (flag == 1):
+            r = redis.Redis(host=conn_host, port=conn_port, password=conn_passwd, db=conn_db,decode_responses=True)
+            re = r.get(rediskey)
         return re
 
     def extract_table_name_from_sql(self,sql_str):

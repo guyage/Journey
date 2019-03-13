@@ -118,6 +118,29 @@ const AdminMenus = [
         ]
     },
     {
+        id: 6,
+        parentMenuId : 0,
+        name: 'database',
+        alias: 'Redis管理',
+        url: '/home',
+        icon: 'icon-database',
+        state: 'ENABLE',
+        roles: 'admin',
+        childs: [
+            {   
+                id: 61, 
+                parentMenuId : 6,
+                name: 'redisdb', 
+                alias: 'RedisDB管理', 
+                url: '/redisdb', 
+                icon: 'icon-suyaniconchanpinleibufenzuodaohangbufen84', 
+                state: 'ENABLE',
+                roles: 'admin',
+                childs: null
+            },
+        ]
+    },
+    {
         id: 5,                        // 菜单id，逐步递增
         parentMenuId: 0,              // 父菜单id，无父菜单，填写
         name: 'SQL',                  // 菜单唯一名字
@@ -153,6 +176,16 @@ const AdminMenus = [
                 alias: 'QueryMongodb', 
                 state: 'ENABLE',
                 url: '/querymongodb', 
+                icon: 'icon-chaxun', 
+                childs: null
+            },
+            {   
+                id: 55, 
+                parentMenuId : 4,
+                name: 'QueryRedis', 
+                alias: 'QueryRedis', 
+                state: 'ENABLE',
+                url: '/queryredis', 
                 icon: 'icon-chaxun', 
                 childs: null
             },

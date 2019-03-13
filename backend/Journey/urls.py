@@ -27,6 +27,7 @@ router.register(r'db', MySQLDatabaseViewSet, base_name="db")
 router.register(r'user', UsersViewSet, base_name="user")
 router.register(r'mongodbinst', MongodbInstViewSet, base_name="mongodbinst")
 router.register(r'mongodbdb', MongodbDBViewSet, base_name="mongodbdb")
+router.register(r'redisdb', RedisDBViewSet, base_name="redisdb")
 # router.register(r'useraccessdb', UserAccessDbViewSet, base_name="useraccessdb")
 # router.register(r'user', UsersViewSet, base_name="user")
 
@@ -40,6 +41,7 @@ urlpatterns = [
     url(r'^api/query', SQLQueryViewSet.as_view()),
     url(r'^api/sqlsoar', SQLSoarViewSet.as_view()),
     url(r'^api/mongodbquery', MongodbQueryViewSet.as_view()),
+    url(r'^api/redisdbquery', RedisdbQueryViewSet.as_view()),
     url(r'^api/dbmeta', MysqlMetaViewSet.as_view()),
     url(r'^api/ldapauth', LdapAuthViewSet.as_view()),
     url(r'^api/logout', LogoutViewSet.as_view(({'get':'logout'}))),
