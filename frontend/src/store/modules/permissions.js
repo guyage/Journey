@@ -1,5 +1,5 @@
 /*jshint esversion: 6 */
-import {AdminMenus,NoramalMenus} from '@/global/config.js'
+import {Menus} from '@/global/config.js'
 import { getCookies, setCookies, removeCookies } from '@/utils/auth.js'
 
 const MenuKey = 'menus'
@@ -44,11 +44,11 @@ const permissions = {
             return new Promise(resolve => {
                 if (roles == 'admin') {
                     // setCookies(MenuKey,AdminMenus)
-                    commit('SET_MENUS', AdminMenus)
+                    commit('SET_MENUS', Menus)
                 }
                 else {
                     // setCookies(MenuKey,NoramalMenus)
-                    commit('SET_MENUS', NoramalMenus)
+                    commit('SET_MENUS', Menus)
                 }
                 resolve()
             })

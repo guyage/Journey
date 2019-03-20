@@ -4,41 +4,42 @@
 
 const baseurl = process.env.baseUrl
 
-// admin菜单
-const AdminMenus = [
-    {
-        id: 1,                     // 菜单id，逐步递增
+const Menus = [
+	{
+		id: 1,                     // 菜单id，逐步递增
         parentMenuId: 0,           // 父菜单id，无父菜单，填写
         name: 'Dashboard',      // 菜单唯一名字
         alias: 'Dashboard',     // 菜单显示名字
         url: '/dashboard',                  // 菜单对应路由
         icon: 'icon-dashboard',     // 菜单图标(阿里svg图标名字)
         state: 'ENABLE',           // 菜单是否启用
-        roles: 'admin',        
-        childs: null               // 菜单是否有子菜单，有则列出，无则为null
-    },
-    {
+        roles: 'dev',        
+        childs: null  
+	},
+	{
         id: 2,
-        parentMenuId : 0,
+        parentMenuId: 0,
         name: 'usermanger',
-        alias: '用户',
-        state: 'ENABLE',
+        alias: '用户管理',
         url: '/home',
         icon: 'icon-houtaiyonghuguanli',
+        state: 'ENABLE',
+        roles: 'admin',
         childs: [
             {   
                 id: 21, 
                 parentMenuId : 2,
                 name: 'user', 
-                alias: '用户管理', 
+                alias: '用户',
+				url: '/user', 				
                 state: 'ENABLE',
-                url: '/user', 
+                roles: 'admin',
                 icon: 'icon-yonghuguanli', 
                 childs: null
             },
         ]
     },
-    {
+	{
         id: 3,
         parentMenuId : 0,
         name: 'database',
@@ -46,14 +47,14 @@ const AdminMenus = [
         url: '/home',
         icon: 'icon-database',
         state: 'ENABLE',
-        roles: 'admin',
+        roles: 'dev',
         childs: [
-            {   
+			{   
                 id: 31, 
-                parentMenuId : 2,
-                name: 'db', 
-                alias: 'MySQL数据库管理', 
-                url: '/db', 
+                parentMenuId : 3,
+                name: 'mysqlinst', 
+                alias: 'MySQL实例', 
+                url: '/mysqlinst', 
                 icon: 'icon-suyaniconchanpinleibufenzuodaohangbufen84', 
                 state: 'ENABLE',
                 roles: 'admin',
@@ -61,32 +62,43 @@ const AdminMenus = [
             },
             {   
                 id: 32, 
-                parentMenuId : 2,
-                name: 'dbuser', 
-                alias: '数据库用户管理', 
-                url: '/dbuser', 
+                parentMenuId : 3,
+                name: 'mysqldb', 
+                alias: 'MySQL数据库', 
+                url: '/mysqldb', 
                 icon: 'icon-erji-yonghuguanli', 
                 state: 'ENABLE',
-                roles: 'dev',
+                roles: 'admin',
                 childs: null
             },
             {   
                 id: 33, 
-                parentMenuId : 2,
+                parentMenuId : 3,
+                name: 'mysqluser', 
+                alias: 'MySQL用户', 
+                url: '/mysqluser', 
+                icon: 'icon-erji-yonghuguanli', 
+                state: 'ENABLE',
+                roles: 'admin',
+                childs: null
+            },
+            {   
+                id: 34, 
+                parentMenuId : 3,
                 name: 'dbmeta', 
-                alias: '数据库元数据', 
+                alias: 'MySQL元数据', 
                 url: '/dbmeta', 
                 icon: 'icon-shujukushili', 
                 state: 'ENABLE',
-                roles: 'admin',
+                roles: 'dev',
                 childs: null
             }
         ]
     },
-    {
+	{
         id: 4,
         parentMenuId : 0,
-        name: 'database',
+        name: 'home',
         alias: 'Mongodb管理',
         url: '/home',
         icon: 'icon-database',
@@ -95,9 +107,9 @@ const AdminMenus = [
         childs: [
             {   
                 id: 41, 
-                parentMenuId : 21,
+                parentMenuId : 4,
                 name: 'mongodbinst', 
-                alias: 'MongodbInst管理', 
+                alias: 'Mongodb实例', 
                 url: '/mongodbinst', 
                 icon: 'icon-suyaniconchanpinleibufenzuodaohangbufen84', 
                 state: 'ENABLE',
@@ -106,9 +118,9 @@ const AdminMenus = [
             },
             {   
                 id: 42, 
-                parentMenuId : 21,
+                parentMenuId : 4,
                 name: 'mongodbdb', 
-                alias: 'mongodbDB管理', 
+                alias: 'Mongodb数据库', 
                 url: '/mongodbdb', 
                 icon: 'icon-suyaniconchanpinleibufenzuodaohangbufen84', 
                 state: 'ENABLE',
@@ -117,10 +129,10 @@ const AdminMenus = [
             },
         ]
     },
-    {
+	{
         id: 6,
         parentMenuId : 0,
-        name: 'database',
+        name: 'home',
         alias: 'Redis管理',
         url: '/home',
         icon: 'icon-database',
@@ -131,7 +143,7 @@ const AdminMenus = [
                 id: 61, 
                 parentMenuId : 6,
                 name: 'redisdb', 
-                alias: 'RedisDB管理', 
+                alias: 'Redis实例', 
                 url: '/redisdb', 
                 icon: 'icon-suyaniconchanpinleibufenzuodaohangbufen84', 
                 state: 'ENABLE',
@@ -140,147 +152,74 @@ const AdminMenus = [
             },
         ]
     },
-    {
-        id: 5,                        // 菜单id，逐步递增
-        parentMenuId: 0,              // 父菜单id，无父菜单，填写
-        name: 'SQL',                  // 菜单唯一名字
-        alias: 'SQL',                 // 菜单显示名字
-        url: '/sql',                  // 菜单对应路由
-        icon: 'icon-SQLshujuji',      // 菜单图标(阿里svg图标名字)
-        state: 'ENABLE',              // 菜单是否启用
+	{
+        id: 7,
+        parentMenuId: 0,
+        name: 'Query',
+        alias: 'Query',
+        url: '/home',
+        icon: 'icon-SQLshujuji',
+        state: 'ENABLE',
+		roles: 'dev',
         childs: [
             {   
-                id: 51, 
-                parentMenuId : 4,
-                name: 'Query', 
+                id: 71, 
+                parentMenuId : 7,
+                name: 'QuerySQL', 
                 alias: 'Query', 
-                state: 'ENABLE',
                 url: '/query', 
-                icon: 'icon-chaxun', 
+                icon: 'icon-chaxun',
+				state: 'ENABLE',
+				roles: 'dev',
                 childs: null
             },
             {   
-                id: 52, 
-                parentMenuId : 4,
-                name: 'Query2', 
-                alias: 'Query2', 
-                state: 'ENABLE',
-                url: '/query2', 
-                icon: 'icon-chaxun', 
+                id: 72, 
+                parentMenuId : 7,
+                name: 'QuerySQL2', 
+                alias: 'QuerySQL2',
+				url: '/query2',
+                icon: 'icon-chaxun',
+				state: 'ENABLE',
+				roles: 'dev',
                 childs: null
             },
             {   
-                id: 53, 
-                parentMenuId : 4,
-                name: 'QueryMongodb', 
-                alias: 'QueryMongodb', 
-                state: 'ENABLE',
+                id: 73, 
+                parentMenuId : 7,
+                name: 'QueryMongodb',
+                alias: 'QueryMongodb',
                 url: '/querymongodb', 
-                icon: 'icon-chaxun', 
+                icon: 'icon-chaxun',
+				state: 'ENABLE',
+				roles: 'dev',
                 childs: null
             },
             {   
-                id: 55, 
-                parentMenuId : 4,
+                id: 74, 
+                parentMenuId : 7,
                 name: 'QueryRedis', 
-                alias: 'QueryRedis', 
-                state: 'ENABLE',
-                url: '/queryredis', 
-                icon: 'icon-chaxun', 
+                alias: 'QueryRedis',
+                url: '/queryredis',
+                icon: 'icon-chaxun',
+				state: 'ENABLE',
+				roles: 'dev',
                 childs: null
             },
             {   
-                id: 54, 
-                parentMenuId : 4,
+                id: 75, 
+                parentMenuId : 7,
                 name: 'SQLSoar', 
-                alias: 'SQLSoar', 
-                state: 'ENABLE',
+                alias: 'SQLSoar',
                 url: '/sqlsoar', 
-                icon: 'icon-SQLshenhe', 
+                icon: 'icon-SQLshenhe',
+				state: 'ENABLE',
+				roles: 'dev',
                 childs: null
             },
         ]              
     },
 ]
-
-
-// dev菜单
-const NoramalMenus = [
-    {
-        id: 1,                     // 菜单id，逐步递增
-        parentMenuId: 0,           // 父菜单id，无父菜单，填写
-        name: 'Dashboard',      // 菜单唯一名字
-        alias: 'Dashboard',     // 菜单显示名字
-        url: '/dashboard',                  // 菜单对应路由
-        icon: 'icon-dashboard',     // 菜单图标(阿里svg图标名字)
-        state: 'ENABLE',           // 菜单是否启用
-        roles: 'admin',        
-        childs: null               // 菜单是否有子菜单，有则列出，无则为null
-    },
-    {
-        id: 2,                     // 菜单id，逐步递增
-        parentMenuId: 0,           // 父菜单id，无父菜单，填写
-        name: 'SQL',      // 菜单唯一名字
-        alias: 'SQL',     // 菜单显示名字
-        url: '/sql',                  // 菜单对应路由
-        icon: 'icon-SQLshujuji',     // 菜单图标(阿里svg图标名字)
-        state: 'ENABLE',           // 菜单是否启用
-        childs: [
-            {   
-                id: 21, 
-                parentMenuId : 4,
-                name: 'dbmeta', 
-                alias: '数据库元数据', 
-                url: '/dbmeta', 
-                icon: 'icon-shujukushili', 
-                state: 'ENABLE',
-                roles: 'admin',
-                childs: null
-            },
-            {   
-                id: 22, 
-                parentMenuId : 4,
-                name: 'Query', 
-                alias: 'Query', 
-                state: 'ENABLE',
-                url: '/query', 
-                icon: 'icon-chaxun', 
-                childs: null
-            },
-            {   
-                id: 23, 
-                parentMenuId : 4,
-                name: 'Query2', 
-                alias: 'Query2', 
-                state: 'ENABLE',
-                url: '/query2', 
-                icon: 'icon-chaxun', 
-                childs: null
-            },
-            // {   
-            //     id: 24, 
-            //     parentMenuId : 4,
-            //     name: 'QueryMongodb', 
-            //     alias: 'QueryMongodb', 
-            //     state: 'ENABLE',
-            //     url: '/querymongodb', 
-            //     icon: 'icon-chaxun', 
-            //     childs: null
-            // },
-            {   
-                id: 25, 
-                parentMenuId : 4,
-                name: 'SQLSoar', 
-                alias: 'SQLSoar', 
-                state: 'ENABLE',
-                url: '/sqlsoar', 
-                icon: 'icon-SQLshenhe', 
-                childs: null
-            },
-        ]              
-    },
-]
-
 
 
 // 数据库表格对应列名
@@ -319,4 +258,4 @@ const mongodbinst_columns = {
 
 
 
-export { baseurl, AdminMenus, mongodbinst_columns,db_columns, user_columns,NoramalMenus};
+export { baseurl, mongodbinst_columns,db_columns, user_columns,Menus};

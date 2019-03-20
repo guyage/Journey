@@ -3,13 +3,20 @@
 from rest_framework import serializers
 from db.models import *
 
+class MySQLInstSerializer(serializers.ModelSerializer):
+    
+    manageuserpwd = serializers.CharField(style={'input_type': 'password'}, write_only=True,)
+    readuserpwd = serializers.CharField(style={'input_type': 'password'}, write_only=True,)
+    class Meta:
+        model = MySQLInst
+        fields = ('id','instname','host','port','manageuser','manageuserpwd','readuser','readuserpwd','version','comment','is_enabled')
+
 class MySQLDatabaseSerializer(serializers.ModelSerializer):
     
-    adminuser = serializers.CharField(write_only=True)
-    password = serializers.CharField(style={'input_type': 'password'}, write_only=True,)
+    mysqlinst_id = serializers.SlugRelatedField(many=False,read_only=True,slug_field='instname')
     class Meta:
         model = MySQLDatabase
-        fields = ('id','dbname','host','port','adminuser','password','version','comment','is_enabled')
+        fields = ('id','mysqlinst_id','dbname','service','comment','is_enabled')
 
 class MongodbInstSerializer(serializers.ModelSerializer):
     

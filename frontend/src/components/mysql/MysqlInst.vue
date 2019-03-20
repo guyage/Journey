@@ -1,5 +1,5 @@
 <template>
-    <div class="mongodbdb">
+    <div class="mysqlinst">
         <div class="filter-container" style="overflow:hidden; padding-bottom:10px;">
             <el-button @click="changeUpdateButton" style="float: left;" icon="el-icon-edit" size="small" type="primary">添加</el-button>
             <el-input v-on:change="inputchange" v-model="searchcontent" @keyup.enter.native="searchData" style="width: 200px;float: right;" size="small" placeholder="Search">
@@ -35,44 +35,66 @@ import Axios from '@/utils/axios.js';
 import Table from '@/components/views/Table.vue';
 import DataDialog from '@/components/views/DataDialog.vue';
 export default {
-    name: 'mongodbdb',
+    name: 'mysqlinst',
     data () {
         return {
             show: false,
             editapi: '',              // 编辑数据接口
-            api: '/mongodbdb/',     // api定义对应后台接口
+            api: '/mysqlinst/',     // api定义对应后台接口
             results: [],              // results定义表数据
             searchcontent: '',        // input搜索框数据
             // table显示列定义
             tablecolumns: {           
                 id: 'id',
-                mongodbinst_id: '实例名称',
-                dbname: '数据库名称',
+                instname: '实例名称',
+                host: 'IP地址',
+                port: '端口',
+                manageuser: '管理用户',
+                readuser: '只读用户',
+                version: '版本',
                 comment: '备注',
                 is_enabled: '是否启用'
             },
             resdetail: {},            // 数据明细根据id获取
             // 添加或修改数据时form表单行定义
             dataform: {
-                mongodbinst_id: '',
-                dbname: '',
+                instname: '',
+                host: '',
+                port: '',
+                manageuser: '',
+                manageuserpwd: '',
+                readuser: '',
+                readuserpwd: '',
+                version: '',
                 comment: '',
-                is_enabled: '',
+                is_enabled: ''
             },
             // 添加或修改数据时form表单对应中文别名
             dataformlabel: {
-                mongodbinst_id: { label: 'Mongodb实例名称', selected: false},
-                dbname: { label: '数据库名称', selected: false },
+                instname: { label: 'Mongodb实例名称', selected: false},
+                host: { label: 'IP地址', selected: false },
+                port: { label: '端口', selected: false },
+                manageuser: { label: '管理用户', selected: false },
+                manageuserpwd: { label: '管理用户密码', selected: false },
+                readuser: { label: '只读用户', selected: false },
+                readuserpwd: { label: '只读用户密码', selected: false },
+                version: { label: '版本', selected: false },
                 comment: { label: '注释', selected: false },
                 is_enabled: { label: '是否启用', selected: false },
             },
             // 添加或修改数据时form表单校验定义
             datarules: {
-                mongodbinst_id: [
-                    { required: true, message: '请选择实例', trigger: 'blur' }
-                ],
-                dbname: [
+                instname: [
                     { required: true, message: '请输入数据库', trigger: 'blur' }
+                ],
+                host: [
+                    { required: true, message: '请输入IP地址', trigger: 'blur' }
+                ],
+                port: [
+                    { required: true, message: '请输入端口', trigger: 'blur' }
+                ],
+                version: [
+                    { required: true, message: '请输入版本', trigger: 'blur' }
                 ],
                 is_enabled: [
                     { required: true, message: '请确认是否启用', trigger: 'blur' }
@@ -174,3 +196,4 @@ export default {
 <style>
 
 </style>
+

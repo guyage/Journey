@@ -21,11 +21,12 @@ class SQLQueryViewSet(APIView):
         dbapi = db_api()
         dbname = request.data['dbname']
         dbinfo = MySQLDatabase.objects.get(Q(dbname=dbname))
+        instinfo = dbinfo.mysqlinst_id
         connectinfo = {'conn_host':'','conn_port':'','conn_user':'','conn_passwd':'','conn_db':''}
-        connectinfo['conn_host'] = dbinfo.host
-        connectinfo['conn_port'] = dbinfo.port
-        connectinfo['conn_user'] = dbinfo.adminuser
-        connectinfo['conn_passwd'] = dbinfo.password
+        connectinfo['conn_host'] = instinfo.host
+        connectinfo['conn_port'] = instinfo.port
+        connectinfo['conn_user'] = instinfo.manageuser
+        connectinfo['conn_passwd'] = instinfo.manageuserpwd
         connectinfo['conn_db'] = dbname
         # sql = 'select * from student;'
         exectype = request.data['exectype']
@@ -65,7 +66,8 @@ class SQLSoarViewSet(APIView):
         sql = request.data['sql']
         soartype = request.data['soartype']
         dbinfo = MySQLDatabase.objects.get(Q(dbname=dbname))
-        dsn = dbinfo.adminuser + ':' + dbinfo.password + '@' + dbinfo.host + ':' + str(dbinfo.port) + '/' + dbname
+        instinfo = dbinfo.mysqlinst_id
+        dsn = instinfo.manageuser + ':' + instinfo.manageuserpwd + '@' + instinfo.host + ':' + str(instinfo.port) + '/' + dbname
         if (soartype == 'optimize'):
             soar_results = dbapi.sql_soar(1,sql,dsn,username)
             re = {'results':soar_results}

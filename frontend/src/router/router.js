@@ -10,8 +10,8 @@ import store from '@/store/store.js'
 //引入功能组件
 import Index from '@/components/views/Index.vue';
 import Dashboard from '@/components/views/Dashboard.vue';
-import Db from '@/components/db/Db.vue';
-import DbUser from '@/components/db/DbUser.vue';
+// import Db from '@/components/db/Db.vue';
+// import DbUser from '@/components/db/DbUser.vue';
 import DbMeta from '@/components/db/DbMeta.vue';
 import Login from '@/components/views/Login.vue';
 import User from '@/components/user/User.vue';
@@ -20,6 +20,9 @@ import QuerySql2 from '@/components/query/QuerySql2.vue';
 import SQLSoar from '@/components/query/SQLSoar.vue';
 import MongodbInst from '@/components/mongodb/MongodbInst.vue';
 import MongodbDB from '@/components/mongodb/MongodbDB.vue';
+import MysqlInst from '@/components/mysql/MysqlInst.vue';
+import MysqlDB from '@/components/mysql/MysqlDB.vue';
+import MysqlUser from '@/components/mysql/MysqlUser.vue';
 import RedisDB from '@/components/redisdb/RedisDB.vue';
 import QueryMongodb from '@/components/query/QueryMongodb.vue';
 import QueryRedis from '@/components/query/QueryRedis.vue';
@@ -56,40 +59,46 @@ const DynamicRouter = [
                 meta: { roles: 'dev', tag: '仪表盘',title: ['仪表盘']},
             },
             { 
-                path: '/db', 
-                component: Db, 
-                name: 'db',
-                meta: { roles: 'admin', tag: 'MySQL数据库管理', title: ['数据库','MySQL数据库管理']},
+                path: '/mysqlinst', 
+                component: MysqlInst, 
+                name: 'mysqlinst',
+                meta: { roles: 'admin', tag: 'MySQL实例', title: ['MySQL管理','MySQL实例']},
             },
             { 
-                path: '/mongodbinst', 
-                component: MongodbInst, 
-                name: 'mongodbinst',
-                meta: { roles: 'admin', tag: 'MongodbInst管理', title: ['数据库','MongodbInst管理']},
+                path: '/mysqldb', 
+                component: MysqlDB, 
+                name: 'mysqldb',
+                meta: { roles: 'admin', tag: 'MySQL数据库', title: ['MySQL管理','MySQL数据库']},
             },
             { 
-                path: '/mongodbdb', 
-                component: MongodbDB, 
-                name: 'mongodbdb',
-                meta: { roles: 'admin', tag: 'MongodbDB管理', title: ['数据库','MongodbDB管理']},
-            },
-            { 
-                path: '/redisdb', 
-                component: RedisDB, 
-                name: 'redisdb',
-                meta: { roles: 'admin', tag: 'RedisDB管理', title: ['数据库','RedisDB管理']},
-            },
-            { 
-                path: '/dbuser', 
-                component: DbUser, 
-                name: 'dbuser',
-                meta: { roles: 'admin', tag: '数据库用户管理', title: ['数据库','数据库用户管理']},
+                path: '/mysqluser', 
+                component: MysqlUser, 
+                name: 'mysqluser',
+                meta: { roles: 'admin', tag: 'MySQL用户', title: ['MySQL管理','MySQL用户']},
             },
             { 
                 path: '/dbmeta', 
                 component: DbMeta, 
                 name: 'dbmeta',
-                meta: { roles: 'dev', tag: '数据库元数据', title: ['数据库','数据库元数据']},
+                meta: { roles: 'dev', tag: 'MySQL元数据', title: ['MySQL管理','MySQL元数据']},
+            },
+            { 
+                path: '/mongodbinst', 
+                component: MongodbInst, 
+                name: 'mongodbinst',
+                meta: { roles: 'admin', tag: 'Mongodb实例', title: ['Mongodb管理','Mongodb实例']},
+            },
+            { 
+                path: '/mongodbdb', 
+                component: MongodbDB, 
+                name: 'mongodbdb',
+                meta: { roles: 'admin', tag: 'Mongodb数据库', title: ['Mongodb管理','Mongodb数据库']},
+            },
+            { 
+                path: '/redisdb', 
+                component: RedisDB, 
+                name: 'redisdb',
+                meta: { roles: 'admin', tag: 'Redis实例', title: ['Redis管理','Redis实例']},
             },
             { 
                 path: '/user', 

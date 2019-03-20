@@ -1,6 +1,8 @@
 <template>
     <div id="dbuser">
-        {{ msg }}
+        <div class="dbuser-show">
+            
+        </div>
     </div>
 </template>
 

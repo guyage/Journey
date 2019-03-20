@@ -55,8 +55,11 @@ export default {
             // console.log(this.username);
             // console.log(this.useraccessdb);
             var accessdb = {}
+            console.log('11',this.useraccessdb);
             // accessdb.username = this.username
             accessdb.accessdb = this.useraccessdb.toString()
+            console.log(accessdb);
+            
             Axios.oUpdate(accessdburl,accessdb).then((response) => {
                 if (response) {
                     this.visible = false

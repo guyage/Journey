@@ -23,6 +23,8 @@ from apps.sql.views import *
 from rest_framework_jwt.views import obtain_jwt_token
 
 router = routers.DefaultRouter()
+router.register(r'mysqlinst', MySQLInstViewSet, base_name="mysqlinst")
+router.register(r'mysqldb', MySQLDatabaseViewSet, base_name="mysqldb")
 router.register(r'db', MySQLDatabaseViewSet, base_name="db")
 router.register(r'user', UsersViewSet, base_name="user")
 router.register(r'mongodbinst', MongodbInstViewSet, base_name="mongodbinst")
@@ -43,6 +45,7 @@ urlpatterns = [
     url(r'^api/mongodbquery', MongodbQueryViewSet.as_view()),
     url(r'^api/redisdbquery', RedisdbQueryViewSet.as_view()),
     url(r'^api/dbmeta', MysqlMetaViewSet.as_view()),
+    url(r'^api/mysqluser', MysqlUserViewSet.as_view()),
     url(r'^api/ldapauth', LdapAuthViewSet.as_view()),
     url(r'^api/logout', LogoutViewSet.as_view(({'get':'logout'}))),
 ]

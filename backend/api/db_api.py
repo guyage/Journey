@@ -58,7 +58,7 @@ class db_api():
         except Exception as e:
             return(str(e),''),['error']
 
-    def get_metadata(self,flag,connectinfo,dbname,tablename=None):
+    def get_metadata(self,flag,connectinfo,dbname=None,tablename=None):
         # 获取对应数据库下的所有表名
         if (flag == 1):
             # dbname = meta_info['dbname']
@@ -76,6 +76,9 @@ class db_api():
         # get table index
         elif (flag == 4):
             sql = "SELECT CONCAT(INDEX_NAME,' (',GROUP_CONCAT(column_name ORDER BY seq_in_index),')') AS INDEXES FROM information_schema.statistics WHERE TABLE_SCHEMA = '%s' AND TABLE_NAME = '%s' GROUP BY INDEX_NAME ORDER BY INDEX_NAME DESC;" % (dbname,tablename)
+            col, results = self.mysql_query(connectinfo,sql)
+        elif (flag == 5):
+            sql = '''select concat(user,'@',"'",host,"'") as "user@host" from mysql.user;'''
             col, results = self.mysql_query(connectinfo,sql)
         return (col,results)
 
@@ -126,7 +129,6 @@ class db_api():
             re = []
             for i in execresults:
                 # re["results"].append(i)
-                print (i)
                 re.append(json_util.dumps(i))
             # re = db.userDetail.find_one()
             # print ('222', re)

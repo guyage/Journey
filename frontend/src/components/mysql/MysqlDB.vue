@@ -1,5 +1,5 @@
 <template>
-    <div class="mongodbdb">
+    <div class="mysqldb">
         <div class="filter-container" style="overflow:hidden; padding-bottom:10px;">
             <el-button @click="changeUpdateButton" style="float: left;" icon="el-icon-edit" size="small" type="primary">添加</el-button>
             <el-input v-on:change="inputchange" v-model="searchcontent" @keyup.enter.native="searchData" style="width: 200px;float: right;" size="small" placeholder="Search">
@@ -35,34 +35,37 @@ import Axios from '@/utils/axios.js';
 import Table from '@/components/views/Table.vue';
 import DataDialog from '@/components/views/DataDialog.vue';
 export default {
-    name: 'mongodbdb',
+    name: 'mysqldb',
     data () {
         return {
             show: false,
             editapi: '',              // 编辑数据接口
-            api: '/mongodbdb/',     // api定义对应后台接口
+            api: '/mysqldb/',     // api定义对应后台接口
             results: [],              // results定义表数据
             searchcontent: '',        // input搜索框数据
             // table显示列定义
             tablecolumns: {           
                 id: 'id',
-                mongodbinst_id: '实例名称',
+                mysqlinst_id: '实例名称',
                 dbname: '数据库名称',
+                service: '服务名称',
                 comment: '备注',
                 is_enabled: '是否启用'
             },
             resdetail: {},            // 数据明细根据id获取
             // 添加或修改数据时form表单行定义
             dataform: {
-                mongodbinst_id: '',
+                mysqlinst_id: '',
                 dbname: '',
+                service: '',
                 comment: '',
                 is_enabled: '',
             },
             // 添加或修改数据时form表单对应中文别名
             dataformlabel: {
-                mongodbinst_id: { label: 'Mongodb实例名称', selected: false},
+                mongodbinst_id: { label: 'MySQL实例名称', selected: false},
                 dbname: { label: '数据库名称', selected: false },
+                service: { label: '服务名称', selected: false },
                 comment: { label: '注释', selected: false },
                 is_enabled: { label: '是否启用', selected: false },
             },

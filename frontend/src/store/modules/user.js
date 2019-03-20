@@ -1,7 +1,7 @@
 /*jshint esversion: 6 */
 import { getCookies, setCookies, removeCookies } from '@/utils/auth.js'
 import Axios from '@/utils/axios.js'
-import {AdminMenus,NoramalMenus} from '@/global/config.js'
+import {Menus} from '@/global/config.js'
 
 const TokenKey = 'Authorization'
 const UserNameKey = 'username'
@@ -65,11 +65,10 @@ const user = {
             return new Promise(resolve => {
                 if (roles == 'admin') {
                     // setCookies(MenuKey,AdminMenus)
-                    commit('SET_MENUS', AdminMenus)
+                    commit('SET_MENUS', Menus)
                 }
                 else {
-                    // setCookies(MenuKey,NoramalMenus)
-                    commit('SET_MENUS', NoramalMenus)
+                    commit('SET_MENUS', Menus.filter(item => item.roles == 'dev'));
                 }
                 resolve()
             })
