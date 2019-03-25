@@ -98,6 +98,7 @@ proc_name = 'Journey'
 cd /app/Journey
 python manage.py createsuperuser
 根据提示创建用户，用户后续使用普通登录方式
+注：创建用户需要将group修改为admin，才为管理员账户
 ```
 启动后端Django服务
 ```bash
