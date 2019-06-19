@@ -12,27 +12,22 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
-import configparser
 import sys
 import datetime
-# import unicode
+import configparser
 #ldap认证相关
 import ldap
 from django_auth_ldap.config import LDAPSearch, GroupOfNamesType, PosixGroupType, LDAPGroupQuery, LDAPSearchUnion
-# from apps.user.utils import jwt_response_payload_handler
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, BASE_DIR)
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
-# sys.path.insert(0, os.path.join(BASE_DIR, 'api'))
-
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 's#@ihl1mnon9_7wx-0fmm3b*9oo0&ew=xrgb^qny=1eo#v$ich'
+SECRET_KEY = 'aaf@!&)99!ty!9bwly094gobl&0g@*+xeei!687bo_5*vm8(_x'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -51,6 +46,7 @@ DB_USER = config.get('db', 'user')
 DB_PASSWORD = config.get('db', 'password')
 DB_DATABASE = config.get('db', 'database')
 
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -62,10 +58,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
-    'db',
+    'rest_framework_swagger',
+    'common',
+    'conf',
     'user',
-    'sql'
-    
+    'db',
+    'sql',
 ]
 
 MIDDLEWARE = [
@@ -77,13 +75,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    
-    
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+        # 'rest_framework.permissions.IsAuthenticated',
     ),
     #  配置默认的认证方式  帐号密码认证
     'DEFAULT_AUTHENTICATION_CLASSES' : (  
@@ -91,8 +89,6 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
-    #分页
-    "PAGE_SIZE":2   #每页显示多少个
 }
 
 # JWT_EXPIRATION_DELTA 指明token的有效期
@@ -103,8 +99,6 @@ JWT_AUTH = {
     'JWT_GET_USER_SECRET_KEY': 'user.models.jwt_get_secret_key',
     'JWT_ALLOW_REFRESH': True,
 }
-
-CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = 'Journey.urls'
 
@@ -140,14 +134,6 @@ DATABASES = {
         'PORT': DB_PORT,
     }
 }
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -202,19 +188,20 @@ AUTH_LDAP_GROUP_TYPE = GroupOfNamesType(name_attr="cn") #返回的组的类型�
 AUTH_LDAP_MIRROR_GROUPS = True #导入用户的组信息，在用户登录的时候把用户的域组关系同步过来。每次用户登录时，都会把用户的组关系删除，重新从ldap中进行同步（解决办法参考后面）
 AUTH_LDAP_ALWAYS_UPDATE_USER = True #是否同步LDAP修改
 
+
+# Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
-#LANGUAGE_CODE = 'en-us'
-#LANGUAGE_CODE = 'zh-hans'
-LANGUAGE_CODE = 'zh-cn'
+LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Asia/Shanghai'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = False
+USE_TZ = True
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/

@@ -3,7 +3,6 @@
 import pymysql
 import json,datetime,time
 import subprocess
-from . import config
 from pymongo import MongoClient
 import ply.lex as lex, re
 from bson import json_util
@@ -20,7 +19,7 @@ class db_api():
         conn_user = connectinfo['conn_user']
         conn_passwd = connectinfo['conn_passwd']
         conn_db = connectinfo['conn_db']
-        default_limit = int(config.get_conf('sqllimit','limit'))
+        # default_limit = int(config.get_conf('sqllimit','limit'))
         try:
             conn = pymysql.connect(host=conn_host,port=conn_port,user=conn_user,passwd=conn_passwd,db=conn_db,charset='utf8')
             cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)
@@ -35,11 +34,11 @@ class db_api():
                 cursor.close()
                 conn.close()
                 return (['ok'],''), ['set']
-            # results = cursor.fetchall()
-            if islimit:
-                results = cursor.fetchmany(size=default_limit)
-            else:
-                results = cursor.fetchall()
+            results = cursor.fetchall()
+            # if islimit:
+            #     results = cursor.fetchmany(size=default_limit)
+            # else:
+            #     results = cursor.fetchall()
             for i in range(len(results)):
                 for k,v in results[i].items():
                     if (isinstance(v,bytes)):
@@ -59,6 +58,11 @@ class db_api():
             return(str(e),''),['error']
 
     def get_metadata(self,flag,connectinfo,dbname=None,tablename=None):
+        # 获取对应实例下的数据库
+        if (flag == 0):
+            # dbname = meta_info['dbname']
+            sql = "SELECT DISTINCT table_schema FROM information_schema.TABLES WHERE table_schema NOT IN ('sys','information_schema','mysql','performance_schema','percona','infra','pt','youcai');"
+            col, results = self.mysql_query(connectinfo,sql)
         # 获取对应数据库下的所有表名
         if (flag == 1):
             # dbname = meta_info['dbname']
@@ -79,6 +83,26 @@ class db_api():
             col, results = self.mysql_query(connectinfo,sql)
         elif (flag == 5):
             sql = '''select concat(user,'@',"'",host,"'") as "user@host" from mysql.user;'''
+            col, results = self.mysql_query(connectinfo,sql)
+        # show full processlist
+        elif (flag == 6):
+            sql = "select * from information_schema.processlist;"
+            col, results = self.mysql_query(connectinfo,sql)
+        # show active
+        elif (flag == 7):
+            sql = "select * from information_schema.processlist where COMMAND!='Sleep' and USER!='system user';"
+            col, results = self.mysql_query(connectinfo,sql)
+        # show engine
+        elif (flag == 8):
+            sql = "show engine innodb status;"
+            col, results = self.mysql_query(connectinfo,sql)
+        # show master status
+        elif (flag == 9):
+            sql = "show master status;"
+            col, results = self.mysql_query(connectinfo,sql)
+        # show salve status
+        elif (flag == 10):
+            sql = "show slave status;"
             col, results = self.mysql_query(connectinfo,sql)
         return (col,results)
 

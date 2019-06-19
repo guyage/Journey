@@ -40,7 +40,6 @@
 import NavMenu from './NavMenu.vue';
 import Breadcrumb from './Breadcrumb.vue';
 import TagsView from './TagsView.vue';
-import Axios from '@/utils/axios.js';
 import store from '@/store/store.js';
 export default {
     data() {

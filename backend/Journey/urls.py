@@ -15,37 +15,38 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.conf.urls import url, include
+from rest_framework_swagger.views import get_swagger_view
 from django.urls import path
 from rest_framework import routers
-from apps.db.views import *
+from rest_framework_jwt.views import obtain_jwt_token,refresh_jwt_token
 from apps.user.views import *
+from apps.common.views import *
+from apps.conf.views import *
+from apps.db.views import *
 from apps.sql.views import *
-from rest_framework_jwt.views import obtain_jwt_token
 
 router = routers.DefaultRouter()
-router.register(r'mysqlinst', MySQLInstViewSet, base_name="mysqlinst")
-router.register(r'mysqldb', MySQLDatabaseViewSet, base_name="mysqldb")
-router.register(r'db', MySQLDatabaseViewSet, base_name="db")
 router.register(r'user', UsersViewSet, base_name="user")
-router.register(r'mongodbinst', MongodbInstViewSet, base_name="mongodbinst")
-router.register(r'mongodbdb', MongodbDBViewSet, base_name="mongodbdb")
-router.register(r'redisdb', RedisDBViewSet, base_name="redisdb")
-# router.register(r'useraccessdb', UserAccessDbViewSet, base_name="useraccessdb")
-# router.register(r'user', UsersViewSet, base_name="user")
+router.register(r'usergroup', UserGroupViewSet, base_name="usergroup")
+router.register(r'permissionsgroup', PermissionsGroupViewSet, base_name="permissionsgroup")
+router.register(r'mailconfig', MailConfigViewSet, base_name="mailconfig")
+router.register(r'mysqlinst', MySQLInstViewSet, base_name="mysqlinst")
+router.register(r'useraccessmysql', UserAccessMySQLViewSet, base_name="useraccessmysql")
+
+schema_view = get_swagger_view(title="Journey API")
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
+    url(r'docs/', schema_view),
     url(r'^', include(router.urls)),
     url(r'api/', include(router.urls)),
-    # url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
     url(r'api/login',obtain_jwt_token),
-    url(r'^api/userinfo/(?P<username>\w+)/$', UserInfoViewSet.as_view()),
-    url(r'^api/query', SQLQueryViewSet.as_view()),
-    url(r'^api/sqlsoar', SQLSoarViewSet.as_view()),
-    url(r'^api/mongodbquery', MongodbQueryViewSet.as_view()),
-    url(r'^api/redisdbquery', RedisdbQueryViewSet.as_view()),
-    url(r'^api/dbmeta', MysqlMetaViewSet.as_view()),
-    url(r'^api/mysqluser', MysqlUserViewSet.as_view()),
-    url(r'^api/ldapauth', LdapAuthViewSet.as_view()),
+    url(r'api/refresh_token',refresh_jwt_token),
     url(r'^api/logout', LogoutViewSet.as_view(({'get':'logout'}))),
+    url(r'^api/ldapauth', LdapAuthViewSet.as_view()),
+    url(r'^api/mailtest', MailTestViewSet.as_view()),
+    url(r'^api/mysqlmeta', MySQLMetaViewSet.as_view()),
+    url(r'^api/mysqluser', MySQLUserViewSet.as_view()),
+    url(r'^api/mysqlstatus', MySQLStatusViewSet.as_view()),
+    url(r'^api/useraccessdb', UserAccessDbViewSet.as_view()),
 ]

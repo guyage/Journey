@@ -1,100 +1,60 @@
-# coding=utf-8
 from django.db import models
-
-class CommonInfo(models.Model):
-    id = models.AutoField(primary_key=True)
-    comment = models.CharField(max_length=64, blank=True, null=True, verbose_name=u"备注")
-    create_time = models.DateTimeField(blank=True, auto_now_add=True, verbose_name=u"创建时间")
-    update_time = models.DateTimeField(blank=True, auto_now=True, verbose_name=u"更新时间")
-
-    class Meta:
-        abstract = True
-        app_label = 'db'
-
-
+import django.utils.timezone as timezone
+# Create your models here.
 IS_ENABLED_CHOICE = (
-    (0, u'禁用'),
-    (1, u'启用')
+    ('ENABLED','ENABLED'),
+    ('DISABLED','DISABLED')
 )
-# MySQL Inst
-class MySQLInst(CommonInfo):
-    instname = models.CharField(max_length=128, blank=False, null=False, verbose_name=u"MySQLInst名称")
-    host = models.GenericIPAddressField(blank=False, null=False, verbose_name=u"MySQLInstIP地址")
-    port = models.PositiveIntegerField(blank=False, null=False, verbose_name=u"MySQLInst端口")
-    manageuser = models.CharField(max_length=32, blank=False, null=False, verbose_name=u"MySQLInst管理用户")
-    manageuserpwd = models.CharField(max_length=64, blank=False, null=False, verbose_name=u"MySQLInst管理用户密码")
-    readuser = models.CharField(max_length=32, blank=False, null=False, verbose_name=u"MySQLInst只读用户")
-    readuserpwd = models.CharField(max_length=32, blank=False, null=False, verbose_name=u"MySQLInst只读用户密码")
-    version = models.CharField(max_length=32,default=5.7,verbose_name=u"MYSQL版本")
-    is_enabled = models.PositiveSmallIntegerField(choices=IS_ENABLED_CHOICE, default=1,verbose_name=u"是否启用")
-    
 
+ROLE_CHOICE = (
+    ('Master','Master'),
+    ('Slave','Slave')
+)
+
+class MySQLInst(models.Model):
+    inst_name = models.CharField(max_length=128, blank=False, null=False, verbose_name=u"MySQLInst名称")
+    inst_host = models.GenericIPAddressField(blank=False, null=False, verbose_name=u"MySQLInstIP地址")
+    inst_port = models.PositiveIntegerField(blank=False, null=False, verbose_name=u"MySQLInst端口")
+    manage_user = models.CharField(max_length=32, blank=True, null=False, verbose_name=u"MySQLInst管理用户")
+    manage_userpwd = models.CharField(max_length=64, blank=True, null=False, verbose_name=u"MySQLInst管理用户密码")
+    read_user = models.CharField(max_length=32, blank=True, null=False, verbose_name=u"MySQLInst只读用户")
+    read_userpwd = models.CharField(max_length=32, blank=True, null=False, verbose_name=u"MySQLInst只读用户密码")
+    role = models.CharField(choices=ROLE_CHOICE,blank=True,max_length=12, default='Master',verbose_name=u"是否启用")
+    services = models.CharField(max_length=255, blank=True, null=False, verbose_name=u"涉及服务")
+    version = models.CharField(max_length=32,blank=True,default='5.7.21',verbose_name=u"MYSQL版本")
+    is_enabled = models.CharField(choices=IS_ENABLED_CHOICE,max_length=12, default='ENABLED',verbose_name=u"是否启用")
+    create_time = models.DateTimeField( auto_now_add=True, verbose_name=u"创建时间")
+    update_time = models.DateTimeField(blank=True, auto_now=True, verbose_name=u"更新时间")
+    comment = models.CharField(max_length=64, blank=True, null=False, verbose_name=u"备注")
+    
     class Meta:
         verbose_name = u"MYSQL实例"
         verbose_name_plural = verbose_name
-        db_table = 'mysql_inst'
 
     def __unicode__(self):
-        return self.instname
-# MySQL Database
-class MySQLDatabase(CommonInfo):
-    mysqlinst_id = models.ForeignKey(MySQLInst,null=True,on_delete=models.SET_NULL,verbose_name='MySQL实例',related_name='mysqlinst_id')
-    dbname = models.CharField(max_length=128, blank=False, null=False, verbose_name=u"MYSQL数据库名")
-    service = models.CharField(max_length=128, blank=True, null=False, verbose_name=u"对应应用")
-    is_enabled = models.PositiveSmallIntegerField(choices=IS_ENABLED_CHOICE, verbose_name=u"是否启用")
+        return (self.inst_host + ':' + self.inst_port)
+
+class UserAccessMySQL(models.Model):
+    username = models.CharField(max_length=50, blank=False,verbose_name=u"用户名")
+    mysqlinst = models.ForeignKey(MySQLInst, blank=True, null=True, on_delete=models.SET_NULL,verbose_name=u'MYSQL实例id', related_name="user_access_mysqlinst")
+    user_access_db = models.CharField(max_length=64, blank=False,verbose_name=u"用户访问数据库")
+    # life_time = models.IntegerField(blank=False,verbose_name=u"MYSQL用户访问权限时间")
+    create_time = models.DateTimeField(auto_now_add=True, verbose_name=u"创建时间")
+    update_time = models.DateTimeField(blank=True, auto_now=True, verbose_name=u"更新时间")
+    # expired_time = models.DateTimeField(blank=True, verbose_name=u"MYSQL用户访问权限到期时间")
+    STATUS_CHOICE = (
+        (0, u'已禁止'),
+        (1, u'申请中'),
+        (2, u'使用中'),
+        (3, u'已驳回')
+    )
+
+    status = models.PositiveSmallIntegerField(choices=STATUS_CHOICE, default=1, verbose_name=u"用户申请查询权限状态")
+    comment = models.CharField(max_length=64, blank=True, null=True, verbose_name=u"备注")
 
     class Meta:
-        verbose_name = u"MYSQL数据库"
+        verbose_name = u"MYSQL用户权限时间表"
         verbose_name_plural = verbose_name
-        db_table = 'mysql_databases'
 
     def __unicode__(self):
-        return self.dbname
-
-class MongodbInst(CommonInfo):
-    instname = models.CharField(max_length=128, blank=False, null=False, verbose_name=u"MongodbInst名称")
-    host = models.GenericIPAddressField(blank=False, null=False, verbose_name=u"MongodbInst IP地址")
-    port = models.PositiveIntegerField(blank=False, null=False, verbose_name=u"MongodbInst端口")
-    manageuser = models.CharField(max_length=32, blank=False, null=False, verbose_name=u"MongodbInst管理用户")
-    manageuserpwd = models.CharField(max_length=64, blank=False, null=False, verbose_name=u"MongodbInst管理用户密码")
-    readuser = models.CharField(max_length=32, blank=False, null=False, verbose_name=u"MongodbInst只读用户")
-    readuserpwd = models.CharField(max_length=32, blank=False, null=False, verbose_name=u"MongodbInst只读用户密码")
-    version = models.CharField(max_length=32,default=5.7,verbose_name=u"Mongodb版本")
-    is_enabled = models.PositiveSmallIntegerField(choices=IS_ENABLED_CHOICE, default=1,verbose_name=u"是否启用")
-
-    class Meta:
-        verbose_name = u"MongodbInst"
-        verbose_name_plural = verbose_name
-        db_table = 'mongodb_insts'
-
-    def __unicode__(self):
-        return self.instname
-
-class MongodbDB(CommonInfo):
-    mongodbinst_id = models.ForeignKey(MongodbInst,null=True,on_delete=models.SET_NULL,verbose_name='mongodb实例',related_name='mongodbinst_id')
-    dbname = models.CharField(max_length=128, blank=False, null=False, verbose_name=u"MongodbDB名称")
-    is_enabled = models.PositiveSmallIntegerField(choices=IS_ENABLED_CHOICE,default=1, verbose_name=u"是否启用")
-
-    class Meta:
-        verbose_name = u"MongodbDB"
-        verbose_name_plural = verbose_name
-        db_table = 'mongodb_dbs'
-
-    def __unicode__(self):
-        return self.dbname
-
-class RedisDB(CommonInfo):
-    name = models.CharField(max_length=128, blank=False, null=False, verbose_name=u"Redis数据库名")
-    host = models.GenericIPAddressField(blank=True, null=True, verbose_name=u"Redis IP地址")
-    port = models.PositiveIntegerField(blank=True, null=True, default=3306, verbose_name=u"Redis端口")
-    password = models.CharField(max_length=64, blank=False, null=False, verbose_name=u"Redis密码")
-    version = models.CharField(max_length=32,default=5.7,verbose_name=u"Redis版本")
-    is_enabled = models.PositiveSmallIntegerField(choices=IS_ENABLED_CHOICE, verbose_name=u"是否启用")
-    
-    class Meta:
-        verbose_name = u"Redis数据库"
-        verbose_name_plural = verbose_name
-        db_table = 'redis_db'
-
-    def __unicode__(self):
-        return self.name
+        return self.username

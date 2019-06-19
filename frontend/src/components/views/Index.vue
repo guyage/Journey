@@ -11,8 +11,5 @@ export default {
     components:{
         Nav
     },
-    // created() {
-    //     this.$router.push({ name: 'index'}) 
-    // },
 }
 </script>

@@ -1,44 +1,18 @@
 # coding=utf-8
-
 from rest_framework import serializers
 from db.models import *
 
 class MySQLInstSerializer(serializers.ModelSerializer):
     
-    manageuserpwd = serializers.CharField(style={'input_type': 'password'}, write_only=True,)
-    readuserpwd = serializers.CharField(style={'input_type': 'password'}, write_only=True,)
+    manage_userpwd = serializers.CharField(style={'input_type': 'password'}, write_only=True,label='管理用户密码')
+    read_userpwd = serializers.CharField(style={'input_type': 'password'}, write_only=True,label='制度用户密码')
     class Meta:
         model = MySQLInst
-        fields = ('id','instname','host','port','manageuser','manageuserpwd','readuser','readuserpwd','version','comment','is_enabled')
+        fields = ('id','inst_name','inst_host','inst_port','manage_user','manage_userpwd','read_user','read_userpwd','role','services','version','is_enabled','comment')
 
-class MySQLDatabaseSerializer(serializers.ModelSerializer):
-    
-    mysqlinst_id = serializers.SlugRelatedField(many=False,read_only=True,slug_field='instname')
-    class Meta:
-        model = MySQLDatabase
-        fields = ('id','mysqlinst_id','dbname','service','comment','is_enabled')
+class UserAccessMySQLSerializer(serializers.ModelSerializer):
 
-class MongodbInstSerializer(serializers.ModelSerializer):
-    
-    # manageuser = serializers.CharField(write_only=True)
-    manageuserpwd = serializers.CharField(style={'input_type': 'password'}, write_only=True,)
-    # readuser = serializers.CharField(write_only=True)
-    readuserpwd = serializers.CharField(style={'input_type': 'password'}, write_only=True,)
+    mysqlinst = serializers.SlugRelatedField(many=False,read_only=True,slug_field='inst_name')
     class Meta:
-        model = MongodbInst
-        fields = ('id','instname','host','port','manageuser','manageuserpwd','readuser','readuserpwd','version','comment','is_enabled')
-
-class MongodbDBSerializer(serializers.ModelSerializer):
-    
-    mongodbinst_id = serializers.SlugRelatedField(many=False,read_only=True,slug_field='instname')
-    # mongodbinst_id = serializers.HyperlinkedRelatedField(many=False,read_only=True,view_name='mongodbinst',lookup_field="id")
-    class Meta:
-        model = MongodbDB
-        fields = ('id','mongodbinst_id','dbname','comment','is_enabled')
-
-class RedisDBSerializer(serializers.ModelSerializer):
-    
-    password = serializers.CharField(style={'input_type': 'password'}, write_only=True,)
-    class Meta:
-        model = RedisDB
-        fields = ('id','name','host','port','password','version','comment','is_enabled')
+        model = UserAccessMySQL
+        fields = ('id','username','mysqlinst','user_access_db','create_time','status','comment')

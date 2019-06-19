@@ -1,19 +1,22 @@
-import Cookies from 'js-cookie'
+/*jshint esversion: 6 */
 
-// const TokenKey = 'Authorization'
-
-export function getCookies(TokenKey) {
-    // return Cookies.get(TokenKey)
-    return sessionStorage.getItem(TokenKey);
+export function getCookies(Key) {
+    if (sessionStorage.getItem(Key) == 'false') {
+        return false;
+    }
+    else if (sessionStorage.getItem(Key) == 'true') {
+        return true;
+    }
+    else {
+        return sessionStorage.getItem(Key);
+    }
+    
 }
   
-export function setCookies(TokenKey,token) {
-    // var real_token = 'JWT ' + token
-    // return Cookies.set(TokenKey, token,{expires:2})
-    return sessionStorage.setItem(TokenKey,token);
+export function setCookies(Key,value) {
+    return sessionStorage.setItem(Key,value);
 }
   
-export function removeCookies(TokenKey) {
-    // return Cookies.remove(TokenKey)
-    return sessionStorage.removeItem(TokenKey);
+export function removeCookies(Key) {
+    return sessionStorage.removeItem(Key);
 }

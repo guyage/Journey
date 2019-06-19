@@ -6,10 +6,10 @@
         <!-- <el-breadcrumb-item v-for="(bread,key) in currentPath" :key="key" >{{bread}}</el-breadcrumb-item> -->
         <!-- <icon-svg iconClass="icon-Logout"></icon-svg> -->
             <div class="right-header" id="right-header">
-                <el-button title="个人中心" class="userinfo-button" @click="handleOpengit" size="mini" circle>
+                <el-button title="项目GitHub" class="userinfo-button" @click="handleOpengit" size="mini" circle>
                     <icon-svg class="right-header-icon" iconClass="icon-github"></icon-svg>
                 </el-button>
-                <el-button title="退出" class="logout-button" @click="handleLoginOut" size="mini" circle >
+                <el-button title="退出" class="logout-button" @click="handleLogout" size="mini" circle >
                     <icon-svg class="right-header-icon" iconClass="icon-Logout"></icon-svg>
                 </el-button>
             </div>
@@ -20,19 +20,19 @@
 
 <script>
 import store from '@/store/store.js'
-import Axios from '@/utils/axios.js';
+import { Logout } from '@/api/api.js'
 export default {
     methods: {
-        handleLoginOut () {
+        handleLogout () {
             this.$confirm('确认退出？', '提示', {
                 confirmButtonText: '确认',
                 cancelButtonText: '取消',
                 type: 'warning'
             })
             .then(() => {
-                Axios.oGet('/logout').then((response) => {
+                Logout().then((response) => {
                     if (response) {
-                        this.$store.dispatch('LoginOut').then(() =>{
+                        this.$store.dispatch('Logout').then(() =>{
                             this.$router.push({name:'login'})
                             // console.log(this.$router);
                             window.location.reload();                            
@@ -40,7 +40,7 @@ export default {
                         // this.$router.options.routes = []
                     }
                 }).catch((error) => {
-                    console.log(error);
+                    console.log(error); 
                 })
             }).catch(() =>{   
             })

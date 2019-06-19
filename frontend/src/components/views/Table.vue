@@ -1,7 +1,7 @@
 <template>
     <div id="generaltable" class="generaltable">
         <el-table
-        size="mini"
+        size="small"
         ref="multipleTable"
         :data="TableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
         border
@@ -15,8 +15,8 @@
             <el-table-column align="center" v-for="(val, key, index) in TableColumn" v-if=" key != 'id'" :key="index" :label="val" :prop="key" ></el-table-column>
             <el-table-column align="center" label="操作">
             <template slot-scope="scope">
-                <el-button @click="handleUpdate(scope.$index,scope.row)" size="mini" type="primary">编辑</el-button>
-                <el-button @click="handleDelete(scope.$index,scope.row)" size="mini" type="danger">删除</el-button>
+                <el-button @click="handleUpdate(scope.$index,scope.row)" size="small" type="primary">编辑</el-button>
+                <el-button @click="handleDelete(scope.$index,scope.row)" size="small" type="danger">删除</el-button>
             </template>
             </el-table-column>
         </el-table>
@@ -98,6 +98,6 @@ export default {
 
 <style>
 .generaltable .el-table--mini, .el-table--small, .el-table__expand-icon{
-    font-size: 14px;
+    font-size: 13px;
 }
 </style>

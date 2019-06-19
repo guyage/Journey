@@ -2,7 +2,7 @@
     <div id="login" class="login">
         <vueCanvasNest :config="backgroundcolor"></vueCanvasNest>
         <div class="login-title">
-            <img src="../../assets/logo4.png">
+            <img src="../../assets/logo.png">
             <h3 class="logintitletext">Welcome to Journey DB平台</h3>
         </div>
         <div class="login-form">
@@ -38,56 +38,13 @@
                     </el-form>
                 </el-tab-pane>
             </el-tabs>
-            <el-dialog
-            title="说明"
-            :visible.sync="dialogVisible"
-            width="50%"
-            :before-close="handleClose">
-            <el-alert
-                title="1. 系统通过LDAP认证登陆 (即JIRA帐号)."
-                type="error"
-                :closable="false">
-            </el-alert>
-            <el-alert
-                title="2. 上次创建用户帐号已删除，统一采用LDAP帐号登陆."
-                type="error"
-                :closable="false">
-            </el-alert>
-            <el-alert
-                title="3. 因安全考虑，登陆后需要访问哪些数据库需提供给管理员配置."
-                type="error"
-                :closable="false">
-            </el-alert>
-            <el-alert
-                title="4. 此提示短期保留，后期取消."
-                type="error"
-                :closable="false">
-            </el-alert>
-            <el-alert
-                title="5. 如有问题，请联系管理员！"
-                type="error"
-                :closable="false">
-            </el-alert>
-            <!-- <p>1. 系统通过LDAP认证登陆 (即JIRA帐号).</p>
-            <p>2. 上次创建用户帐号已删除，统一采用LDAP帐号登陆.</p>
-            <p>3. 因安全考虑，登陆后需要访问哪些数据库需提供给管理员配置.</p>
-            <p>4. 此提示短期保留，后期取消.</p>
-            <p>5. 如有问题，请联系管理员！</p> -->
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-            </span>
-            </el-dialog>
-            
         </div>
     </div>
 </template>
 
 <script>
 import store from '@/store/store.js'
-import Axios from '@/utils/axios.js';
 import vueCanvasNest from 'vue-canvas-nest';
-
 export default {
     components: {
         vueCanvasNest
@@ -99,7 +56,6 @@ export default {
                 count: 199,
                 opacity: 0.7,
             },
-            dialogVisible: true,
             activeName: '1',
             api: '/login',
             loading: false,
@@ -127,29 +83,20 @@ export default {
                     { required: true, message: '请输入密码', trigger: 'red' },
                 ]
             },
-
         }
     },
     methods: {
-        handleClose(done) {
-            this.$confirm('确认关闭？')
-            .then(_ => {
-                done();
-            })
-            .catch(_ => {});
-        },
         handlenormalLogin() {
             this.$refs['normalloginform'].validate((valid)=>{
                 if(valid){
                     this.loading = true
-                    this.$store.dispatch('NormalLoginIn',this.normalloginform).then(() => {
+                    this.$store.dispatch('NormalLogin',this.normalloginform).then((response) => {
                         this.$message.success('登陆成功，跳转中...');
                         this.loading = false
-                            this.$router.push({ path: '/index'})
-                    }).catch((error)=>{
-                        // this.$message.error('登陆失败，请输入正确用户名及密码，如有疑问，请联系管理员!');
-                        console.log(error);
+                        this.$router.push({ path: '/index'})                     
+                    }).catch((error) => {
                         this.loading = false
+                        console.log(error);
                     })
                 }
                 else {
@@ -165,7 +112,7 @@ export default {
                     this.$store.dispatch('LdapLoginIn',this.ldaploginform).then(() => {
                         this.$message.success('登陆成功，跳转中...');
                         this.loading = false
-                            this.$router.push({ path: '/index'})
+                            this.$router.replace({ path: '/index'})
                     }).catch((error)=>{
                         // this.$message.error('登陆失败，请输入正确用户名及密码，如有疑问，请联系管理员!');
                         console.log(error);

@@ -4,26 +4,29 @@ import smtplib
 import sys
 #from email.mime.text import MIMEText  
 from email.mime.text import MIMEText
-from api.config import get_conf
+# from apps.conf.models import MailConfig
+from conf.models import MailConfig
 
+mailconfig = MailConfig.objects.get(id=1)
 # 邮件服务连接信息
-mail_host = get_conf('mail','mail_host')
-mail_user = get_conf('mail','mail_user')
-mail_pass = get_conf('mail','mail_pass')
-mail_postfix = get_conf('mail','mail_postfix')
+mail_host = mailconfig.mail_host
+mail_port = mailconfig.mail_port
+mail_user = mailconfig.mail_user
+mail_pass = mailconfig.mail_pass
+
 # 平台域名
-platform_domain = get_conf('domain_name','domain')
+platform_domain = 'http://journey.xs.jf'
 
 def send_mail_fun(to_list,sub,content):    
 	# content = content.decode('utf8').encode('gbk') 
-    me="monitor"+"<"+mail_user+"@"+mail_postfix+">"  
+    me="monitor"+"<"+mail_user+">"  
     msg = MIMEText(content,_subtype='plain',_charset='gbk')  
     msg['Subject'] = sub  
     msg['From'] = me  
     msg['To'] = ";".join(to_list)  
     try:  
         server = smtplib.SMTP()  
-        server.connect(mail_host)  
+        server.connect(mail_host,mail_port)  
         server.login(mail_user,mail_pass)  
         server.sendmail(me, to_list, msg.as_string())  
         server.close()  
@@ -32,21 +35,26 @@ def send_mail_fun(to_list,sub,content):
         print (str(e))
         return False
 
-def send_mail(to_list,maildata=None,type=None):
-
+def send_mail(to_list,type=None,maildata=None):
     if type == 1:
         sub = '用户创建通知'
-        content = '你好，SQL_Platform用户已创建，\
+        content = '你好，Journey DB 平台用户已创建，\
         用户名: %s \
         初始密码：%s \
-        登陆地址：' % (maildata['username'], maildata['password'])
+        登陆地址：%s' % (maildata['username'], maildata['password'],platform_domain)
         content = content + platform_domain
-        send_mail_fun(to_list,sub,content)
+        res = send_mail_fun(to_list,sub,content)
     elif (type == 2):
         sub = '密码修改通知'
-        content = '你好，SQL_Platform用户密码已修改，\
+        content = '你好，Journey DB 平台用户密码已修改，\
         用户名: %s \
         密码：%s \
-        登陆地址：' % (maildata['username'], maildata['password'])
+        登陆地址：%s' % (maildata['username'], maildata['password'],platform_domain)
         content = content + platform_domain
-        send_mail_fun(to_list,sub,content)
+        res = send_mail_fun(to_list,sub,content)
+    elif (type == 3):
+        sub = 'Journey DB测试邮件'
+        content = 'Journey DB 平台测试邮件!'
+        res = send_mail_fun(to_list,sub,content)
+    
+    return res
