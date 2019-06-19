@@ -17,6 +17,7 @@ mv /tmp/Journey/backend /app/Journey
 cd /app/Journey/backend
 pip install -r requirements.txt
 ```
+其中ldap相关包，参照后面安装方式，因ldap相关包直接安装问题较多
 3. 创建项目数据库及用户(项目所需MySQL数据库)
 安装MySQL后，进入MySQL命令行
 创建数据库
