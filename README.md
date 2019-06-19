@@ -1,4 +1,4 @@
-![Image text](https://github.com/guyage/Journey/blob/master/frontend/src/assets/logo2.png)
+![Image text](https://github.com/guyage/Journey/blob/master/frontend/src/assets/logo.png)
 # Journey DB平台
 ![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/build-release-brightgreen.svg)
 ![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/version-0.1.0-brightgreen.svg)
@@ -8,23 +8,24 @@
 ![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/vue.js-2.5.2-brightgreen.svg)
 ![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/element--ui-2.4.6-brightgreen.svg)
 ## 功能简介
-* 用户
-  * 用户管理：管理平台用户，配置用户可访问数据库，可禁用用户
+* 用户管理
+  * 用户：管理平台用户，设置用户禁用及超级帐号
+  * 用户组：管理用户组
 * MySQL管理
-  * MySQL数据库管理：管理数据库，目前以数据库为管理单位
-  * 数据库用户管理：功能待开发
-  * 数据库元数据：显示表结构
+  * MySQL实例：管理MySQL实例(以前为以数据为单位管理，后面发现使用不方便)
+  * 数据库用户：管理MySQL用户
+  * 数据库元数据：显示MySQL表结构
+  * 数据库实例状态：管理MySQL实例状态(processlist、innodb状态、master/slave状态)
+* 数据库权限
+  * MySQL权限：用户默认无可访问MySQL权限，通过申请，待管理员同意后，方可访问
+* 全局配置
+  * 邮件配置：配置平台邮件服务
 * MongoDB管理
-  * MongodbInst管理：管理Mongodb实例
-  * MongodbDB管理：管理Mongodb数据库，以MongodbInst实例信息为外键
+  * 待重构
 * Redis管理
-  * RedisDB管理：管理Redis实例
+  * 待重构
 * SQL
-  * Query：通过页面查询数据，多标签查询
-  * Query2：另外一种SQL查询页面风格
-  * QueryMongodb：查询Mongodb数据
-  * QueryRedis：查询Redis中key值
-  * SQLSoar：集成小米开源工具soar功能，输出sql审核建议
+  * 带重构
 ## 环境
 * 后端
   * python 3.6
@@ -40,19 +41,20 @@
 ## 部分功能展示
 登录界面(支持LADP和普通登陆)：
 ![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/1.png)
-功能菜单：
-![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/2.png)
 用户管理：
+![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/2.png)
+用户组页面：
 ![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/3.png)
-SQL查询页面：
+添加用户组页面：
 ![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/4.png)
-SQL查询页面2：
+MySQL权限页面：
 ![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/5.png)
-MongoDB查询页面：
+申请MySQL权限页面：
 ![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/6.png)
-Redis查询页面：
+邮件配置页面：
 ![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/7.png)
 ## 使用交流
 * QQ群：521745114
 
+说明：项目目前在重构，重构原因：主要涉及后端models设计，后面添加功能发现使用不方便，还有前端请求后端部分，添加了统一的api文件，方便管理，另外样式部分需要调整
 备注：项目是个人在满足公司需求时做的，也希望能帮助到其他人，项目刚开始，后期会增加其他功能。
