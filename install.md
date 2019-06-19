@@ -192,12 +192,7 @@ error: Setup script exited with error: command 'gcc' failed with exit status 1
 
 原因是版本不兼容，centos默认装了个2.3的。以下指令好使
 ```bash
-yum install openldap
-yum install openldap24-libs
-yum install openldap-clients
-yum install openldap-devel
-yum install openssl-devel
-yum install openldap24-libs-devel
+yum install openldap openldap24-libs openldap-clients openldap-devel openldap24-libs-devel
 export CPATH=/usr/include/openldap24
 export LIBRARY_PATH=/usr/lib/openldap24/     (以上为安装openldap)
 pip install python-ldap
