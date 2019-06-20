@@ -120,7 +120,7 @@ export default {
   min-height: 100%;
 }
 
-.el-scrollbar__wrap {
+.nav .el-scrollbar__wrap {
    overflow-x: hidden;
 }
 .nav-header-icon.svg-icon { 

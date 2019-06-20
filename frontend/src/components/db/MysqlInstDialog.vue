@@ -101,7 +101,6 @@ export default {
         handelEditData() {
             this.$refs['form'].validate((valid)=>{
                 if(valid){
-                    console.log(this.form);
                     this.saveData(this.isEdit,this.form)
                 }
                 else {

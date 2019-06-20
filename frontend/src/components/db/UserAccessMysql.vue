@@ -95,6 +95,7 @@ export default {
             this.isapply = true
         },
         handleApply() {
+            
             this.$refs['form'].validate((valid)=>{
                 if(valid){
                     addUserAccessMysql(this.form).then((response) => {

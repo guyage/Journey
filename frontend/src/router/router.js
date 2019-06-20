@@ -56,13 +56,13 @@ const DynamicRouter = [
                 path: '/user', 
                 component: User, 
                 name: 'user',
-                meta: { issuper: false, tag: '用户',title: ['用户管理','用户']},
+                meta: { issuper: true, tag: '用户',title: ['用户管理','用户']},
             },
             {
                 path: '/usergroup', 
                 component: UserGroup, 
                 name: 'usergroup',
-                meta: { issuper: false, tag: '用户组',title: ['用户管理','用户组']},
+                meta: { issuper: true, tag: '用户组',title: ['用户管理','用户组']},
             },
             {
                 path: '/mailconfig', 
@@ -80,7 +80,7 @@ const DynamicRouter = [
                 path: '/mysqlmeta', 
                 component: MysqlMeta, 
                 name: 'mysqlmeta',
-                meta: { issuper: true, tag: 'MySQL元数据',title: ['MySQL管理','MySQL元数据']},
+                meta: { issuper: false, tag: 'MySQL元数据',title: ['MySQL管理','MySQL元数据']},
             },
             {
                 path: '/mysqlstatus', 

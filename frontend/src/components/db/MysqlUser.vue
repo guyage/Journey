@@ -2,7 +2,7 @@
     <div class="mysqluser">
         <div class="mysqluser-inst">
             <!-- <span style="float: left;margin-top: 5px;">MySQL实例：</span> -->
-            <el-select  v-model="selectinst" placeholder="请选择MySQL实例" @change="handleSelect($event)">
+            <el-select style="width: 300px;" v-model="selectinst" placeholder="请选择MySQL实例" @change="handleSelect($event)">
                 <el-option 
                 v-for="item in instlist" 
                 :key="item.instid"
@@ -20,7 +20,7 @@
                 <el-tag >该实例包含数据库：</el-tag>
                 <el-tag v-for="(val, key) in dblist" :key="key">{{val}}</el-tag>
             </div>
-            <el-table v-if="results.length > 0" size="mini" style="width: 100%" highlight-current-row max-height="700" border :data="results.slice((currentPage-1)*pagesize,currentPage*pagesize)">
+            <el-table v-if="results.length > 0" size="mini" style="width: 100%" highlight-current-row max-height="600" border :data="results.slice((currentPage-1)*pagesize,currentPage*pagesize)">
                 <el-table-column  align="center" v-for="(val, key) in col" :fixed="key===0?true:false" :key="key" :label="val" :prop="val">
                 </el-table-column>
                 <el-table-column width="500px" align="center" label="操作">
@@ -276,9 +276,9 @@ export default {
 /* .mysqluser .el-scrollbar__wrap{
     overflow-x: scroll;
 } */
-.el-select-dropdown .el-scrollbar .el-scrollbar__wrap{
+/* .mysqluser .el-scrollbar__wrap{
     overflow: scroll;
-}
+} */
 .mysqluser .mysqluser-inst{
     float: left;
     width: 100%;
@@ -317,7 +317,7 @@ export default {
 .mysqluser-userpri-adduser .el-checkbox__label{
     padding-left: 5px;
 }
-.mysqluser-userpri-adduser .el-form-item__content{
+/* .mysqluser-userpri-adduser .el-form-item__content{
     position: absolute;
-}
+} */
 </style>

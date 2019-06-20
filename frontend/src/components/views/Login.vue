@@ -38,6 +38,17 @@
                     </el-form>
                 </el-tab-pane>
             </el-tabs>
+            <el-dialog
+            title="说明"
+            :visible.sync="dialogVisible"
+            width="50%"
+            :before-close="handleClose">
+            <h2 style="color:black;">此为测试环境平台!</h2>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+            </span>
+            </el-dialog>
         </div>
     </div>
 </template>
@@ -51,6 +62,7 @@ export default {
     },
     data () {
         return {
+            dialogVisible: true,
             backgroundcolor: {
                 color: '0,0,0',
                 count: 199,
@@ -86,6 +98,13 @@ export default {
         }
     },
     methods: {
+        handleClose(done) {
+            this.$confirm('确认关闭？')
+            .then(_ => {
+                done();
+            })
+            .catch(_ => {});
+        },
         handlenormalLogin() {
             this.$refs['normalloginform'].validate((valid)=>{
                 if(valid){

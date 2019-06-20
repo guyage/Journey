@@ -82,7 +82,6 @@ export default {
             this.selectinst = val
         },
         handleKillSession($index,row){
-            console.log(row);
             var real_index = $index+(this.currentPage - 1) * this.pagesize
             this.results.splice(real_index, 1)
             let dropinfo = '确认删除<strong style="color:red;">会话ID:'+row.ID+'</strong>'
@@ -171,9 +170,9 @@ export default {
 .mysqlstatus .el-table .cell{
     white-space: nowrap
 }
-.el-select-dropdown .el-scrollbar .el-scrollbar__wrap{
-    overflow: scroll;
-}
+/* .mysqlstatus .el-scrollbar__wrap{
+    overflow-x: scroll;
+} */
 .mysqlstatus .mysqlstatus-inst{
     float: left;
 }

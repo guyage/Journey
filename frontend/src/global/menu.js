@@ -19,7 +19,7 @@ const Menus = [
         url: '/home',
         icon: 'icon-houtaiyonghuguanli',
         state: 'ENABLE',
-        issuper: false,
+        issuper: true,
         childs: [
             {   
                 id: 21, 
@@ -28,7 +28,7 @@ const Menus = [
                 alias: '用户',
 				url: '/user', 				
                 state: 'ENABLE',
-                issuper: false,
+                issuper: true,
                 icon: 'icon-yonghuguanli', 
                 childs: null
             },
@@ -39,7 +39,7 @@ const Menus = [
                 alias: '用户组',
 				url: '/usergroup', 				
                 state: 'ENABLE',
-                issuper: false,
+                issuper: true,
                 icon: 'icon-yonghuguanli', 
                 childs: null
             },
@@ -142,6 +142,29 @@ const Menus = [
 				url: '/mailconfig', 				
                 state: 'ENABLE',
                 issuper: true,
+                icon: 'icon-yonghuguanli', 
+                childs: null
+            },
+        ]
+    },
+    {
+        id: 6,
+        parentMenuId: 0,
+        name: 'dbmanger',
+        alias: 'Query',
+        url: '/home',
+        icon: 'icon-houtaiyonghuguanli',
+        state: 'ENABLE',
+        issuper: false,
+        childs: [
+            {   
+                id: 61, 
+                parentMenuId : 6,
+                name: 'mysqlmeta', 
+                alias: 'MySQL元数据',
+				url: '/mysqlmeta', 				
+                state: 'ENABLE',
+                issuper: false,
                 icon: 'icon-yonghuguanli', 
                 childs: null
             },

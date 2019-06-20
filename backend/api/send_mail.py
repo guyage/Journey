@@ -7,17 +7,16 @@ from email.mime.text import MIMEText
 # from apps.conf.models import MailConfig
 from conf.models import MailConfig
 
-mailconfig = MailConfig.objects.get(id=1)
-# 邮件服务连接信息
-mail_host = mailconfig.mail_host
-mail_port = mailconfig.mail_port
-mail_user = mailconfig.mail_user
-mail_pass = mailconfig.mail_pass
-
 # 平台域名
 platform_domain = 'http://journey.xs.jf'
 
-def send_mail_fun(to_list,sub,content):    
+def send_mail_fun(to_list,sub,content):
+    mailconfig = MailConfig.objects.get(id=1)
+    # 邮件服务连接信息
+    mail_host = mailconfig.mail_host
+    mail_port = mailconfig.mail_port
+    mail_user = mailconfig.mail_user
+    mail_pass = mailconfig.mail_pass    
 	# content = content.decode('utf8').encode('gbk') 
     me="monitor"+"<"+mail_user+">"  
     msg = MIMEText(content,_subtype='plain',_charset='gbk')  

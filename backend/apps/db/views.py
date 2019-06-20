@@ -38,13 +38,13 @@ class UserAccessMySQLViewSet(viewsets.ModelViewSet):
     serializer_class = UserAccessMySQLSerializer
     # pagination_class = PageNumberPagination
     filter_backends = (filters.SearchFilter, filters.OrderingFilter,)
-    search_fields = ('username','user_access_db','comment',)
+    search_fields = ('username','user_access_db','comment','status')
     ordering_fields = ('id',)
 
     def create(self, request, *args, **kwargs):
         real_data = request.data
         for db in request.data['user_access_db']:
-            userhavedb = UserAccessMySQL.objects.filter(Q(username=request.data['username']),Q(user_access_db=db),Q(status=1)|Q(status=2)).count()
+            userhavedb = UserAccessMySQL.objects.filter(Q(username=request.data['username']),Q(user_access_db=db),Q(mysqlinst=request.data['mysqlinst']),Q(status=1)|Q(status=2)).count()
             if (userhavedb == 0):
                 real_data['user_access_db'] = db
                 serializer = self.get_serializer(data=real_data)
@@ -177,7 +177,6 @@ class MySQLUserViewSet(APIView):
         re['col'] = col
         re['results'] = results
         re['dblist'] = dblist
-        print (re)
         return Response(re)
 
 class MySQLStatusViewSet(APIView):

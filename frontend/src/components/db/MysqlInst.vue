@@ -132,8 +132,9 @@ export default {
         },
         delData(id) {
             delMysqlInst({id:id}).then((response) => {
-                console.log(response);
+                this.$message.success('删除成功!');
             }).catch((error) => {
+                this.$message.error('删除失败!');
                 console.log(error);
             })
         },

@@ -108,6 +108,9 @@ export default {
     height: 30px;
     margin-top: 5px;
 }
+.tagsview .el-scrollbar__wrap{
+    overflow: auto;
+}
 .tagsview .el-tag--small{
     float: left;
     margin: 0 2px;

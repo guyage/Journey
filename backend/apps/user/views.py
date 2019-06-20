@@ -161,9 +161,9 @@ class UsersViewSet(viewsets.ModelViewSet):
             serializer = self.get_serializer(instance, data=request.data, partial=partial)
             serializer.is_valid(raise_exception=True)
             self.perform_update(serializer)
-            username = request.data['username']
-            userinfo = Users.objects.get(username=username)
             if ('group' in request.data.keys()):
+                username = request.data['username']
+                userinfo = Users.objects.get(username=username)
                 group_name = request.data['group']
                 group_add_user(group_name,userinfo.id)
 
