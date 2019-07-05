@@ -20,12 +20,14 @@
   * MySQL权限：用户默认无可访问MySQL权限，通过申请，待管理员同意后，方可访问
 * 全局配置
   * 邮件配置：配置平台邮件服务
+  * QueryLimit：设置查询返回行数限制
+  * 导出白名单：提供个别需求需要查询超出limit限制数据，针对用户的白名单
 * MongoDB管理
   * 待重构
 * Redis管理
   * 待重构
-* SQL
-  * 待重构
+* Query
+  * QuerySql：mysql查询功能，提供语法提示功能，导出查询结果功能
 ## 环境
 * 后端
   * python 3.6
@@ -47,12 +49,25 @@
 ![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/3.png)
 添加用户组页面：
 ![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/4.png)
+MySQL用户功能页面：
+用户列表页面：
+![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/12.png)
+查看用户权限页面：
+![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/13.png)
+添加MySQL用户页面：
+![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/14.png)
 MySQL权限页面：
 ![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/5.png)
 申请MySQL权限页面：
 ![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/6.png)
 邮件配置页面：
 ![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/7.png)
+QueryLimit页面：
+![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/8.png)
+导出白名单页面：
+![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/9.png)
+QuerySQL页面：
+![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/10.png)
 ## 使用交流
 * QQ群：521745114
 
