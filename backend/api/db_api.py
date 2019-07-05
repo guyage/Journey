@@ -13,7 +13,7 @@ class db_api():
     def __init__(self):
         pass
 
-    def mysql_query(self,connectinfo,sql,islimit=None):
+    def mysql_query(self,connectinfo,sql,sqllimit=None):
         conn_host = connectinfo['conn_host']
         conn_port = connectinfo['conn_port']
         conn_user = connectinfo['conn_user']
@@ -34,11 +34,11 @@ class db_api():
                 cursor.close()
                 conn.close()
                 return (['ok'],''), ['set']
-            results = cursor.fetchall()
-            # if islimit:
-            #     results = cursor.fetchmany(size=default_limit)
-            # else:
-            #     results = cursor.fetchall()
+            # results = cursor.fetchall()
+            if sqllimit:
+                results = cursor.fetchmany(size=int(sqllimit))
+            else:
+                results = cursor.fetchall()
             for i in range(len(results)):
                 for k,v in results[i].items():
                     if (isinstance(v,bytes)):

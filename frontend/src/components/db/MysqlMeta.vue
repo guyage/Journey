@@ -1,38 +1,42 @@
 <template>
     <div class="mysqlmeta" id="mysqlmeta">
-        <div class="mysqlmeta-tree">
-            <el-input
-            class="mysqlmeta-filterinput"
-            placeholder="输入关键字进行过滤"
-            v-model="filterText">
-            </el-input>
-                <div class="mysqlmeta-tree-data">
-                    <el-tree
-                    class="filter-tree"
-                    ref="tree"
-                    :data="treedata"
-                    lazy
-                    accordion
-                    highlight-current
-                    :load="loadTreeData"
-                    :props="treeprops"
-                    @node-click="handleNodeClick"
-                    :filter-node-method="filterNode">
-                    </el-tree>
-                </div>      
-        </div>
-        <div class="mysqlmeta-table">
-            <el-table border :data="tablecol.results">
-                <el-table-column align="left" v-for="(val, key) in tablecol.col" v-if="key == 0" width="300px" :key="key" :label="val" :prop="val">
-                </el-table-column>
-                <el-table-column align="left" v-for="(val, key) in tablecol.col" v-if="key != 0" :key="key" :label="val" :prop="val">
-                </el-table-column>
-                <!-- <el-table-column align="left" label="Table" prop="Table">
-                </el-table-column>
-                <el-table-column align="left" label="Create Table" prop="Create Table">
-                </el-table-column> -->
-            </el-table>
-        </div>
+        <el-collapse v-model="activeNames">
+            <el-collapse-item title="MySQL元数据" name="1">
+                <div class="mysqlmeta-tree" style="padding: 0.8em 0em 1em;">
+                    <el-input
+                    class="mysqlmeta-filterinput"
+                    placeholder="输入关键字进行过滤"
+                    v-model="filterText">
+                    </el-input>
+                        <div class="mysqlmeta-tree-data">
+                            <el-tree
+                            class="filter-tree"
+                            ref="tree"
+                            :data="treedata"
+                            lazy
+                            accordion
+                            highlight-current
+                            :load="loadTreeData"
+                            :props="treeprops"
+                            @node-click="handleNodeClick"
+                            :filter-node-method="filterNode">
+                            </el-tree>
+                        </div>      
+                </div>
+                <div class="mysqlmeta-table" style="padding: 0.8em 0em 1em;">
+                    <el-table border :data="tablecol.results">
+                        <el-table-column align="left" v-for="(val, key) in tablecol.col" v-if="key == 0" width="300px" :key="key" :label="val" :prop="val">
+                        </el-table-column>
+                        <el-table-column align="left" v-for="(val, key) in tablecol.col" v-if="key != 0" :key="key" :label="val" :prop="val">
+                        </el-table-column>
+                        <!-- <el-table-column align="left" label="Table" prop="Table">
+                        </el-table-column>
+                        <el-table-column align="left" label="Create Table" prop="Create Table">
+                        </el-table-column> -->
+                    </el-table>
+                </div>
+            </el-collapse-item>
+        </el-collapse>
     </div>
 </template>
 
@@ -43,6 +47,7 @@ export default {
     name: 'mysqlmeta',
     data () {
         return {
+            activeNames: ['1'],
             instid: 0,
             dbname: '',
             tablecol: {},
@@ -142,6 +147,12 @@ export default {
 </script>
 
 <style>
+.mysqlmeta .el-collapse-item__header.is-active,.mysqlmeta .el-collapse-item__header{
+    font-size: 16px;
+    font-weight: bold;
+    padding-left: 0.5em;
+    border-bottom: 1px solid #dcdfe6;
+}  
 .mysqlmeta .el-table--border{
     max-height: 800px;
     overflow: auto;

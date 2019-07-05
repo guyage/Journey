@@ -145,6 +145,28 @@ const Menus = [
                 icon: 'icon-yonghuguanli', 
                 childs: null
             },
+            {   
+                id: 32, 
+                parentMenuId : 3,
+                name: 'querylimit', 
+                alias: 'QueryLimit',
+				url: '/querylimit', 				
+                state: 'ENABLE',
+                issuper: true,
+                icon: 'icon-yonghuguanli', 
+                childs: null
+            },
+            {   
+                id: 33, 
+                parentMenuId : 3,
+                name: 'dumpwhitelist', 
+                alias: '导出白名单',
+				url: '/dumpwhitelist', 				
+                state: 'ENABLE',
+                issuper: true,
+                icon: 'icon-yonghuguanli', 
+                childs: null
+            },
         ]
     },
     {
@@ -153,7 +175,7 @@ const Menus = [
         name: 'dbmanger',
         alias: 'Query',
         url: '/home',
-        icon: 'icon-houtaiyonghuguanli',
+        icon: 'icon-chaxun',
         state: 'ENABLE',
         issuper: false,
         childs: [
@@ -165,7 +187,18 @@ const Menus = [
 				url: '/mysqlmeta', 				
                 state: 'ENABLE',
                 issuper: false,
-                icon: 'icon-yonghuguanli', 
+                icon: 'icon-shujukushili', 
+                childs: null
+            },
+            {   
+                id: 62, 
+                parentMenuId : 6,
+                name: 'querysql', 
+                alias: 'QuerySql',
+				url: '/querysql', 				
+                state: 'ENABLE',
+                issuper: false,
+                icon: 'icon-SQLshenhe', 
                 childs: null
             },
         ]

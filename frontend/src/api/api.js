@@ -8,7 +8,7 @@ export const LdapAuth = params => { return request.post('/ldapauth',params) };
 //Logout
 export const Logout = () => { return request.get('/logout') };
 
-////通知管理
+////全局配置
 // 邮件配置
 export const getMailConfig = () => { return request.get('/mailconfig/')};
 export const setMailConfig = params => {
@@ -21,16 +21,22 @@ export const setMailConfig = params => {
 };
 //测试邮件功能
 export const execMailTest = params => { return request.post('/mailtest/',params) };
-// LDAP配置
-export const getLdapConfig = () => { return request.get('/ldapconfig/')};
-export const setLdapConfig = params => {
-    if ('id' in params) {
-        return request.patch('/ldapconfig/'+params.id+'/',params); 
+// QueryLimit配置
+export const getQueryLimit = () => { return request.get('/querylimit/')};
+export const setQueryLimit = params => {
+    if (params.id >0) {
+        return request.patch('/querylimit/'+params.id+'/',params); 
     }
     else {
-        return request.post('/ldapconfig/',params);
+        return request.post('/querylimit/',params);
     }
-}
+};
+// 导出白名单
+export const getDumpWhiteList = () => { return request.get('/dumpwhitelist/')};
+export const delDumpWhiteList = params => { return request.delete('/dumpwhitelist/'+params.id+'/')};
+export const addDumpWhiteList = params => { return request.post('/dumpwhitelist/',params)};
+export const editDumpWhiteList = params => { return request.patch('/dumpwhitelist/'+params.id+'/',params)};
+export const searchDumpWhiteList = params => { return request.get('/dumpwhitelist/'+'?search='+params.searchcontent) };
 
 ////用户管理
 //用户组
@@ -92,3 +98,7 @@ export const getUserAccessDb = params =>  { return request.post('/useraccessdb/'
 export const execMysqlUser = params =>  { return request.post('/mysqluser/',params); }
 ////mysqlstatus
 export const getMysqlStatus = params =>  { return request.post('/mysqlstatus/',params); }
+
+////query
+//querysql
+export const execQuerySql = params =>  { return request.post('/querysql/',params); }

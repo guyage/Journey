@@ -1,101 +1,105 @@
 <template>
     <div class="mysqluser">
-        <div class="mysqluser-inst">
-            <!-- <span style="float: left;margin-top: 5px;">MySQL实例：</span> -->
-            <el-select style="width: 300px;" v-model="selectinst" placeholder="请选择MySQL实例" @change="handleSelect($event)">
-                <el-option 
-                v-for="item in instlist" 
-                :key="item.instid"
-                :label="item.instname"
-                :value="item.instid">
-                </el-option>
-            </el-select>
-            <el-input size="small" v-model="searchcontent" @keyup.enter.native="searchData" style="width: 200px;float: right;" placeholder="Search">
-                <el-button @click="searchData" slot="append" icon="el-icon-search"></el-button>
-            </el-input>
-            <el-button size="small" style="float: right;margin-right: 5px;"  type="primary" @click="addMysqlUser">添加用户</el-button>
-        </div>
-        <div v-if="results.length > 0" class="mysqluser-results">
-            <div class="mysqluser-results-tag">
-                <el-tag >该实例包含数据库：</el-tag>
-                <el-tag v-for="(val, key) in dblist" :key="key">{{val}}</el-tag>
-            </div>
-            <el-table v-if="results.length > 0" size="mini" style="width: 100%" highlight-current-row max-height="600" border :data="results.slice((currentPage-1)*pagesize,currentPage*pagesize)">
-                <el-table-column  align="center" v-for="(val, key) in col" :fixed="key===0?true:false" :key="key" :label="val" :prop="val">
-                </el-table-column>
-                <el-table-column width="500px" align="center" label="操作">
-                <template slot-scope="scope">
-                    <el-button size="mini" type="primary"  @click="handleShowUser(scope.$index,scope.row)">查看权限</el-button>
-                    <el-button size="mini" type="danger"  @click="handleDropUser(scope.$index,scope.row)">删除</el-button>
-                </template>
-                </el-table-column>
-            </el-table>
-            <el-pagination
-            v-if="results.length > 0"
-            background
-            layout="total, sizes,prev, pager, next, jumper"
-            :total="results.length"
-            :page-sizes="[10, 20, 30]"
-            :page-size="pagesize"
-            @current-change="handleCurrentChange"
-            @size-change="handleSizeChange">
-            </el-pagination>
-        </div>
-        <div class="mysqluser-userpriresults">
-            <el-dialog
-            :title="isadduser?'添加MySQL用户':'用户权限'"
-            :visible.sync="dialogVisible"
-            width="50%">
-            <div v-if="isadduser">
-                <div class="mysqluser-userpri-adduser">
-                    <el-card class="box-card">
-                        <el-form ref="userform" :model="userform" label-width="100px">
-                            <el-form-item label="用户名：">
-                                <el-input style="width: 300px; float: left;" v-model="userform.username"></el-input>
-                            </el-form-item>
-                            <el-form-item label="IP：">
-                                <el-input style="width: 300px; float: left;" v-model="userform.userip"></el-input>
-                            </el-form-item>
-                            <el-form-item label="用户密码：">
-                                <el-input style="width: 300px; float: left;" show-password v-model="userform.userpwd"></el-input>
-                            </el-form-item>
-                            <el-form-item label="数据库操作：">
-                                <el-checkbox-group v-model="userform.userpri">
-                                <el-checkbox label="SELECT" name="userpri"></el-checkbox>
-                                <el-checkbox label="INSERT" name="userpri"></el-checkbox>
-                                <el-checkbox label="UPDATE" name="userpri"></el-checkbox>
-                                <el-checkbox label="DELETE" name="userpri"></el-checkbox>
-                                </el-checkbox-group>
-                            </el-form-item>
-                            <el-form-item label="数据库：">
-                                <el-radio-group v-model="userform.userpridb">
-                                <el-radio v-for="(val, key) in dblist" :key="key" :label="val"></el-radio>
-                                </el-radio-group>
-                            </el-form-item>
-                            <el-form-item style="padding-bottom: 40px;">
-                                <el-button type="primary" @click="saveUser">添加</el-button>
-                                <el-button @click="dialogVisible = false">取消</el-button>
-                            </el-form-item>
-                        </el-form>
+        <el-collapse v-model="activeNames">
+            <el-collapse-item title="MySQL用户" name="1">
+                <div class="mysqluser-inst" style="padding: 0.8em 0em 1em;">
+                    <!-- <span style="float: left;margin-top: 5px;">MySQL实例：</span> -->
+                    <el-select style="width: 300px;" v-model="selectinst" placeholder="请选择MySQL实例" @change="handleSelect($event)">
+                        <el-option 
+                        v-for="item in instlist" 
+                        :key="item.instid"
+                        :label="item.instname"
+                        :value="item.instid">
+                        </el-option>
+                    </el-select>
+                    <el-input size="small" v-model="searchcontent" @keyup.enter.native="searchData" style="width: 200px;float: right;" placeholder="Search">
+                        <el-button @click="searchData" slot="append" icon="el-icon-search"></el-button>
+                    </el-input>
+                    <el-button size="small" style="float: right;margin-right: 5px;"  type="primary" @click="addMysqlUser">添加用户</el-button>
+                </div>
+                <div v-if="results.length > 0" class="mysqluser-results">
+                    <div class="mysqluser-results-tag">
+                        <el-tag >该实例包含数据库：</el-tag>
+                        <el-tag v-for="(val, key) in dblist" :key="key">{{val}}</el-tag>
+                    </div>
+                    <el-table v-if="results.length > 0" size="mini" style="width: 100%" highlight-current-row max-height="600" border :data="results.slice((currentPage-1)*pagesize,currentPage*pagesize)">
+                        <el-table-column  align="center" v-for="(val, key) in col" :fixed="key===0?true:false" :key="key" :label="val" :prop="val">
+                        </el-table-column>
+                        <el-table-column width="500px" align="center" label="操作">
+                        <template slot-scope="scope">
+                            <el-button size="mini" type="primary"  @click="handleShowUser(scope.$index,scope.row)">查看权限</el-button>
+                            <el-button size="mini" type="danger"  @click="handleDropUser(scope.$index,scope.row)">删除</el-button>
+                        </template>
+                        </el-table-column>
+                    </el-table>
+                    <el-pagination
+                    v-if="results.length > 0"
+                    background
+                    layout="total, sizes,prev, pager, next, jumper"
+                    :total="results.length"
+                    :page-sizes="[10, 20, 30]"
+                    :page-size="pagesize"
+                    @current-change="handleCurrentChange"
+                    @size-change="handleSizeChange">
+                    </el-pagination>
+                </div>
+                <div class="mysqluser-userpriresults">
+                    <el-dialog
+                    :title="isadduser?'添加MySQL用户':'用户权限'"
+                    :visible.sync="dialogVisible"
+                    width="50%">
+                    <div v-if="isadduser">
+                        <div class="mysqluser-userpri-adduser">
+                            <el-card class="box-card">
+                                <el-form ref="userform" :model="userform" label-width="100px">
+                                    <el-form-item label="用户名：">
+                                        <el-input style="width: 300px; float: left;" v-model="userform.username"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="IP：">
+                                        <el-input style="width: 300px; float: left;" v-model="userform.userip"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="用户密码：">
+                                        <el-input style="width: 300px; float: left;" show-password v-model="userform.userpwd"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="数据库操作：">
+                                        <el-checkbox-group v-model="userform.userpri">
+                                        <el-checkbox label="SELECT" name="userpri"></el-checkbox>
+                                        <el-checkbox label="INSERT" name="userpri"></el-checkbox>
+                                        <el-checkbox label="UPDATE" name="userpri"></el-checkbox>
+                                        <el-checkbox label="DELETE" name="userpri"></el-checkbox>
+                                        </el-checkbox-group>
+                                    </el-form-item>
+                                    <el-form-item label="数据库：">
+                                        <el-radio-group v-model="userform.userpridb">
+                                        <el-radio v-for="(val, key) in dblist" :key="key" :label="val"></el-radio>
+                                        </el-radio-group>
+                                    </el-form-item>
+                                    <el-form-item style="padding-bottom: 40px;">
+                                        <el-button type="primary" @click="saveUser">添加</el-button>
+                                        <el-button @click="dialogVisible = false">取消</el-button>
+                                    </el-form-item>
+                                </el-form>
+                            </el-card>
+                        </div>
+                    </div>
+                    <div v-if="!isadduser">
+                        <el-card shadow="always" class="user-tableb-card">
+                        <div slot="header" >
+                            <span>用户</span><el-tag>{{selectuser}}</el-tag><span>权限如下：</span>
+                        </div>
+                        <div v-for="i in userpriresults" :key="i" class="text item">
+                            {{i}}
+                        </div>
                     </el-card>
+                    <span slot="footer">
+                        <el-button style="margin-top: 10px;" @click="dialogVisible = false">取 消</el-button>
+                        <el-button style="margin-top: 10px;" type="primary" @click="dialogVisible = false">确 定</el-button>
+                    </span>
+                    </div>
+                    </el-dialog>
                 </div>
-            </div>
-            <div v-if="!isadduser">
-                <el-card shadow="always" class="user-tableb-card">
-                <div slot="header" >
-                    <span>用户</span><el-tag>{{selectuser}}</el-tag><span>权限如下：</span>
-                </div>
-                <div v-for="i in userpriresults" :key="i" class="text item">
-                    {{i}}
-                </div>
-            </el-card>
-            <span slot="footer">
-                <el-button style="margin-top: 10px;" @click="dialogVisible = false">取 消</el-button>
-                <el-button style="margin-top: 10px;" type="primary" @click="dialogVisible = false">确 定</el-button>
-            </span>
-            </div>
-            </el-dialog>
-        </div>
+            </el-collapse-item>
+        </el-collapse>
     </div>
 </template>
 
@@ -106,6 +110,7 @@ export default {
     name: 'mysqluser',
     data () {
         return {
+            activeNames: ['1'],
             searchcontent: '',
             // 用户权限弹出框参数
             dialogVisible: false,
@@ -267,6 +272,12 @@ export default {
 </script>
 
 <style>
+.mysqluser .el-collapse-item__header.is-active,.mysqluser .el-collapse-item__header{
+    font-size: 16px;
+    font-weight: bold;
+    padding-left: 0.5em;
+    border-bottom: 1px solid #dcdfe6;
+}
 .mysqluser .el-table th{
     user-select: auto
 }

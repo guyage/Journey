@@ -63,7 +63,7 @@ INSTALLED_APPS = [
     'conf',
     'user',
     'db',
-    'sql',
+    'query',
 ]
 
 MIDDLEWARE = [

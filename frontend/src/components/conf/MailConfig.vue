@@ -155,5 +155,6 @@ export default {
     font-size: 16px;
     font-weight: bold;
     padding-left: 0.5em;
+    /* border-bottom: 1px solid #dcdfe6; */
 }
 </style>

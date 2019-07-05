@@ -15,11 +15,14 @@ import Dashboard from '@/components/views/Dashboard.vue';
 import User from '@/components/user/User.vue';
 import UserGroup from '@/components/user/UserGroup.vue';
 import MailConfig from '@/components/conf/MailConfig.vue';
+import QueryLimit from '@/components/conf/QueryLimit.vue';
+import DumpWhiteList from '@/components/conf/DumpWhiteList.vue';
 import MysqlInst from '@/components/db/MysqlInst.vue';
 import UserAccessMysql from '@/components/db/UserAccessMysql.vue';
 import MysqlMeta from '@/components/db/MysqlMeta.vue';
 import MysqlUser from '@/components/db/MysqlUser.vue';
 import MysqlStatus from '@/components/db/MysqlStatus.vue';
+import QuerySql from '@/components/query/QuerySql.vue';
 
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
@@ -71,6 +74,18 @@ const DynamicRouter = [
                 meta: { issuper: true, tag: '邮件配置',title: ['全局配置','邮件配置']},
             },
             {
+                path: '/dumpwhitelist', 
+                component: DumpWhiteList, 
+                name: 'dumpwhitelist',
+                meta: { issuper: true, tag: '导出白名单',title: ['全局配置','导出白名单']},
+            },
+            {
+                path: '/querylimit', 
+                component: QueryLimit, 
+                name: 'querylimit',
+                meta: { issuper: true, tag: 'QueryLimit',title: ['全局配置','QueryLimit']},
+            },
+            {
                 path: '/mysqlinst', 
                 component: MysqlInst, 
                 name: 'mysqlinst',
@@ -80,7 +95,7 @@ const DynamicRouter = [
                 path: '/mysqlmeta', 
                 component: MysqlMeta, 
                 name: 'mysqlmeta',
-                meta: { issuper: false, tag: 'MySQL元数据',title: ['MySQL管理','MySQL元数据']},
+                meta: { issuper: false, tag: 'MySQL元数据',title: ['Query','MySQL元数据']},
             },
             {
                 path: '/mysqlstatus', 
@@ -99,6 +114,12 @@ const DynamicRouter = [
                 component: UserAccessMysql, 
                 name: 'useraccessmysql',
                 meta: { issuper: false, tag: 'MySQL权限',title: ['数据库权限','MySQL权限']},
+            },
+            {
+                path: '/querysql', 
+                component: QuerySql, 
+                name: 'querysql',
+                meta: { issuper: false, tag: 'QuerySql',title: ['Query','QuerySql']},
             },
             
         ]

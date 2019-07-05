@@ -9,3 +9,15 @@ class MailConfigSerializer(serializers.ModelSerializer):
         model = MailConfig
         fields = ('id','mail_host','mail_port','mail_user','mail_pass','create_time','update_time','comment')
 
+class QueryLimitSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = QueryLimit
+        fields = ('id','query_type','query_limit','comment')
+
+class DumpWhiteListSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = DumpWhiteList
+        fields = ('id','white_user','white_table')
+

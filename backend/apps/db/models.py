@@ -36,7 +36,7 @@ class MySQLInst(models.Model):
 
 class UserAccessMySQL(models.Model):
     username = models.CharField(max_length=50, blank=False,verbose_name=u"用户名")
-    mysqlinst = models.ForeignKey(MySQLInst, blank=True, null=True, on_delete=models.SET_NULL,verbose_name=u'MYSQL实例id', related_name="user_access_mysqlinst")
+    mysqlinst = models.ForeignKey(MySQLInst, blank=True, null=True, on_delete=models.CASCADE,verbose_name=u'MYSQL实例id', related_name="user_access_mysqlinst")
     user_access_db = models.CharField(max_length=64, blank=False,verbose_name=u"用户访问数据库")
     # life_time = models.IntegerField(blank=False,verbose_name=u"MYSQL用户访问权限时间")
     create_time = models.DateTimeField(auto_now_add=True, verbose_name=u"创建时间")
