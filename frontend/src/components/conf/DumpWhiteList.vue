@@ -119,6 +119,7 @@ export default {
                 white_data.white_table = this.white_table_temp
                 addDumpWhiteList(white_data).then((response) => {
                     this.$message.success('添加成功!');
+                    this.getDataList()
                 }).catch((error) => {
                     console.log(error);
                     this.$message.error('添加失败!');
@@ -167,6 +168,7 @@ export default {
             getDumpWhiteList().then((response) => {
                 for (let i=0;i<response.data.length;i++) {
                     response.data[i].isedit = false
+                    // response.data[i].isadd = false
                 }
                 this.table_data = response.data
             }).catch((error) => {

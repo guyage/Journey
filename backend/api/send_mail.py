@@ -55,5 +55,19 @@ def send_mail(to_list,type=None,maildata=None):
         sub = 'Journey DB测试邮件'
         content = 'Journey DB 平台测试邮件!'
         res = send_mail_fun(to_list,sub,content)
-    
+
+    elif (type == 4):
+        if (maildata['git_permission'] == 'Developer'):
+            permission = '读写'
+        elif (maildata['git_permission'] == 'Reporter'):
+            permission = '只读'
+        elif (maildata['git_permission'] == 'None'):
+            permission = '移除权限'
+        sub = 'Git权限工单'
+        content = '您好，Git权限工单待审批!\n \
+        Git账户: %s \n \
+        Git项目: %s \n \
+        Git权限: %s \n' % (maildata['git_user'], maildata['git_project'],permission)
+        res = send_mail_fun(to_list,sub,content)
+
     return res

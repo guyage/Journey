@@ -29,12 +29,48 @@ class MySQLInstViewSet(viewsets.ModelViewSet):
     search_fields = ('inst_name','inst_host','inst_port','role','services','comment')
     ordering_fields = ('id',)
 
+class MongoDBInstViewSet(viewsets.ModelViewSet):
+    """
+    list:
+        MongoDBInst.
+    create:
+        创建MongoDBInst.
+    delete:
+        删除MongoDBInst.
+    update:
+        修改MongoDBInst.
+    """
+    queryset = MongoDBInst.objects.all().order_by('id')
+    serializer_class = MongoDBInstSerializer
+    # pagination_class = PageNumberPagination
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter,)
+    search_fields = ('inst_name','inst_host','inst_port','role','services','comment')
+    ordering_fields = ('id',)
+
+class RedisInstViewSet(viewsets.ModelViewSet):
+    """
+    list:
+        RedisInst.
+    create:
+        创建RedisInst.
+    delete:
+        删除RedisInst.
+    update:
+        修改RedisInst.
+    """
+    queryset = RedisInst.objects.all().order_by('id')
+    serializer_class = RedisInstSerializer
+    # pagination_class = PageNumberPagination
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter,)
+    search_fields = ('inst_name','inst_host','inst_port','role','services','comment')
+    ordering_fields = ('id',)
+
 class UserAccessMySQLViewSet(viewsets.ModelViewSet):
     """
     数据库列表，分页，查找
     """
     
-    queryset = UserAccessMySQL.objects.all().order_by('id')
+    queryset = UserAccessMySQL.objects.all().order_by('-id')
     serializer_class = UserAccessMySQLSerializer
     # pagination_class = PageNumberPagination
     filter_backends = (filters.SearchFilter, filters.OrderingFilter,)
@@ -63,12 +99,12 @@ class UserAccessMySQLViewSet(viewsets.ModelViewSet):
             queryset = self.queryset
             if isinstance(queryset, QuerySet):
                 # Ensure queryset is re-evaluated on each request.
-                queryset = queryset.all()
+                queryset = queryset.all().order_by('-id')
         else:
             queryset = self.queryset
             if isinstance(queryset, QuerySet):
                 # Ensure queryset is re-evaluated on each request.
-                queryset = queryset.filter(Q(username=self.request.user.username))
+                queryset = queryset.filter(Q(username=self.request.user.username)).order_by('-id')
         return queryset
 
 
@@ -130,6 +166,32 @@ class UserAccessDbViewSet(APIView):
                 # user_access_mysqldb.append({'label':db['user_access_db'],'type':'db'})
                 user_access_mysqldb.append({'dbname':db['user_access_db']})
             results = user_access_mysqldb
+        elif (str(dbtype) == 'mongodbinst'):
+            username = request.data['username']
+            user_access_inst_count = UserAccessMongoDB.objects.filter(Q(username=username),Q(status=2)).values("mongodbinst_id").distinct().count()
+            if (user_access_inst_count > 0):
+                user_access_mongodbinst = []
+                insts = UserAccessMongoDB.objects.filter(Q(username=username),Q(status=2)).values("mongodbinst_id").distinct()
+                for inst in insts:
+                    inst_id = inst['mongodbinst_id']
+                    instinfo = MongoDBInst.objects.get(Q(id=inst_id))
+                    user_access_mongodbinst.append({'instid':inst_id,'instname':instinfo.inst_name})
+                    results = user_access_mongodbinst
+            else:
+                results = []
+        elif (str(dbtype) == 'redisinst'):
+            username = request.data['username']
+            user_access_inst_count = UserAccessRedis.objects.filter(Q(username=username),Q(status=2)).values("redisinst_id").distinct().count()
+            if (user_access_inst_count > 0):
+                user_access_redisinst = []
+                insts = UserAccessRedis.objects.filter(Q(username=username),Q(status=2)).values("redisinst_id").distinct()
+                for inst in insts:
+                    inst_id = inst['redisinst_id']
+                    instinfo = RedisInst.objects.get(Q(id=inst_id))
+                    user_access_redisinst.append({'instid':inst_id,'instname':instinfo.inst_name})
+                    results = user_access_redisinst
+            else:
+                results = []
         re = { 'results': '',}
         re['results'] = results
         return Response(re)
@@ -215,3 +277,83 @@ class MySQLStatusViewSet(APIView):
         re['col'] = col
         re['results'] = results
         return Response(re)
+
+class UserAccessMongoDBViewSet(viewsets.ModelViewSet):
+    """
+    数据库列表，分页，查找
+    """
+    
+    queryset = UserAccessMongoDB.objects.all().order_by('-id')
+    serializer_class = UserAccessMongoDBSerializer
+    # pagination_class = PageNumberPagination
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter,)
+    search_fields = ('username','comment','status')
+    ordering_fields = ('id',)
+
+    def create(self, request, *args, **kwargs):
+        real_data = request.data
+        userhavedb = UserAccessMongoDB.objects.filter(Q(username=request.data['username']),Q(mongodbinst=request.data['mongodbinst']),Q(status=1)|Q(status=2)).count()
+        if (userhavedb == 0):
+            serializer = self.get_serializer(data=real_data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            useraccessdata = UserAccessMongoDB.objects.get(id=serializer.data['id'])
+            useraccessdata.mongodbinst_id = request.data['mongodbinst']
+            useraccessdata.save()
+            headers = self.get_success_headers(serializer.data)
+        else:
+            return Response({'message':'请勿重复申请'},status=500)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def get_queryset(self):
+        if (self.request.user.is_superuser):
+            queryset = self.queryset
+            if isinstance(queryset, QuerySet):
+                # Ensure queryset is re-evaluated on each request.
+                queryset = queryset.all().order_by('-id')
+        else:
+            queryset = self.queryset
+            if isinstance(queryset, QuerySet):
+                # Ensure queryset is re-evaluated on each request.
+                queryset = queryset.filter(Q(username=self.request.user.username)).order_by('-id')
+        return queryset
+
+class UserAccessRedisViewSet(viewsets.ModelViewSet):
+    """
+    数据库列表，分页，查找
+    """
+    
+    queryset = UserAccessRedis.objects.all().order_by('-id')
+    serializer_class = UserAccessRedisSerializer
+    # pagination_class = PageNumberPagination
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter,)
+    search_fields = ('username','comment','status')
+    ordering_fields = ('id',)
+
+    def create(self, request, *args, **kwargs):
+        real_data = request.data
+        userhavedb = UserAccessRedis.objects.filter(Q(username=request.data['username']),Q(redisinst=request.data['redisinst']),Q(status=1)|Q(status=2)).count()
+        if (userhavedb == 0):
+            serializer = self.get_serializer(data=real_data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            useraccessdata = UserAccessRedis.objects.get(id=serializer.data['id'])
+            useraccessdata.redisinst_id = request.data['redisinst']
+            useraccessdata.save()
+            headers = self.get_success_headers(serializer.data)
+        else:
+            return Response({'message':'请勿重复申请'},status=500)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def get_queryset(self):
+        if (self.request.user.is_superuser):
+            queryset = self.queryset
+            if isinstance(queryset, QuerySet):
+                # Ensure queryset is re-evaluated on each request.
+                queryset = queryset.all().order_by('-id')
+        else:
+            queryset = self.queryset
+            if isinstance(queryset, QuerySet):
+                # Ensure queryset is re-evaluated on each request.
+                queryset = queryset.filter(Q(username=self.request.user.username)).order_by('-id')
+        return queryset

@@ -19,7 +19,7 @@ axios.defaults.baseURL = baseurl;
 //     'X-Requested-With': 'XMLHttpRequest'
 // }
 // 请求超时时间，默认5分钟
-axios.defaults.timeout = 600000;
+axios.defaults.timeout = 300000;
 
 //请求拦截器
 axios.interceptors.request.use(config => {
@@ -27,13 +27,13 @@ axios.interceptors.request.use(config => {
       // 让每个请求携带token-- ['Authorization']为自定义key 请根据实际情况自行修改
       config.headers['Authorization'] = 'JWT ' + getCookies('Authorization')
       //发起请求时，取消掉当前正在进行的相同请求
-      if (promiseArr[config.url]) {
-        promiseArr[config.url]('操作取消')
-        promiseArr[config.url] = cancel
-      } 
-      else {
-          promiseArr[config.url] = cancel
-      }
+      // if (promiseArr[config.url]) {
+      //   promiseArr[config.url]('操作取消')
+      //   promiseArr[config.url] = cancel
+      // } 
+      // else {
+      //     promiseArr[config.url] = cancel
+      // }
     }
     return config
 }, error => {
@@ -91,7 +91,7 @@ axios.interceptors.response.use(response => {
           err.message = `连接错误${err.response.status}`
       }
     } else {
-      err.message = "连接到服务器失败，请确认网络正常，或联系管理员!"
+      err.message = err.toString()
     }
     Message.error({message: err.message})
     return Promise.reject(err);
@@ -105,9 +105,9 @@ export default {
           method: 'get',
           url,
           params: param,
-          cancelToken: new CancelToken(c => {
-              cancel = c
-          })
+          // cancelToken: new CancelToken(c => {
+          //     cancel = c
+          // })
           }).then(res => {
             resolve(res)
           }).catch((err) => {
@@ -122,9 +122,9 @@ export default {
           method: 'post',
           url,
           data: param,
-          cancelToken: new CancelToken(c => {
-              cancel = c
-          })
+          // cancelToken: new CancelToken(c => {
+          //     cancel = c
+          // })
           }).then(res => {
             resolve(res)
           }).catch((err) => {
@@ -139,9 +139,9 @@ export default {
         method: 'patch',
         url,
         data: param,
-        cancelToken: new CancelToken(c => {
-            cancel = c
-        })
+        // cancelToken: new CancelToken(c => {
+        //     cancel = c
+        // })
         }).then(res => {
           resolve(res)
         }).catch((err) => {
@@ -156,9 +156,9 @@ export default {
         method: 'delete',
         url,
         params: param,
-        cancelToken: new CancelToken(c => {
-            cancel = c
-        })
+        // cancelToken: new CancelToken(c => {
+        //     cancel = c
+        // })
         }).then(res => {
           resolve(res);
         }).catch((err) => {

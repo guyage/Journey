@@ -14,18 +14,34 @@ import Login from '@/components/views/Login.vue';
 import Dashboard from '@/components/views/Dashboard.vue';
 import User from '@/components/user/User.vue';
 import UserGroup from '@/components/user/UserGroup.vue';
+import PermissionsGroup from '@/components/user/PermissionsGroup.vue';
 import MailConfig from '@/components/conf/MailConfig.vue';
 import QueryLimit from '@/components/conf/QueryLimit.vue';
 import DumpWhiteList from '@/components/conf/DumpWhiteList.vue';
-import MysqlInst from '@/components/db/MysqlInst.vue';
-import UserAccessMysql from '@/components/db/UserAccessMysql.vue';
-import MysqlMeta from '@/components/db/MysqlMeta.vue';
-import MysqlUser from '@/components/db/MysqlUser.vue';
-import MysqlStatus from '@/components/db/MysqlStatus.vue';
+//mysql
+import MysqlInst from '@/components/db/mysql/MysqlInst.vue';
+import UserAccessMysql from '@/components/db/mysql/UserAccessMysql.vue';
+import MysqlMeta from '@/components/db/mysql/MysqlMeta.vue';
+import MysqlUser from '@/components/db/mysql/MysqlUser.vue';
+import MysqlStatus from '@/components/db/mysql/MysqlStatus.vue';
+//mongodb
+import MongodbInst from '@/components/db/mongodb/MongodbInst.vue';
+import UserAccessMongodb from '@/components/db/mongodb/UserAccessMongodb.vue';
+//redis
+import RedisInst from '@/components/db/redis/RedisInst.vue';
+import UserAccessRedis from '@/components/db/redis/UserAccessRedis.vue';
+//QUery
 import QuerySql from '@/components/query/QuerySql.vue';
+import QueryMongodb from '@/components/query/QueryMongodb.vue';
+import QueryRedis from '@/components/query/QueryRedis.vue';
+//workflow
+import MyWorkOrder from '@/components/workflow/MyWorkOrder.vue';
+import NewWorkOrder from '@/components/workflow/NewWorkOrder.vue';
+import ToDoWorkOrder from '@/components/workflow/ToDoWorkOrder.vue';
+import WorkOrderDetail from '@/components/workflow/WorkOrderDetail.vue';
 
-import NProgress from 'nprogress'
-import 'nprogress/nprogress.css'
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
 
 //配置路由   注意：名字
 const login = {
@@ -68,6 +84,12 @@ const DynamicRouter = [
                 meta: { issuper: true, tag: '用户组',title: ['用户管理','用户组']},
             },
             {
+                path: '/permissionsgroup', 
+                component: PermissionsGroup, 
+                name: 'permissionsgroup',
+                meta: { issuper: true, tag: '权限组',title: ['用户管理','权限组']},
+            },
+            {
                 path: '/mailconfig', 
                 component: MailConfig, 
                 name: 'mailconfig',
@@ -89,7 +111,7 @@ const DynamicRouter = [
                 path: '/mysqlinst', 
                 component: MysqlInst, 
                 name: 'mysqlinst',
-                meta: { issuper: true, tag: 'MySQL管理',title: ['MySQL管理','MySQL实例']},
+                meta: { issuper: true, tag: 'MySQL实例',title: ['MySQL管理','MySQL实例']},
             },
             {
                 path: '/mysqlmeta', 
@@ -116,10 +138,71 @@ const DynamicRouter = [
                 meta: { issuper: false, tag: 'MySQL权限',title: ['数据库权限','MySQL权限']},
             },
             {
+                path: '/useraccessmongodb', 
+                component: UserAccessMongodb, 
+                name: 'useraccessmongodb',
+                meta: { issuper: false, tag: 'MongoDB权限',title: ['数据库权限','MongoDB权限']},
+            },
+            {
+                path: '/useraccessredis', 
+                component: UserAccessRedis, 
+                name: 'useraccessredis',
+                meta: { issuper: false, tag: 'Redis权限',title: ['数据库权限','Redis权限']},
+            },
+            {
                 path: '/querysql', 
                 component: QuerySql, 
                 name: 'querysql',
                 meta: { issuper: false, tag: 'QuerySql',title: ['Query','QuerySql']},
+            },
+            {
+                path: '/querymongodb', 
+                component: QueryMongodb, 
+                name: 'querymongodb',
+                meta: { issuper: false, tag: 'QueryMongodb',title: ['Query','QueryMongodb']},
+            },
+            {
+                path: '/queryredis', 
+                component: QueryRedis, 
+                name: 'queryredis',
+                meta: { issuper: false, tag: 'QueryRedis',title: ['Query','QueryRedis']},
+            },
+            {
+                path: '/mongodbinst', 
+                component: MongodbInst, 
+                name: 'mongodbinst',
+                meta: { issuper: true, tag: 'MongoDB实例',title: ['MongoDB管理','MongoDB实例']},
+            },
+            {
+                path: '/redisinst', 
+                component: RedisInst, 
+                name: 'redisinst',
+                meta: { issuper: true, tag: 'Redis实例',title: ['Redis管理','Redis实例']},
+            },
+            //workflow
+            {
+                path: '/myworkorder', 
+                component: MyWorkOrder, 
+                name: 'myworkorder',
+                meta: { issuper: false, tag: '我创建的',title: ['工单系统','我创建的']},
+            },
+            {
+                path: '/newworkorder', 
+                component: NewWorkOrder, 
+                name: 'newworkorder',
+                meta: { issuper: false, tag: '新建工单',title: ['工单系统','新建工单']},
+            },
+            {
+                path: '/todoworkorder', 
+                component: ToDoWorkOrder, 
+                name: 'todoworkorder',
+                meta: { issuper: false, tag: '我的待办',title: ['工单系统','我的待办']},
+            },
+            {
+                path: '/workorderdetail/:workordernum', 
+                component: WorkOrderDetail, 
+                name: 'workorderdetail',
+                meta: { issuper: false, tag: '工单明细',title: ['工单系统','工单明细']},
             },
             
         ]

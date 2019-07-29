@@ -24,7 +24,7 @@
                         </div>      
                 </div>
                 <div class="mysqlmeta-table" style="padding: 0.8em 0em 1em;">
-                    <el-table border :data="tablecol.results">
+                    <el-table v-loading="loading" :element-loading-text="loadingtext" border :data="tablecol.results">
                         <el-table-column align="left" v-for="(val, key) in tablecol.col" v-if="key == 0" width="300px" :key="key" :label="val" :prop="val">
                         </el-table-column>
                         <el-table-column align="left" v-for="(val, key) in tablecol.col" v-if="key != 0" :key="key" :label="val" :prop="val">
@@ -48,6 +48,8 @@ export default {
     data () {
         return {
             activeNames: ['1'],
+            loading: false,
+            loadingtext: '拼命加载中...',
             instid: 0,
             dbname: '',
             tablecol: {},
@@ -112,11 +114,14 @@ export default {
                 this.dbname = data.label                
             }
             else if (data.type == 'table') {
+                this.loading = true
                 let meta_data = {'type':'tablemeta','instid':this.instid,'dbname':this.dbname,'tablename':data.label}
                 getMysqlMeta(meta_data).then((response) => {
                     this.tablecol = response.data
+                    this.loading = false
                 }).catch((error) => {
                     console.log(error);
+                    this.loading = false
                 })
             }
         },
@@ -154,7 +159,7 @@ export default {
     border-bottom: 1px solid #dcdfe6;
 }  
 .mysqlmeta .el-table--border{
-    max-height: 800px;
+    max-height: 750px;
     overflow: auto;
 }
 .mysqlmeta .el-table::before{
@@ -166,7 +171,7 @@ export default {
     text-overflow: unset;
 }
 .mysqlmeta .mysqlmeta-tree-data{
-    max-height: 800px;
+    max-height: 750px;
     overflow:auto;
 }
 .mysqlmeta .el-tree-node__label{

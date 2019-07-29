@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'user',
     'db',
     'query',
+    'workflow',
 ]
 
 MIDDLEWARE = [
@@ -81,7 +82,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
-        # 'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.IsAuthenticated',
     ),
     #  配置默认的认证方式  帐号密码认证
     'DEFAULT_AUTHENTICATION_CLASSES' : (  
@@ -194,7 +195,7 @@ AUTH_LDAP_ALWAYS_UPDATE_USER = True #是否同步LDAP修改
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 

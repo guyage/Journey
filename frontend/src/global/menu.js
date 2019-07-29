@@ -43,6 +43,17 @@ const Menus = [
                 icon: 'icon-yonghuguanli', 
                 childs: null
             },
+            {   
+                id: 23, 
+                parentMenuId : 2,
+                name: 'permissionsgroup', 
+                alias: '权限组',
+				url: '/permissionsgroup', 				
+                state: 'ENABLE',
+                issuper: true,
+                icon: 'icon-yonghuguanli', 
+                childs: null
+            },
         ]
     },
     {
@@ -102,6 +113,52 @@ const Menus = [
         ]
     },
     {
+        id: 7,
+        parentMenuId: 0,
+        name: 'dbmanger',
+        alias: 'MongoDB管理',
+        url: '/home',
+        icon: 'icon-houtaiyonghuguanli',
+        state: 'ENABLE',
+        issuper: true,
+        childs: [
+            {   
+                id: 71, 
+                parentMenuId : 7,
+                name: 'mongodbinst', 
+                alias: 'MongoDB实例',
+				url: '/mongodbinst', 				
+                state: 'ENABLE',
+                issuper: true,
+                icon: 'icon-yonghuguanli', 
+                childs: null
+            },
+        ]
+    },
+    {
+        id: 8,
+        parentMenuId: 0,
+        name: 'dbmanger',
+        alias: 'Redis管理',
+        url: '/home',
+        icon: 'icon-houtaiyonghuguanli',
+        state: 'ENABLE',
+        issuper: true,
+        childs: [
+            {   
+                id: 81, 
+                parentMenuId : 8,
+                name: 'redisinst', 
+                alias: 'Redis实例',
+				url: '/redisinst', 				
+                state: 'ENABLE',
+                issuper: true,
+                icon: 'icon-yonghuguanli', 
+                childs: null
+            },
+        ]
+    },
+    {
         id: 5,
         parentMenuId: 0,
         name: 'dbmanger',
@@ -117,6 +174,28 @@ const Menus = [
                 name: 'useraccessmysql', 
                 alias: 'MySQL权限',
 				url: '/useraccessmysql', 				
+                state: 'ENABLE',
+                issuper: false,
+                icon: 'icon-yonghuguanli', 
+                childs: null
+            },
+            {   
+                id: 52, 
+                parentMenuId : 5,
+                name: 'useraccessmongodb', 
+                alias: 'MongoDB权限',
+				url: '/useraccessmongodb', 				
+                state: 'ENABLE',
+                issuper: false,
+                icon: 'icon-yonghuguanli', 
+                childs: null
+            },
+            {   
+                id: 53, 
+                parentMenuId : 5,
+                name: 'useraccessredis', 
+                alias: 'Redis权限',
+				url: '/useraccessredis', 				
                 state: 'ENABLE',
                 issuper: false,
                 icon: 'icon-yonghuguanli', 
@@ -199,6 +278,73 @@ const Menus = [
                 state: 'ENABLE',
                 issuper: false,
                 icon: 'icon-SQLshenhe', 
+                childs: null
+            },
+            {   
+                id: 63, 
+                parentMenuId : 6,
+                name: 'querymongodb', 
+                alias: 'QueryMongodb',
+				url: '/querymongodb', 				
+                state: 'ENABLE',
+                issuper: false,
+                icon: 'icon-SQLshenhe', 
+                childs: null
+            },
+            {   
+                id: 64, 
+                parentMenuId : 6,
+                name: 'queryredis', 
+                alias: 'QueryRedis',
+				url: '/queryredis', 				
+                state: 'ENABLE',
+                issuper: false,
+                icon: 'icon-SQLshenhe', 
+                childs: null
+            },
+        ]
+    },
+    {
+        id: 9,
+        parentMenuId: 0,
+        name: 'dbmanger',
+        alias: '工单系统',
+        url: '/home',
+        icon: 'icon-chaxun',
+        state: 'ENABLE',
+        issuper: false,
+        childs: [
+            {   
+                id: 93, 
+                parentMenuId : 9,
+                name: 'newworkorder', 
+                alias: '新建工单',
+				url: '/newworkorder', 				
+                state: 'ENABLE',
+                issuper: false,
+                icon: 'icon-shujukushili', 
+                childs: null
+            },
+            {   
+                id: 91, 
+                parentMenuId : 9,
+                name: 'myworkorder', 
+                alias: '我创建的',
+				url: '/myworkorder', 				
+                state: 'ENABLE',
+                issuper: false,
+                icon: 'icon-shujukushili', 
+                childs: null
+            },
+            {   
+                id: 92, 
+                parentMenuId : 9,
+                name: 'todoworkorder', 
+                alias: '我的待办',
+				url: '/todoworkorder', 				
+                state: 'ENABLE',
+                issuper: false,
+                icon: 'icon-shujukushili', 
                 childs: null
             },
         ]

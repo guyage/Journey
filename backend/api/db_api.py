@@ -140,14 +140,18 @@ class db_api():
         conn_port = connectinfo['conn_port']
         conn_user = connectinfo['conn_user']
         conn_passwd = connectinfo['conn_passwd']
-        conn_db = connectinfo['conn_db']
         client = MongoClient(conn_host,conn_port)
         db_auth = client.admin
         db_auth.authenticate(conn_user, conn_passwd)
-        db = getattr(client,conn_db)
-        if (flag == 1):
+        if (flag == 0):
+            re = client.database_names()
+        elif (flag == 1):
+            conn_db = connectinfo['conn_db']
+            db = getattr(client,conn_db)
             re = db.collection_names()
         elif (flag == 2):
+            conn_db = connectinfo['conn_db']
+            db = getattr(client,conn_db)
             execresults = eval(sql)
             # re = {'results' : ''}
             re = []

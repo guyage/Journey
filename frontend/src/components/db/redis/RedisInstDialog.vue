@@ -1,7 +1,7 @@
 <template>
-    <div id="mysqlinstdialog" class="mysqlinstdialog">
+    <div id="redisinstdialog" class="redisinstdialog">
         <el-dialog
-            :title="isEdit?'编辑MySQL实例':'添加MySQL实例'"
+            :title="isEdit?'编辑Redis实例':'添加Redis实例'"
             :visible.sync="visible"
             @close="$emit('update:show', false)"
             :show="show"
@@ -24,17 +24,8 @@
                             <el-option label="Slave" value="Slave"></el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="管理用户 : " label-width="105px" prop="manage_user">
-                        <el-input style="width: 300px; float: left;" v-model="form.manage_user" auto-complete="off"></el-input>
-                    </el-form-item>
-                    <el-form-item label="管理用户密码 : " label-width="105px" prop="manage_userpwd">
-                        <el-input style="width: 300px; float: left;" show-password v-model="form.manage_userpwd" auto-complete="off"></el-input>
-                    </el-form-item>
-                    <el-form-item label="只读用户 : " label-width="105px" prop="read_user">
-                        <el-input style="width: 300px; float: left;" v-model="form.read_user" auto-complete="off"></el-input>
-                    </el-form-item>
-                    <el-form-item label="只读用户密码 : " label-width="105px" prop="read_userpwd">
-                        <el-input style="width: 300px; float: left;" show-password v-model="form.read_userpwd" auto-complete="off"></el-input>
+                    <el-form-item label="密码 : " label-width="105px" prop="password">
+                        <el-input style="width: 300px; float: left;" show-password v-model="form.password" auto-complete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="涉及服务 : " label-width="105px" prop="services">
                         <el-input style="width: 300px; float: left;" v-model="form.services" auto-complete="off"></el-input>
@@ -65,7 +56,7 @@
 
 <script>
 export default {
-    name: 'mysqlinstdialog',
+    name: 'redisinstdialog',
     data () {
         return {
             //弹出框
@@ -111,7 +102,6 @@ export default {
         handleAddData() {
             this.$refs['form'].validate((valid)=>{
                 if(valid){
-                    console.log(this.form);
                     this.saveData(this.isEdit,this.form)
                 }
                 else {
@@ -131,7 +121,7 @@ export default {
 </script>
 
 <style>
-.mysqlinstdialog{
+.redisinstdialog{
     text-align: left;
 }
 </style>

@@ -19,7 +19,7 @@ const user = {
         token: getCookies(TokenKey),
         menus: '',
         routers: [],
-        userpermissionsgroup: []
+        userpermissionsgroup: getCookies(UserPermissionsGroupKey)
     },
 
 
@@ -85,9 +85,11 @@ const user = {
                     commit('SET_TOKEN',response.data.token);
                     commit('SET_USERNAME',response.data.username);
                     commit('SET_ISSUPER',response.data.is_superuser);
+                    commit('SET_USERPERMISSIONSGROUP',response.data.permissions_group);
                     setCookies(TokenKey,response.data.token);
                     setCookies(UserNameKey,response.data.username);
                     setCookies(UserIsSuperKey,response.data.is_superuser);
+                    setCookies(UserPermissionsGroupKey,response.data.permissions_group);
                     resolve(response);
                 }).catch(error => {
                     reject(error)
@@ -114,9 +116,11 @@ const user = {
                         setCookies(TokenKey,response.data.token);
                         setCookies(UserNameKey,response.data.username);
                         setCookies(UserIsSuperKey,response.data.is_superuser);
+                        commit('SET_USERPERMISSIONSGROUP',response.data.permissions_group);
                         commit('SET_ISSUPER',response.data.is_superuser);
                         commit('SET_TOKEN',response.data.token);
                         commit('SET_USERNAME',response.data.username);
+                        setCookies(UserPermissionsGroupKey,response.data.permissions_group);
                         resolve();
                     }
                     else  {

@@ -36,7 +36,7 @@ class UserGroupViewSet(viewsets.ModelViewSet):
         if (len(userselected) > 0):
             for user_id in userselected:
                 # django models 多对多添加
-                group_add_user(group_name,user_id)
+                usergroup_add_user(group_name,user_id)
         return Response(request.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def update(self, request, *args, **kwargs):
@@ -52,7 +52,7 @@ class UserGroupViewSet(viewsets.ModelViewSet):
         if (len(userselected) > 0):
             for user_id in userselected:
                 # django models 多对多添加
-                group_add_user(group_name,user_id)
+                usergroup_add_user(group_name,user_id)
 
         if getattr(instance, '_prefetched_objects_cache', None):
             # If 'prefetch_related' has been applied to a queryset, we need to
@@ -84,6 +84,49 @@ class PermissionsGroupViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.SearchFilter, filters.OrderingFilter,)
     search_fields = ('permissions_name','comment',)
     ordering_fields = ('id',)
+
+    def create(self, request, *args, **kwargs):
+        userselected = request.data['userselected']
+        permissions_name = request.data['permissions_name']
+        del request.data['userselected']
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        if (len(userselected) > 0):
+            for user_id in userselected:
+                # django models 多对多添加
+                permissionsgroup_add_user(permissions_name,user_id)
+        return Response(request.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def update(self, request, *args, **kwargs):
+        userselected = request.data['userselected']
+        permissions_name = request.data['permissions_name']
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        # django models 多对多清空
+        instance.user_permissions_join.clear()
+        if (len(userselected) > 0):
+            for user_id in userselected:
+                # django models 多对多添加
+                permissionsgroup_add_user(permissions_name,user_id)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance.
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        # django models 多对多清空
+        instance.user_permissions_join.clear()
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 # Create your views here.
 class UsersViewSet(viewsets.ModelViewSet):
@@ -119,7 +162,7 @@ class UsersViewSet(viewsets.ModelViewSet):
             userinfo.save()
             headers = self.get_success_headers(serializer.data)
             group_name = request.data['group']
-            group_add_user(group_name,userinfo.id)
+            usergroup_add_user(group_name,userinfo.id)
             maildata = {}
             maildata['username'] = username
             maildata['password'] = password
@@ -153,7 +196,7 @@ class UsersViewSet(viewsets.ModelViewSet):
             userinfo.save()
             if ('group' in request.data.keys()):
                 group_name = request.data['group']
-                group_add_user(group_name,userinfo.id)
+                usergroup_add_user(group_name,userinfo.id)
             send_mail(mailtolist,2,maildata)
         else:
             partial = kwargs.pop('partial', False)
@@ -165,7 +208,7 @@ class UsersViewSet(viewsets.ModelViewSet):
                 username = request.data['username']
                 userinfo = Users.objects.get(username=username)
                 group_name = request.data['group']
-                group_add_user(group_name,userinfo.id)
+                usergroup_add_user(group_name,userinfo.id)
 
             if getattr(instance, '_prefetched_objects_cache', None):
                 # If 'prefetch_related' has been applied to a queryset, we need to

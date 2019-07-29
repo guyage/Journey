@@ -10,7 +10,7 @@
                     </div>
                     <div class="querylimit-list-mongodb" style="float:left;clear: both;padding: 0.8em 0em 1em;">
                         <el-tag style="width:100px;" >MongoDB</el-tag>
-                        <el-input-number size="small" style="left:10px;" v-model="mongodblimit" :step="100" :min="0" :max="1000" label="描述文字"></el-input-number>
+                        <el-input-number size="small" style="left:10px;" v-model="mongodblimit" :step="10" :min="0" :max="500" label="描述文字"></el-input-number>
                         <el-button type="primary" size="small" style="margin-left:10px;" @click="setData('mongodb')">修改</el-button>
                     </div>
                 </div>

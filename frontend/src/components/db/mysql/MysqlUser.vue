@@ -328,6 +328,13 @@ export default {
 .mysqluser-userpri-adduser .el-checkbox__label{
     padding-left: 5px;
 }
+.mysqluser .el-radio{
+    /* padding-left: 5px; */
+    margin-right: 15px!important; 
+}
+.mysqluser  .el-radio__label{
+    padding-left: 5px;
+}
 /* .mysqluser-userpri-adduser .el-form-item__content{
     position: absolute;
 } */

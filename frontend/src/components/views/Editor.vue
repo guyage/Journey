@@ -2,10 +2,11 @@
     <div class="editor">
         <el-alert title="请输入SQL语句：" type="info" :closable="false">
             <div class="editor-sqlformat">
-               <icon-svg @click.native="sqlFormat" iconClass="icon-moshubang" slot="suffix"></icon-svg> 
+                <icon-svg @click.native="showSqlHint" iconClass="icon-tishi" slot="suffix"></icon-svg>
+                <icon-svg style="padding-left:5px;" @click.native="sqlFormat" iconClass="icon-moshubang" slot="suffix"></icon-svg> 
             </div>
         </el-alert>
-        <codemirror ref="editor" v-model="code" :options="cmOption"></codemirror>
+        <codemirror  ref="editor" @keyup.alt.67.native="showSqlHint"  v-model="code" :options="cmOption"></codemirror>
         <!-- <textarea ref="editor" class="codesql" v-model="code" style="height:200px;width:600px;"></textarea> -->
     </div>
     
@@ -28,7 +29,7 @@ export default {
         //     return { student: ['name']}
         // }
         return {
-            code: '',
+            code: '# Alt+c键开启提示，或者点击输入框右上角提示按钮开启提示',
             cmOption: {
                 tabSize: 4,
                 styleActiveLine: true,
@@ -38,7 +39,7 @@ export default {
                 line: true,
                 mode: 'text/x-mysql',
                 theme: 'solarized light',
-                extraKeys: {"Ctrl":"autocomplete"},
+                // extraKeys: {"Ctrl":"autocomplete"},
                 matchBrackets: true,
                 hintOptions: {
                     completeSingle: false,
@@ -53,13 +54,13 @@ export default {
                 let sqlContent = this.code
                 this.code = sqlFormatter.format(sqlContent)
             }
+        },
+        showSqlHint() {
+            let editor = this.$refs.editor.codemirror
+            editor.on('cursorActivity', function() {
+                editor.showHint()
+            })
         }
-    },
-    mounted() {
-        let editor = this.$refs.editor.codemirror
-        editor.on('cursorActivity', function() {
-            editor.showHint()
-        })
     },
 }
 </script>

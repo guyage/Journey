@@ -28,14 +28,14 @@
                         </div>
                         <div class="querysql-sql-help">
                             <el-alert title="SQL查询注意事项:" :closable="false" type="warning"></el-alert>
-                            <el-alert title="支持单条语句查询" :closable="false" type="warning" show-icon></el-alert>
-                            <el-alert title="查询语句默认添加limit 100，也可指定limit" :closable="false" type="warning" show-icon></el-alert>
+                            <el-alert title="SQL提示功能，可通过Alt+c键开启提示，或者点击输入框右上角提示按钮开启提示" :closable="false" type="warning" show-icon></el-alert>
+                            <el-alert title="支持单条语句查询，查询语句默认添加limit 100，也可指定limit" :closable="false" type="warning" show-icon></el-alert>
                             <el-alert title="建议在所有的表名前加上库名限定，如dbname.tablename" :closable="false" type="warning" show-icon></el-alert>
-                            <el-alert title="查询字段中无.符号，可采用别名，否则数据无法渲染" :closable="false" type="warning" show-icon></el-alert>
+                            <el-alert title="查询字段中带.符号，可采用别名，否则数据渲染有问题" :closable="false" type="warning" show-icon></el-alert>
                         </div>
                     </div>
                     <div id="querysql-sql-button" class="querysql-sql-button">
-                        <el-button title="Exec" class="querysql-sql-button-exec" @click="handleSql('exec')" size="mini" circle>
+                        <el-button :loading="loading" title="Exec" class="querysql-sql-button-exec" @click="handleSql('exec')" size="mini" circle>
                             <icon-svg class="querysql-sql-button-exec-icon" iconClass="icon-zhihangzhong"></icon-svg>
                         </el-button>
                         <el-button title="Explain" class="query-sql-button-exec" @click="handleSql('explain')" size="mini" circle>
@@ -46,7 +46,7 @@
                         </el-button>
                     </div>
                     <div class="querysql-sql-results-table">
-                        <el-table size="small" :element-loading-text="loadingtext" v-loading="loading" style="width: 100%" highlight-current-row max-height="400" border :data="results.slice((currentPage-1)*pagesize,currentPage*pagesize)">
+                        <el-table size="small" :element-loading-text="loadingtext" v-loading="loading" style="width: 100%" highlight-current-row height="400" border :data="results.slice((currentPage-1)*pagesize,currentPage*pagesize)">
                             <el-table-column :width="val.length<5?((val.length+3)*13):val.length*13" align="center" v-for="(val, key) in col" :fixed="key===0?true:false" :key="key" :label="val" :prop="val">
                             </el-table-column>
                         </el-table>
@@ -151,12 +151,12 @@ export default {
         },
         handleSql(action) {
             if (this.selectinst > 0 && this.selectdb.length > 0) {
-                this.loading = true
                 let querysql_data = {}
                 querysql_data.instid = this.selectinst
                 querysql_data.dbname = this.selectdb
                 querysql_data.sql = this.$refs.sqleditor.code
                 if (action == 'exec') {
+                    this.loading = true
                     querysql_data.exectype = 'exec'
                     querysql_data.username = this.$store.getters.username 
                 }
@@ -165,7 +165,7 @@ export default {
                 }
                 execQuerySql(querysql_data).then((response) => {
                     if (response) {
-                        this.col = response.data.col
+                        this.col = response.data.col;
                         this.results = response.data.results
                         this.loading = false
                     }
@@ -259,7 +259,9 @@ export default {
 .querysql .el-table .cell{
     white-space: nowrap
 }
-.el-radio{
+.querysql .el-radio{
    margin-right: 0px!important; 
 }
+
+
 </style>

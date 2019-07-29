@@ -53,7 +53,96 @@ class UserAccessMySQL(models.Model):
     comment = models.CharField(max_length=64, blank=True, null=True, verbose_name=u"备注")
 
     class Meta:
-        verbose_name = u"MYSQL用户权限时间表"
+        verbose_name = u"用户访问MySQL权限表"
+        verbose_name_plural = verbose_name
+
+    def __unicode__(self):
+        return self.username
+
+class MongoDBInst(models.Model):
+    inst_name = models.CharField(max_length=128, blank=False, null=False, verbose_name=u"MongoDBInst名称")
+    inst_host = models.GenericIPAddressField(blank=False, null=False, verbose_name=u"MongoDBInstIP地址")
+    inst_port = models.PositiveIntegerField(blank=False, null=False, verbose_name=u"MongoDBInst端口")
+    manage_user = models.CharField(max_length=32, blank=True, null=False, verbose_name=u"MongoDBInst管理用户")
+    manage_userpwd = models.CharField(max_length=64, blank=True, null=False, verbose_name=u"MongoDBInst管理用户密码")
+    read_user = models.CharField(max_length=32, blank=True, null=False, verbose_name=u"MongoDBInst只读用户")
+    read_userpwd = models.CharField(max_length=32, blank=True, null=False, verbose_name=u"MongoDBInst只读用户密码")
+    role = models.CharField(choices=ROLE_CHOICE,blank=True,max_length=12, default='Master',verbose_name=u"是否启用")
+    services = models.CharField(max_length=255, blank=True, null=False, verbose_name=u"涉及服务")
+    version = models.CharField(max_length=32,blank=True,default='3.2.8',verbose_name=u"MongoDB版本")
+    is_enabled = models.CharField(choices=IS_ENABLED_CHOICE,max_length=12, default='ENABLED',verbose_name=u"是否启用")
+    create_time = models.DateTimeField( auto_now_add=True, verbose_name=u"创建时间")
+    update_time = models.DateTimeField(blank=True, auto_now=True, verbose_name=u"更新时间")
+    comment = models.CharField(max_length=64, blank=True, null=False, verbose_name=u"备注")
+    
+    class Meta:
+        verbose_name = u"MongoDB实例"
+        verbose_name_plural = verbose_name
+
+    def __unicode__(self):
+        return (self.inst_host + ':' + self.inst_port)
+
+class UserAccessMongoDB(models.Model):
+    username = models.CharField(max_length=50, blank=False,verbose_name=u"用户名")
+    mongodbinst = models.ForeignKey(MongoDBInst, blank=True, null=True, on_delete=models.CASCADE,verbose_name=u'MongoDB实例id', related_name="user_access_mongodbinst")
+    create_time = models.DateTimeField(auto_now_add=True, verbose_name=u"创建时间")
+    update_time = models.DateTimeField(blank=True, auto_now=True, verbose_name=u"更新时间")
+
+    STATUS_CHOICE = (
+        (0, u'已禁止'),
+        (1, u'申请中'),
+        (2, u'使用中'),
+        (3, u'已驳回')
+    )
+
+    status = models.PositiveSmallIntegerField(choices=STATUS_CHOICE, default=1, verbose_name=u"用户申请查询权限状态")
+    comment = models.CharField(max_length=64, blank=True, null=True, verbose_name=u"备注")
+
+    class Meta:
+        verbose_name = u"用户访问MongoDB权限表"
+        verbose_name_plural = verbose_name
+
+    def __unicode__(self):
+        return self.username
+
+class RedisInst(models.Model):
+    inst_name = models.CharField(max_length=128, blank=False, null=False, verbose_name=u"Redis实例")
+    inst_host = models.GenericIPAddressField(blank=True, null=True, verbose_name=u"Redis IP地址")
+    inst_port = models.PositiveIntegerField(blank=True, null=True, default=3306, verbose_name=u"Redis端口")
+    password = models.CharField(max_length=64, blank=False, null=False, verbose_name=u"Redis密码")
+    role = models.CharField(choices=ROLE_CHOICE,blank=True,max_length=12, default='Master',verbose_name=u"是否启用")
+    services = models.CharField(max_length=255, blank=True, null=False, verbose_name=u"涉及服务")
+    version = models.CharField(max_length=32,blank=True,default='3.2.0',verbose_name=u"Redis版本")
+    is_enabled = models.CharField(choices=IS_ENABLED_CHOICE,max_length=12, default='ENABLED',verbose_name=u"是否启用")
+    create_time = models.DateTimeField( auto_now_add=True, verbose_name=u"创建时间")
+    update_time = models.DateTimeField(blank=True, auto_now=True, verbose_name=u"更新时间")
+    comment = models.CharField(max_length=64, blank=True, null=False, verbose_name=u"备注")
+    
+    class Meta:
+        verbose_name = u"Redis实例"
+        verbose_name_plural = verbose_name
+
+    def __unicode__(self):
+        return self.inst_name
+
+class UserAccessRedis(models.Model):
+    username = models.CharField(max_length=50, blank=False,verbose_name=u"用户名")
+    redisinst = models.ForeignKey(RedisInst, blank=True, null=True, on_delete=models.CASCADE,verbose_name=u'Redis实例id', related_name="user_access_redisinst")
+    create_time = models.DateTimeField(auto_now_add=True, verbose_name=u"创建时间")
+    update_time = models.DateTimeField(blank=True, auto_now=True, verbose_name=u"更新时间")
+
+    STATUS_CHOICE = (
+        (0, u'已禁止'),
+        (1, u'申请中'),
+        (2, u'使用中'),
+        (3, u'已驳回')
+    )
+
+    status = models.PositiveSmallIntegerField(choices=STATUS_CHOICE, default=1, verbose_name=u"用户申请查询权限状态")
+    comment = models.CharField(max_length=64, blank=True, null=True, verbose_name=u"备注")
+
+    class Meta:
+        verbose_name = u"用户访问Redis权限表"
         verbose_name_plural = verbose_name
 
     def __unicode__(self):

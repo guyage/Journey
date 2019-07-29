@@ -43,7 +43,26 @@
             :visible.sync="dialogVisible"
             width="50%"
             :before-close="handleClose">
-            <h2 style="color:black;">此为测试环境平台!</h2>
+            <el-alert
+                title="1. 系统通过LDAP认证登陆 (即JIRA帐号)."
+                type="error"
+                :closable="false">
+            </el-alert>
+            <el-alert
+                title="2. 登陆后访问数据库需通过数据库权限申请."
+                type="error"
+                :closable="false">
+            </el-alert>
+            <el-alert
+                title="3. 增加SQL提示功能."
+                type="error"
+                :closable="false">
+            </el-alert>
+            <el-alert
+                title="4. 测试阶段，如有问题，联系管理员."
+                type="error"
+                :closable="false">
+            </el-alert>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">取 消</el-button>
                 <el-button type="primary" @click="dialogVisible = false">确 定</el-button>

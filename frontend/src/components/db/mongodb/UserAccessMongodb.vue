@@ -1,8 +1,8 @@
 <template>
-    <div id="useraccessmysql" class="useraccessmysql">
-        <div v-if="!isapply" class="useraccessmysql-list">
+    <div id="useraccessmongodb" class="useraccessmongodb">
+        <div v-if="!isapply" class="useraccessmongodb-list">
             <el-collapse v-model="activeNames">
-                <el-collapse-item title="MySQL权限" name="1">
+                <el-collapse-item title="MongoDB权限" name="1">
                     <div class="user-operation" style="padding: 0.8em 0em 1em;">
                         <el-button @click="applyData" style="float: left;" icon="el-icon-edit" size="small" type="primary">申请权限</el-button>
                         <el-input v-model="searchcontent" @keyup.enter.native="searchData" style="width: 200px;float: right;" size="small" placeholder="Search">
@@ -19,24 +19,24 @@
                 </el-collapse-item>
             </el-collapse> 
         </div>
-        <div v-if="isapply" class="useraccessmysql-apply">
+        <div v-if="isapply" class="useraccessmongodb-apply">
             <el-collapse v-model="activeNames">
-                <el-collapse-item title="申请MySQL权限" name="1">
+                <el-collapse-item title="申请MongoDB权限" name="1">
                     <div style="padding-top: 10px;">
-                        <el-form  ref="form" :model="form">
-                            <el-form-item label="申请用户：" label-width="150px">
+                        <el-form  ref="form" :model="form" :rules="rules">
+                            <el-form-item label="申请用户：" label-width="150px" prop="username">
                                 <el-input style="width: 300px; float: left;" v-model="form.username"></el-input>
                             </el-form-item>
-                            <el-form-item label="申请访问实例：" label-width="150px">
-                                <el-select style="width: 300px; float: left;" v-model="form.mysqlinst" @change="getInstDb($event)" placeholder="请选择MySQL实例">
+                            <el-form-item label="申请访问实例：" label-width="150px" prop="mongodbinst">
+                                <el-select style="width: 300px; float: left;" v-model="form.mongodbinst" placeholder="请选择MongoDB实例">
                                     <el-option v-for="(val,index) in instlist" :key="index" :label="val.inst" :value="val.id" ></el-option>
                                 </el-select>
                             </el-form-item>
-                            <el-form-item  label="申请访问数据库：" label-width="150px">
+                            <!-- <el-form-item  label="申请访问数据库：" label-width="150px">
                                 <el-checkbox-group style="float: left;" v-model="form.user_access_db">
                                     <el-checkbox v-for="(val,index) in instdb" :key="index" :label="val"></el-checkbox>
                                 </el-checkbox-group>
-                            </el-form-item>
+                            </el-form-item> -->
                             <el-form-item label="申请说明：" label-width="150px">
                                 <el-input style="width: 300px; float: left;" v-model="form.comment"></el-input>
                             </el-form-item>
@@ -56,10 +56,10 @@
 
 <script>
 import store from '@/store/store.js';
-import UserAccessTable from './UserAccessTable.vue';
-import { getUserAccessMysql,getMysqlInst,getMysqlMeta,editUserAccessMysql,delUserAccessMysql,addUserAccessMysql,searchUserAccessMysql } from '@/api/api.js';
+import UserAccessTable from '../mysql/UserAccessTable.vue';
+import { getUserAccessMongoDB,getMongoDBInst,execQueryMongodb,editUserAccessMongoDB,delUserAccessMongoDB,addUserAccessMongoDB,searchUserAccessMongoDB } from '@/api/api.js';
 export default {
-    name: "useraccessmysql",
+    name: "useraccessmongodb",
     components: {
         UserAccessTable,
     },
@@ -72,8 +72,7 @@ export default {
             table_columns: {
                 id: 'id',
                 username: '用户名',
-                mysqlinst: 'MySQL实例',
-                user_access_db: '访问数据库',
+                mongodbinst: 'MongoDB实例',
                 create_time: '申请时间',
                 status: '状态',
                 comment: '备注'
@@ -83,9 +82,16 @@ export default {
             instdb: [],
             form: {
                 username: '',
-                mysqlinst: '',
-                user_access_db: [],
+                mongodbinst: '',
                 comment: '',
+            },
+            rules: {
+                username: [
+                    { required: true, message: '请输入用户名', trigger: 'blur' }
+                ],
+                mongodbinst: [
+                    { required: true, message: '请选择MongoDB实例', trigger: 'change' }
+                ],
             },
             isapply: false,
         }
@@ -95,10 +101,9 @@ export default {
             this.isapply = true
         },
         handleApply() {
-            
             this.$refs['form'].validate((valid)=>{
                 if(valid){
-                    addUserAccessMysql(this.form).then((response) => {
+                    addUserAccessMongoDB(this.form).then((response) => {
                         if (response) {
                             this.$message.success('申请成功!');
                             this.getDataList()
@@ -115,7 +120,7 @@ export default {
             })
         },
         delData(id) {
-            delUserAccessMysql({id:id}).then((response) => {
+            delUserAccessMongoDB({id:id}).then((response) => {
                 // console.log(response);
                 this.$message.success('删除成功!');
             }).catch((error) => {
@@ -123,7 +128,7 @@ export default {
             })
         },
         editData (data) {
-            editUserAccessMysql(data).then((response) => {
+            editUserAccessMongoDB(data).then((response) => {
                 this.$message.success('处理成功!');
             }).catch((error) => {
                 console.log(error);
@@ -131,7 +136,7 @@ export default {
         },
         searchData() {
             if (this.searchcontent) {
-                searchUserAccessMysql({searchcontent:this.searchcontent}).then((response) => {
+                searchUserAccessMongoDB({searchcontent:this.searchcontent}).then((response) => {
                     this.table_data = response.data
                 }).catch((error) => {
                     console.log(error);
@@ -142,14 +147,16 @@ export default {
             }
         },
         getDataList() {
-            getUserAccessMysql({'username':store.getters.username}).then((response) => {
-                this.table_data = response.data
+            getUserAccessMongoDB({'username':store.getters.username}).then((response) => {
+                if (response) {
+                    this.table_data = response.data
+                }
             }).catch((error) => {
                 console.log(error);
             })
         },
-        getMysqlInst() {
-            getMysqlInst().then((response) => {
+        getInstList() {
+            getMongoDBInst().then((response) => {
                 if (response.data.length > 0) {
                     if (store.getters.userissuper) {
                         for (var i = 0; i < response.data.length;i++) {
@@ -168,27 +175,27 @@ export default {
                 console.log(error);
             })
         },
-        getInstDb (val) {
-            this.instdb = []
-            let req_data = {}
-            req_data.type = 'database'
-            req_data.instid = val
-            getMysqlMeta(req_data).then((response) => {
-                for (let i=0;i<response.data.results.length;i++) {
-                    this.instdb.push(response.data.results[i].table_schema)
-                }
-            }).catch((error) => {
-                console.log(error);
-            })
+        // getInstDb (val) {
+        //     this.instdb = []
+        //     let req_data = {}
+        //     req_data.exectype = 'table'
+        //     req_data.instid = val
+        //     execQueryMongodb(req_data).then((response) => {
+        //         for (let i=0;i<response.data.results.length;i++) {
+        //             this.instdb.push(response.data.results[i].table_schema)
+        //         }
+        //     }).catch((error) => {
+        //         console.log(error);
+        //     })
             
-        },
+        // },
         initUserApplyData() {
             this.form.username = store.getters.username
         },
     },
     mounted() {
         this.getDataList()
-        this.getMysqlInst()
+        this.getInstList()
         this.initUserApplyData()
     },
 
@@ -197,7 +204,7 @@ export default {
 
 
 <style>
-.useraccessmysql .el-collapse-item__header.is-active,.useraccessmysql .el-collapse-item__header{
+.useraccessmongodb .el-collapse-item__header.is-active,.useraccessmongodb .el-collapse-item__header{
     font-size: 16px;
     font-weight: bold;
     padding-left: 0.5em;
