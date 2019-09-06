@@ -1,21 +1,20 @@
 <template>
     <div id="querylimit" class="querylimit">
-        <el-collapse v-model="activeNames">
-            <el-collapse-item title="QueryLimit配置" name="1">
-                <div class="querylimit-list" style="padding: 0.8em 1em 1em;">
-                    <div class="querylimit-list-mysql" style="float:left;padding: 0.8em 0em 1em;">
-                        <el-tag  style="width:100px;">MySQL</el-tag>
-                        <el-input-number size="small" style="left:10px;rigth:10px;" v-model="mysqllimit" :step="100" :min="0" :max="1000" label="描述文字"></el-input-number>
-                        <el-button type="primary" size="small" style="margin-left:10px;" @click="setData('mysql')">修改</el-button>
-                    </div>
-                    <div class="querylimit-list-mongodb" style="float:left;clear: both;padding: 0.8em 0em 1em;">
-                        <el-tag style="width:100px;" >MongoDB</el-tag>
-                        <el-input-number size="small" style="left:10px;" v-model="mongodblimit" :step="10" :min="0" :max="500" label="描述文字"></el-input-number>
-                        <el-button type="primary" size="small" style="margin-left:10px;" @click="setData('mongodb')">修改</el-button>
-                    </div>
+        <el-row>
+            <el-divider content-position="left">QueryLimit</el-divider>
+            <div class="querylimit-list">
+                <div class="querylimit-list-mysql" style="float:left;padding: 0.8em 0em 1em;">
+                    <el-tag  style="width:100px;">MySQL</el-tag>
+                    <el-input-number size="small" style="left:10px;rigth:10px;" v-model="mysqllimit" :step="100" :min="0" :max="1000" label="描述文字"></el-input-number>
+                    <el-button type="primary" size="small" style="margin-left:10px;" @click="setData('mysql')">修改</el-button>
                 </div>
-            </el-collapse-item>
-        </el-collapse>
+                <div class="querylimit-list-mongodb" style="float:left;clear: both;padding: 0.8em 0em 1em;">
+                    <el-tag style="width:100px;" >MongoDB</el-tag>
+                    <el-input-number size="small" style="left:10px;" v-model="mongodblimit" :step="10" :min="0" :max="500" label="描述文字"></el-input-number>
+                    <el-button type="primary" size="small" style="margin-left:10px;" @click="setData('mongodb')">修改</el-button>
+                </div>
+            </div>
+        </el-row> 
     </div>
 </template>
 
@@ -25,7 +24,6 @@ export default {
     name: 'querylimit',
     data () {
         return {
-            activeNames: ['1'],
             mysqllimit: 0,
             mongodblimit: 0,
             mysqllimitid: 0,

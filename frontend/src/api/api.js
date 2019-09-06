@@ -8,65 +8,32 @@ export const LdapAuth = params => { return request.post('/ldapauth',params) };
 //Logout
 export const Logout = () => { return request.get('/logout') };
 
-////全局配置
-// 邮件配置
-export const getMailConfig = () => { return request.get('/mailconfig/')};
-export const setMailConfig = params => {
-    if ('id' in params) {
-        return request.patch('/mailconfig/'+params.id+'/',params); 
-    }
-    else {
-        return request.post('/mailconfig/',params);
-    }
-};
-//测试邮件功能
-export const execMailTest = params => { return request.post('/mailtest/',params) };
-// QueryLimit配置
-export const getQueryLimit = () => { return request.get('/querylimit/')};
-export const setQueryLimit = params => {
-    if (params.id >0) {
-        return request.patch('/querylimit/'+params.id+'/',params); 
-    }
-    else {
-        return request.post('/querylimit/',params);
-    }
-};
-// 导出白名单
-export const getDumpWhiteList = () => { return request.get('/dumpwhitelist/')};
-export const delDumpWhiteList = params => { return request.delete('/dumpwhitelist/'+params.id+'/')};
-export const addDumpWhiteList = params => { return request.post('/dumpwhitelist/',params)};
-export const editDumpWhiteList = params => { return request.patch('/dumpwhitelist/'+params.id+'/',params)};
-export const searchDumpWhiteList = params => { return request.get('/dumpwhitelist/'+'?search='+params.searchcontent) };
-
-////用户管理
-//用户组
-export const getUserGroupList = params => {
+////---------------------user文件夹组件api
+export const getMenus = params => {
     if (params) {
-        return request.get('/usergroup/'+params.id+'/');
+        return request.get('/menu/'+params.id+'/');
     }
     else {
-        return request.get('/usergroup/');
+        return request.get('/menu/');
     }
 };
-export const searchUserGroup = params => { return request.get('/usergroup/'+'?search='+params.searchcontent) };
-export const addUserGroup = params => { return request.post('/usergroup/',params) };
-export const delUserGroup = params => { return request.delete('/usergroup/'+params.id+'/') };
-export const editUserGroup = params => { return request.patch('/usergroup/'+params.id+'/',params) };
-//权限组
-export const getPermissionsGroupList = params => {
+export const searchMenus = params => { return request.get('/menu/'+'?search='+params.searchcontent) };
+export const addMenus = params => { return request.post('/menu/',params)};
+export const editMenus = params => { return request.patch('/menu/'+params.id+'/',params)};
+// role
+export const getRole = params => {
     if (params) {
-        return request.get('/permissionsgroup/'+params.id+'/');
+        return request.get('/role/'+params.id+'/');
     }
     else {
-        return request.get('/permissionsgroup/');
+        return request.get('/role/');
     }
 };
-export const searchPermissionsGroup = params => { return request.get('/permissionsgroup/'+'?search='+params.searchcontent); };
-export const addPermissionsGroup = params => { return request.post('/permissionsgroup/',params); };
-export const delPermissionsGroup = params => { return request.delete('/permissionsgroup/'+params.id+'/'); };
-export const editPermissionsGroup = params => { return request.patch('/permissionsgroup/'+params.id+'/',params); };
+export const addRole = params => { return request.post('/role/',params)};
+export const editRole = params => { return request.patch('/role/'+params.id+'/',params)};
+// user
 //用户
-export const getUserList = params => {
+export const getUser = params => {
     if (params) {
         return request.get('/user/'+params.id+'/');
     }
@@ -79,7 +46,21 @@ export const addUser = params => { return request.post('/user/',params) };
 export const delUser = params => { return request.delete('/user/'+params.id+'/') };
 export const editUser = params => { return request.patch('/user/'+params.id+'/',params) };
 
-////db
+// 用户组
+export const getUserGroup = params => {
+    if (params) {
+        return request.get('/usergroup/'+params.id+'/');
+    }
+    else {
+        return request.get('/usergroup/');
+    }
+};
+export const searchUserGroup = params => { return request.get('/usergroup/'+'?search='+params.searchcontent) };
+export const addUserGroup = params => { return request.post('/usergroup/',params) };
+export const delUserGroup = params => { return request.delete('/usergroup/'+params.id+'/') };
+export const editUserGroup = params => { return request.patch('/usergroup/'+params.id+'/',params) };
+
+////---------------------db文件下api
 //mysqlinst
 export const getMysqlInst = params => {
     if (params) {
@@ -153,8 +134,7 @@ export const getMysqlMeta = params => { return request.post('/mysqlmeta/',params
 export const execMysqlUser = params =>  { return request.post('/mysqluser/',params); };
 ////mysqlstatus
 export const getMysqlStatus = params =>  { return request.post('/mysqlstatus/',params); };
-
-////query
+////---------------------query文件下api
 //querysql
 export const execQuerySql = params =>  { return request.post('/querysql/',params); };
 //querymongodb
@@ -162,7 +142,70 @@ export const execQueryMongodb = params =>  { return request.post('/querymongodb/
 //queryredis
 export const execQueryRedis = params =>  { return request.post('/queryredis/',params); };
 
-////workflow
+////---------------------conf文件下api
+// 邮件配置
+export const getMailConfig = () => { return request.get('/mailconfig/')};
+export const setMailConfig = params => {
+    if ('id' in params) {
+        return request.patch('/mailconfig/'+params.id+'/',params); 
+    }
+    else {
+        return request.post('/mailconfig/',params);
+    }
+};
+//测试邮件功能
+export const execMailTest = params => { return request.post('/mailtest/',params) };
+// QueryLimit配置
+export const getQueryLimit = () => { return request.get('/querylimit/')};
+export const setQueryLimit = params => {
+    if (params.id >0) {
+        return request.patch('/querylimit/'+params.id+'/',params); 
+    }
+    else {
+        return request.post('/querylimit/',params);
+    }
+};
+// 导出白名单
+export const getDumpWhiteList = () => { return request.get('/dumpwhitelist/')};
+export const delDumpWhiteList = params => { return request.delete('/dumpwhitelist/'+params.id+'/');};
+export const addDumpWhiteList = params => { return request.post('/dumpwhitelist/',params);};
+export const editDumpWhiteList = params => { return request.patch('/dumpwhitelist/'+params.id+'/',params);};
+export const searchDumpWhiteList = params => { return request.get('/dumpwhitelist/'+'?search='+params.searchcontent);};
+
+//// workflow
+// workordertype
+export const getWorkOrderType = params => {
+    if (params) {
+        return request.get('/workordertype/'+params.id+'/');
+    }
+    else {
+        return request.get('/workordertype/');
+    }
+};
+export const addWorkOrderType = params => { return request.post('/workordertype/',params);};
+export const editWorkOrderType = params => { return request.patch('/workordertype/'+params.id+'/',params);};
+export const delWorkOrderType = params => { return request.delete('/workordertype/'+params.id+'/');};
+//approvalgroup
+export const getApprovalGroup = params => {
+    if (params) {
+        return request.get('/approvalgroup/'+params.id+'/');
+    }
+    else {
+        return request.get('/approvalgroup/');
+    }
+};
+export const addApprovalGroup = params => { return request.post('/approvalgroup/',params);};
+export const editApprovalGroup = params => { return request.patch('/approvalgroup/'+params.id+'/',params);};
+// workorderstep
+export const getWorkOrderStep = params => {
+    if (params) {
+        return request.get('/workorderstep/'+params.id+'/');
+    }
+    else {
+        return request.get('/workorderstep/');
+    }
+};
+export const addWorkOrderStep = params => { return request.post('/workorderstep/',params);};
 //workorder
 export const getWorkOrder = params => {
     if (params) {
@@ -173,16 +216,12 @@ export const getWorkOrder = params => {
     }
 };
 export const addWorkOrder = params => { return request.post('/workorder/',params); };
-export const editWorkOrder = params => { return request.patch('/workorder/'+params.id+'/',params); };
-export const searchWorkOrder = params => { return request.get('/workorder/'+'?search='+params.searchcontent); };
-//workorderstep
-export const getWorkOrderStep = params => { return request.post('/workorderstep/',params); };
-export const ChangeWorkOrderState = params => { return request.post('/changeworkorderstate/',params); };
-//ToDoWorkOrder
-export const ToDoWorkOrder = params => { return request.post('/todoworkorder/',params); };
-export const WorkOrderDetail = params => { return request.post('/workorderdetail/',params); };
-
+export const editWorkOrder = params => { return request.patch('/workorder/'+params.id+'/',params);};
+//workorderdetail
+export const getWorkOrderDetail = params => { return request.post('/workorderdetail/',params); };
 //gitlabinfo
 export const getGitLabInfo = params =>  { return request.post('/gitlabinfo/',params); };
-
-
+//myworkorder
+export const getMyWorkOrder = () =>  { return request.get('/myworkorder/'); };
+//todoworkorder
+export const getToDoWorkOrder = () =>  { return request.get('/todoworkorder/'); };

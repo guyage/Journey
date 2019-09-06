@@ -21,3 +21,5 @@ class DumpWhiteListSerializer(serializers.ModelSerializer):
         model = DumpWhiteList
         fields = ('id','white_user','white_table')
 
+
+

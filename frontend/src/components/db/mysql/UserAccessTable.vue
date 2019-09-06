@@ -13,13 +13,13 @@
                 <template slot-scope="scope"><span>{{scope.$index+(currentPage - 1) * pagesize + 1}} </span></template>
             </el-table-column>    
             <!-- <el-table-column align="center" v-for="(val, key, index) in TableColumn" v-if=" key != 'id'" :key="index" :label="val" :prop="key" ></el-table-column> -->
-            <el-table-column align="center" :label="TableColumn.username" prop="username" ></el-table-column>
+            <el-table-column align="center" :label="TableColumn.username" width="100" prop="username" ></el-table-column>
             <el-table-column v-if="TableColumn.mysqlinst" align="center" :label="TableColumn.mysqlinst" prop="mysqlinst" ></el-table-column>
             <el-table-column v-if="TableColumn.mongodbinst" align="center" :label="TableColumn.mongodbinst" prop="mongodbinst" ></el-table-column>
             <el-table-column v-if="TableColumn.redisinst" align="center" :label="TableColumn.redisinst" prop="redisinst" ></el-table-column>
             <el-table-column v-if="TableColumn.mysqlinst" align="center" :label="TableColumn.user_access_db" prop="user_access_db" ></el-table-column>
             <el-table-column align="center" :label="TableColumn.create_time" prop="create_time" ></el-table-column>
-            <el-table-column align="center" :label="TableColumn.status" prop="status" >
+            <el-table-column align="center" :label="TableColumn.status"  width="100" prop="status" >
                 <template slot-scope="scope">
                     <el-tag size="small" type="danger" v-if="scope.row.status == 0">已禁止</el-tag>
                     <el-tag size="small" v-else-if="scope.row.status == 1">申请中</el-tag>

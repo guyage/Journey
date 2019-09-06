@@ -8,9 +8,12 @@ import json,datetime,time
 from db.models import *
 from conf.models import *
 import re
+from user.permissions import CustomerPremission
 
 class QuerySqlViewSet(APIView):
-
+    # 权限相关
+    permission_classes = [CustomerPremission,]
+    module_perms = ['query:querysql']
     def post(self,request,format=None):
         try:
             limitinfo = QueryLimit.objects.get(Q(query_type='mysql'))
@@ -87,6 +90,9 @@ class QuerySqlViewSet(APIView):
         return Response(result)
 
 class QueryMongodbViewSet(APIView):
+    # 权限相关
+    permission_classes = [CustomerPremission,]
+    module_perms = ['query:querymongodb']
     def post(self,request,format=None):
         try:
             limitinfo = QueryLimit.objects.get(Q(query_type='mongodb'))
@@ -136,6 +142,9 @@ class QueryMongodbViewSet(APIView):
         return Response(result)
 
 class QueryRedisViewSet(APIView):
+    # 权限相关
+    permission_classes = [CustomerPremission,]
+    module_perms = ['query:queryredis']
     def post(self,request,format=None):
         dbapi = db_api()
         exectype = request.data['exectype']

@@ -1,30 +1,31 @@
 <template>
     <div id="mysqlinst" class="mysqlinst">
-        <el-collapse v-model="activeNames">
-            <el-collapse-item title="MySQL实例" name="1">
-                <div class="mysqlinst-operation" style="padding: 0.8em 0em 1em;">
-                    <el-button @click="addData" style="float: left;" icon="el-icon-edit" size="small" type="primary">添加</el-button>
-                    <el-input v-model="searchcontent" @keyup.enter.native="searchData" style="width: 200px;float: right;" size="small" placeholder="Search">
-                        <el-button @click="searchData" slot="append" icon="el-icon-search"></el-button>
-                    </el-input>
-                </div>
-                <br>
-                <MysqlInstTable
-                ref="datatable"
-                :TableData="table_data"
-                :TableColumn="table_columns"
-                :delData="delData"
-                :editData="editData">
-                </MysqlInstTable>
-                <MysqlInstDialog
-                ref="datadialog"
-                :show.sync="show"
-                :form="form"
-                :rules="rules"
-                :saveData="saveData">
-                </MysqlInstDialog>
-            </el-collapse-item>
-        </el-collapse> 
+        <el-row style="padding-bottom:5px;">
+            <div class="mysqlinst-operation">
+                <el-button @click="addData" style="float: left;" icon="el-icon-edit" size="small" type="primary">添加</el-button>
+                <el-input v-model="searchcontent" @keyup.enter.native="searchData" style="width: 200px;float: right;" size="small" placeholder="Search">
+                    <el-button @click="searchData" slot="append" icon="el-icon-search"></el-button>
+                </el-input>
+            </div>
+        </el-row>
+        <el-row>
+            <MysqlInstTable
+            ref="datatable"
+            :TableData="table_data"
+            :TableColumn="table_columns"
+            :delData="delData"
+            :editData="editData">
+            </MysqlInstTable>
+        </el-row>
+        <el-row>
+            <MysqlInstDialog
+            ref="datadialog"
+            :show.sync="show"
+            :form="form"
+            :rules="rules"
+            :saveData="saveData">
+            </MysqlInstDialog>
+        </el-row> 
     </div>
 </template>
 
@@ -42,7 +43,6 @@ export default {
         return {
             //控制弹出框
             show: false,
-            activeNames: ['1'],
             searchcontent: '',
             table_data: [],
             table_columns: {

@@ -11,6 +11,7 @@ let cancel ,promiseArr = {}
 const CancelToken = axios.CancelToken;
 
 const baseurl = process.env.baseUrl
+
 // axios 全局参数
 axios.defaults.baseURL = baseurl;
 

@@ -1,49 +1,47 @@
 <template>
     <div id="querymongodb" class="querymongodb">
-        <el-collapse v-model="activeNames">
-            <el-collapse-item title="QueryMongoDB" name="1">
-                <div id="querymongodb-sql" class="querymongodb-sql" style="padding: 0.8em 0.2em 1em;">
-                    <div id="querymongodb-db" class="querymongodb-db">
-                    <el-input
-                    class="dbmeta-filterinput"
-                    placeholder="输入关键字进行过滤"
-                    v-model="filterText">
-                    </el-input>
-                    <el-tree
-                    class="filter-tree"
-                    ref="tree"
-                    :data="treedata"
-                    lazy
-                    accordion
-                    :load="loadTreeData"
-                    highlight-current
-                    :props="treeprops"
-                    :filter-node-method="filterNode"
-                    @node-click="handleNodeClick">
-                    </el-tree>
+        <el-row>
+            <div id="querymongodb-sql" class="querymongodb-sql">
+                <div id="querymongodb-db" class="querymongodb-db">
+                <el-input
+                class="dbmeta-filterinput"
+                placeholder="输入关键字进行过滤"
+                v-model="filterText">
+                </el-input>
+                <el-tree
+                class="filter-tree"
+                ref="tree"
+                :data="treedata"
+                lazy
+                accordion
+                :load="loadTreeData"
+                highlight-current
+                :props="treeprops"
+                :filter-node-method="filterNode"
+                @node-click="handleNodeClick">
+                </el-tree>
+                </div>
+                <div class="querymongodb-input-results">
+                    <div class="querymongodb-input-db">
+                        <span>当前选中db：</span>
+                        <span>{{db}}</span>
                     </div>
-                    <div class="querymongodb-input-results">
-                        <div class="querymongodb-input-db">
-                            <span>当前选中db：</span>
-                            <span>{{db}}</span>
-                        </div>
-                        <div class="querymongodb-input" style="padding: 2em 0em 0em;">
-                            <el-input  v-model="sql" style="max-width:80%;float:left;" placeholder="输入MongoDB查询">
-                            </el-input>
-                            <el-button :loading="loading" type="primary" @click="execQuery">查询</el-button>
-                        </div>
-                        <div class="querymongodb-results">
-                            <label v-for="(item, index) in results" :key="index">
-                                <p class="querymongodb-results-index">/* {{index + 1}} */</p>
-                                <pre class="querymongodb-results-content">{{JSON.stringify(JSON.parse(item.replace(/\s*/g,"")), null,4)}}</pre>
-                                <br>
-                            </label>
-                            <!-- <pre v-for="(item, index) in results" :key="index">{{JSON.stringify(JSON.parse(item.replace(/\s*/g,"")), null,4)}}</pre>  -->
-                        </div>
+                    <div class="querymongodb-input" style="padding: 2em 0em 0em;">
+                        <el-input  v-model="sql" style="max-width:80%;float:left;" placeholder="输入MongoDB查询">
+                        </el-input>
+                        <el-button :loading="loading" type="primary" @click="execQuery">查询</el-button>
+                    </div>
+                    <div class="querymongodb-results">
+                        <label v-for="(item, index) in results" :key="index">
+                            <p class="querymongodb-results-index">/* {{index + 1}} */</p>
+                            <pre class="querymongodb-results-content">{{JSON.stringify(JSON.parse(item.replace(/\s*/g,"")), null,4)}}</pre>
+                            <br>
+                        </label>
+                        <!-- <pre v-for="(item, index) in results" :key="index">{{JSON.stringify(JSON.parse(item.replace(/\s*/g,"")), null,4)}}</pre>  -->
                     </div>
                 </div>
-            </el-collapse-item>
-        </el-collapse>
+            </div>
+        </el-row>
     </div>
 </template>
 

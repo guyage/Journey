@@ -1,193 +1,185 @@
 <template>
     <div class="workorderdetail">
-        <el-collapse v-model="activeNames">
-            <el-collapse-item title="工单明细" name="1">
-                <el-divider content-position="left">{{workordernum}}</el-divider>
-                <div style="width:100%;" class="demo-table-expand">
-                    <el-form label-width="100px">
-                        <el-form-item style="float:left;" v-for="(val, key, index) in form_columns" v-if="key != 'status'" :key="index" :label="val+':'">
-                            <span>{{workorderdata[key]}}</span>
-                        </el-form-item>
-                        <el-form-item style="float:left;" v-for="(val, key, index) in form_columns" v-if="key == 'status'" :key="index+20" :label="val+':'">
-                            <el-tag size="small" type="danger" v-if="workorderdata[key] == -1">已失败</el-tag>
-                            <el-tag size="small" type="danger" v-else-if="workorderdata[key] == 0">已终止</el-tag>
-                            <el-tag size="small" v-else-if="workorderdata[key] == 1">申请中</el-tag>
-                            <el-tag size="small" type="success" v-else-if="workorderdata[key] == 2">已同意</el-tag>
-                            <el-tag size="small" type="success" v-else-if="workorderdata[key] == 3">已完成</el-tag>
-                            <el-tag size="small" type="danger" v-else="workorderdata[key] == 4">已驳回</el-tag>
-                        </el-form-item>
-                        <el-form-item v-if="workorderdata['order_type'] == 'git'" style="float:left;" v-for="(val, key, index) in git_columns" :key="index+10" :label="val+':'">
-                            <span v-if="key != 'git_project' && key != 'git_permission'">{{JSON.parse(workorderdata['content'])[key]}}</span>
-                            <span v-else-if="key == 'git_project'">{{JSON.parse(workorderdata['content'])[key]}}</span>
-                            <span v-else-if="JSON.parse(workorderdata['content'])[key] == 'None'">移除权限</span>
-                            <span v-else-if="JSON.parse(workorderdata['content'])[key] == 'Developer'">读写</span>
-                            <span v-else-if="JSON.parse(workorderdata['content'])[key] == 'Reporter'">只读</span>
-                        </el-form-item>
-                    </el-form>
-                    <div style="padding: 10px 10px 10px 10px;">
-                        <el-alert :closable="false" title="工单流" type="info" show-icon></el-alert>
-                        <div>
-                            <el-steps style="padding: 10px 10px 10px 10px;" :active="step" finish-status="success">
-                            <el-step title="开始" :description="step1_description"></el-step>
-                            <el-step title="审核" :description="step2_description"></el-step>
-                            <el-step title="完成" :description="step3_description"></el-step>
-                            </el-steps>
-                        </div>
-                    </div>
-                    <div v-if="user_permissions.indexOf(workorderdata['operation_group']) > -1" style="padding: 10px 10px 10px 10px;">
-                        <el-alert :closable="false" title="操作" type="info" show-icon></el-alert>
-                        <div style="padding: 10px 10px 10px 10px;">
-                            <el-button @click="handleAction('agree')" style="float:left;" size="small" type="primary">同意</el-button>
-                            <el-button @click="handleAction('reject')" style="float:left;" size="small" type="danger">驳回</el-button>
-                        </div>
-                    </div>
-                </div>
-            </el-collapse-item>
-        </el-collapse>
+        <el-row>
+            <el-divider content-position="left">{{workorderno}}</el-divider>
+        </el-row>
+        <el-row>
+            <el-col style="text-align:left;">
+                <el-form size="mini" label-width="100">
+                    <el-form-item label="主题:">
+                        <span>{{workorderdata['title']}}</span>
+                    </el-form-item>
+                    <el-form-item label="状态:">
+                        <el-tag size="small" type="danger" v-if="workorderdata['status'] == -1">已失败</el-tag>
+                            <el-tag size="small" type="danger" v-else-if="workorderdata['status'] == 0">已终止</el-tag>
+                            <el-tag size="small" v-else-if="workorderdata['status'] == 1">申批中</el-tag>
+                            <el-tag size="small" type="success" v-else-if="workorderdata['status'] == 2">已同意</el-tag>
+                            <el-tag size="small" type="success" v-else-if="workorderdata['status'] == 3">已完成</el-tag>
+                            <el-tag size="small" type="danger" v-else="workorderdata['status'] == 4">已驳回</el-tag>
+                    </el-form-item>
+                    <el-form-item label="申请人:">
+                        <span>{{workorderdata['creator']}}</span>
+                    </el-form-item>
+                    <el-form-item v-for="(val, key, index) in content" :key="index" :label="key+':'">
+                        <span>{{val}}</span>
+                    </el-form-item>
+                </el-form>
+            </el-col>
+        </el-row>
+        <el-row style="margin-top:10px;">
+            <el-alert :closable="false" title="工单流程" type="info" show-icon></el-alert>
+            <el-steps style="text-align: left;margin-top:10px;" :active="workorder_current_state" finish-status="success">
+                <el-step v-for="(val,index) in ordertypesteps"
+                v-if="val.step_name == 'start'"
+                :key="index"
+                title="开始" 
+                :description="val.step_info">
+                </el-step>
+                <el-step v-for="(val,index) in ordertypesteps"
+                v-if="val.step_name != 'finsh' && val.step_name != 'start'"
+                :key="index" 
+                :title="val.step_name" 
+                :description="val.step_info?val.step_info:val.approver_group_name">
+                </el-step>
+                <el-step v-for="(val,index) in ordertypesteps"
+                v-if="val.step_name == 'finsh'"
+                :key="index" 
+                title="完成" 
+                :description="val.step_info?val.step_info:'系统处理 [成功] 时间'">
+                </el-step>
+            </el-steps>
+        </el-row>
+        <el-row v-if="approver_group_hasuser.indexOf(username) > -1" style="margin-top:10px;">
+            <el-alert :closable="false" title="操作" type="info" show-icon></el-alert>
+            <div style="margin-top:10px;">
+                <el-button :loading="loading" @click="handleAction('agree')" style="float:left;" size="small" type="primary">同意</el-button>
+                <el-button :loading="loading" @click="handleAction('reject')" style="float:left;" size="small" type="danger">驳回</el-button>
+            </div>
+        </el-row>
     </div>
 </template>
 
 <script>
 import moment from 'moment';
 import store from '@/store/store.js';
-import { WorkOrderDetail,getWorkOrderStep,ChangeWorkOrderState } from '@/api/api.js';
+import { getWorkOrder,getWorkOrderType,editWorkOrder,getApprovalGroup } from '@/api/api.js';
 export default {
     // name: 'workorderdetail',
     data() {
         return {
             loading: false,
-            activeNames: ['1'],
-            workordernum: '',
-            form_columns: {
-                title: '主题',
-                order_type: '工单类型',
-                status: '工单状态',
-                creator: '申请人',
-                // operator: '操作人',
-                // create_time: '创建时间',
-                // update_time: '更新时间',
-            },
-            user_permissions: [],
             username: '',
-            git_columns: {
-                git_user: 'Git账户',
-                git_project: 'Git项目',
-                git_permission: 'Git权限',
-
-            },
+            workorderno: '',
+            workorderid: '',
             workorderdata: {},
-            workorderid:0,
-            comment: '',
-            step: 1,
-            step1_description: '',
-            step2_description: '',
-            step3_description: '',
+            content: {},
+            ordertypesteps: [],
+            workorderstate: [],
+            workorder_current_state: 0,
+            approver_group_id: '',
+            approver_group_hasuser: [],
         }
     },
     methods: {
         handleAction(action) {
             this.loading = true
             let change_data = {};
-            change_data.workorderid = this.workorderid
-            change_data.operator = this.username
+            change_data.id = this.workorderid
+            change_data.operator = store.getters.username
             if (action == 'agree') {
-                change_data.changetype = 'agree'
+                change_data.status = 2
             }
             else if (action == 'reject') {
-                change_data.changetype = 'reject'
+                change_data.status = 4
             }
-            ChangeWorkOrderState(change_data).then((response) => {
+            editWorkOrder(change_data).then((response) => {
                 this.getWorkOrderDetail()
+                this.$message.success('处理成功!');
                 this.loading = false
             }).catch((error) => {
                 console.log(error);
+                this.$message.error('处理失败!');
                 this.loading = false
-            })
-        },
-        getWorkOrderDetail () {
-            this.workordernum = this.$route.params.workordernum
-            this.workorderid = this.workordernum.split('-')[1]
-            this.getWorkOrderState({'workorderid':this.workorderid})
-            WorkOrderDetail({'workorderid':this.workorderid}).then((response) => {
-                this.workorderdata = response.data.results
-            }).catch((error) => {
-                console.log(error);
-            })
-        },
-        getWorkOrderState(workorderid) {
-            getWorkOrderStep(workorderid).then((response) => {
-                this.step = response.data.steps
-                for (let i =0;i<this.step;i++) {
-                    let dname = 'step'+(i+1)+'_description'
-                    let operator = response.data.results[i].operator
-                    let create_time = response.data.results[i].create_time
-                    let status = response.data.results[i].step
-                    if (status == 2) {
-                        this.step2_description = operator + ' [同意] ' +this.dateFormate(create_time)
-                    }
-                    else if (status == 4) {
-                        this.step2_description = operator + ' [驳回] ' +this.dateFormate(create_time)
-                    }
-                    else if (status == 1) {
-                        this.step1_description = operator + ' [提交] ' + this.dateFormate(create_time)
-                    }
-                    else if (status == 3) {
-                        this.step3_description = operator + ' [完成] ' + this.dateFormate(create_time)
-                    }
-                    else if (status == -1) {
-                        this.step3_description = operator + ' [失败] ' + this.dateFormate(create_time)
-                    }
-                }
-            }).catch((error) => {
-                console.log(error);
             })
         },
         dateFormate(date) {
             return moment(date).format("YYYY-MM-DD HH:mm:ss");
-        }
+        },
+        getApproverGroupUsers(step_id) {
+            this.approver_group_hasuser = []
+            for (let i=0;i<this.ordertypesteps.length;i++) {
+                if (this.ordertypesteps[i].step_id == step_id) {
+                    if (this.ordertypesteps[i].approver_group_id) {
+                        this.approver_group_id =  this.ordertypesteps[i].approver_group_id
+                        getApprovalGroup({'id':this.approver_group_id}).then((response) => {
+                            this.approver_group_hasuser = response.data.hasusername
+                        })
+                    }
+                }
+            }
+        },
+        getWorkOrderDetail() {
+            this.workorderno = this.$route.params.workorderno
+            this.workorderid = this.workorderno.split('-')[1]
+            getWorkOrder({'id':this.workorderid}).then((response) => {
+                if (response.data.ordertype) {
+                    this.workorderdata = response.data
+                    this.workorderstate = response.data.workorderstate
+                    this.content = JSON.parse(response.data.content)
+                    this.getWorkOrderTypeInfo(response.data.ordertype)
+                }
+            })
+        },
+        getWorkOrderTypeInfo(ordertype_id) {
+            this.ordertypesteps = []
+            getWorkOrderType({'id':ordertype_id}).then((response) => {
+                for (let i=0;i<response.data.hasstep.length;i++) {
+                    this.ordertypesteps.push(response.data.hasstep[i])
+                }
+                this.getWorkOrderState(this.workorderstate,this.ordertypesteps)
+            }).catch((error) => {
+                console.log(error);         
+            })
+        },
+        getWorkOrderState(workorderstate,ordertypesteps) {
+            this.workorder_current_state = workorderstate.length
+            this.getApproverGroupUsers(this.workorder_current_state+1)
+            for (let i=0;i<workorderstate.length;i++) {
+                if (workorderstate[i].action == 'start') {
+                    ordertypesteps[i].step_info = workorderstate[i].operator + ' [提交] ' + this.dateFormate(workorderstate[i].update_time)
+                }
+                else if (workorderstate[i].action == 'finsh') {
+                    ordertypesteps[i].step_info = workorderstate[i].operator + ' [完成] ' + this.dateFormate(workorderstate[i].update_time)
+                }
+                else {
+                    ordertypesteps[i].step_info = workorderstate[i].operator + ' [同意] ' + this.dateFormate(workorderstate[i].update_time)
+                }
+                
+            }
+        },
     },
-    mounted () {
+    mounted() {
         this.getWorkOrderDetail()
-        let userpermissionsgroup = store.getters.userpermissionsgroup
         this.username = store.getters.username
-        if (typeof(userpermissionsgroup) == 'string') {
-            this.user_permissions = userpermissionsgroup.split(',')
-        }
-        else {
-            this.user_permissions = userpermissionsgroup
-        }
     },
-
 }
 </script>
 
 <style>
-.workorderdetail .el-collapse-item__header.is-active,.workorderdetail .el-collapse-item__header{
-    font-size: 16px;
-    font-weight: bold;
-    padding-left: 0.5em;
-    border-bottom: 1px solid #dcdfe6;
-}
 .workorderdetail .el-table__expanded-cell[class*=cell]{
     padding: 5px 62px;
 }
-.workorderdetail .demo-table-expand {
-    font-size: 0;
-}
-.workorderdetail .demo-table-expand label {
+.workorderdetail label {
     /* width: 100px; */
     font-size: 12px;
     color: #99a9bf;
 }
-.workorderdetail .demo-table-expand .el-form-item {
+.workorderdetail .el-form-item {
     margin-right: 0;
     margin-bottom: 0;
     width: 100%;
 }
 .workorderdetail .el-form-item__content{
-    text-align: left;
-}
-.workorderdetail .el-step__head{
     text-align: left;
 }
 </style>

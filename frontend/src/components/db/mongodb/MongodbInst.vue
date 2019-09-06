@@ -1,30 +1,31 @@
 <template>
     <div id="mongodbinst" class="mongodbinst">
-        <el-collapse v-model="activeNames">
-            <el-collapse-item title="MongoDB实例" name="1">
-                <div class="mongodbinst-operation" style="padding: 0.8em 0em 1em;">
-                    <el-button @click="addData" style="float: left;" icon="el-icon-edit" size="small" type="primary">添加</el-button>
-                    <el-input v-model="searchcontent" @keyup.enter.native="searchData" style="width: 200px;float: right;" size="small" placeholder="Search">
-                        <el-button @click="searchData" slot="append" icon="el-icon-search"></el-button>
-                    </el-input>
-                </div>
-                <br>
-                <MongodbInstTable
-                ref="datatable"
-                :TableData="table_data"
-                :TableColumn="table_columns"
-                :delData="delData"
-                :editData="editData">
-                </MongodbInstTable>
-                <MongodbInstDialog
-                ref="datadialog"
-                :show.sync="show"
-                :form="form"
-                :rules="rules"
-                :saveData="saveData">
-                </MongodbInstDialog>
-            </el-collapse-item>
-        </el-collapse> 
+        <el-row style="padding-bottom:5px;">
+            <div class="mongodbinst-operation">
+                <el-button @click="addData" style="float: left;" icon="el-icon-edit" size="small" type="primary">添加</el-button>
+                <el-input v-model="searchcontent" @keyup.enter.native="searchData" style="width: 200px;float: right;" size="small" placeholder="Search">
+                    <el-button @click="searchData" slot="append" icon="el-icon-search"></el-button>
+                </el-input>
+            </div>
+        </el-row>
+        <el-row>
+            <MongodbInstTable
+            ref="datatable"
+            :TableData="table_data"
+            :TableColumn="table_columns"
+            :delData="delData"
+            :editData="editData">
+            </MongodbInstTable>
+        </el-row>   
+        <el-row>
+            <MongodbInstDialog
+            ref="datadialog"
+            :show.sync="show"
+            :form="form"
+            :rules="rules"
+            :saveData="saveData">
+            </MongodbInstDialog>
+        </el-row>
     </div>
 </template>
 
@@ -42,7 +43,6 @@ export default {
         return {
             //控制弹出框
             show: false,
-            activeNames: ['1'],
             searchcontent: '',
             table_data: [],
             table_columns: {

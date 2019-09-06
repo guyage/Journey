@@ -1,20 +1,15 @@
 <template>
-    <div class="error500">
+    <div class="error_404">
         404
     </div>
 </template>
 
 <script>
 export default {
-    methods: {
-        backPage () {
-            this.$router.go(-1);
-        },
-        goHome () {
-            this.$router.push({
-                name: 'home'
-            });
-        }
-    }
-};
+    
+}
 </script>
+
+<style>
+
+</style>

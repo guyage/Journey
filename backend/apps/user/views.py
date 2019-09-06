@@ -2,11 +2,17 @@ from django.shortcuts import render
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework import viewsets
+from django.db.models import Q
 from rest_framework import filters
 from user.models import *
 from user.serializers import *
-from user.user_api import *
-from api.send_mail import send_mail
+from user.permissions import CustomerPremission
+import random, string
+
+def random_str(randomlength=10):
+    a = list(string.ascii_letters)
+    random.shuffle(a)
+    return ''.join(a[:randomlength])
 
 class UserGroupViewSet(viewsets.ModelViewSet):
     """
@@ -19,116 +25,97 @@ class UserGroupViewSet(viewsets.ModelViewSet):
     update:
         修改用户组.
     """
+    
     queryset = UserGroup.objects.all().order_by('id')
     serializer_class = UserGroupSerializer
     filter_backends = (filters.SearchFilter, filters.OrderingFilter,)
-    search_fields = ('group_name','comment',)
+    search_fields = ('group','comment',)
     ordering_fields = ('id',)
-
-    def create(self, request, *args, **kwargs):
-        userselected = request.data['userselected']
-        group_name = request.data['group_name']
-        del request.data['userselected']
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        if (len(userselected) > 0):
-            for user_id in userselected:
-                # django models 多对多添加
-                usergroup_add_user(group_name,user_id)
-        return Response(request.data, status=status.HTTP_201_CREATED, headers=headers)
+    # 权限相关
+    permission_classes = [CustomerPremission,]
+    module_perms = ['user:usergroup']
 
     def update(self, request, *args, **kwargs):
-        userselected = request.data['userselected']
-        group_name = request.data['group_name']
         partial = kwargs.pop('partial', False)
+        userselected = request.data['userselected']
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        # django models 多对多清空
-        instance.user_group_join.clear()
-        if (len(userselected) > 0):
-            for user_id in userselected:
-                # django models 多对多添加
-                usergroup_add_user(group_name,user_id)
-
-        if getattr(instance, '_prefetched_objects_cache', None):
-            # If 'prefetch_related' has been applied to a queryset, we need to
-            # forcibly invalidate the prefetch cache on the instance.
-            instance._prefetched_objects_cache = {}
-
+        userlist = Users.objects.filter(Q(id__in=userselected))
+        instance.user_group.set(userlist,bulk=True)
         return Response(serializer.data)
 
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        # django models 多对多清空
-        instance.user_group_join.clear()
-        self.perform_destroy(instance)
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-class PermissionsGroupViewSet(viewsets.ModelViewSet):
+class MenuViewSet(viewsets.ModelViewSet):
     """
     list:
-        权限组列表.
+        菜单列表.
     create:
-        创建权限组.
+        创建菜单.
     delete:
-        删除权限组.
+        删除菜单.
     update:
-        修改权限组.
+        修改菜单.
     """
-    queryset = PermissionsGroup.objects.all().order_by('id')
-    serializer_class = PermissionsGroupSerializer
+    queryset = Menu.objects.all().order_by('id')
+    serializer_class = MenuSerializer
     filter_backends = (filters.SearchFilter, filters.OrderingFilter,)
-    search_fields = ('permissions_name','comment',)
+    # search_fields = ('mtype',)
     ordering_fields = ('id',)
+    # 权限相关
+    permission_classes = [CustomerPremission,]
+    module_perms = ['user:menu']
 
-    def create(self, request, *args, **kwargs):
-        userselected = request.data['userselected']
-        permissions_name = request.data['permissions_name']
-        del request.data['userselected']
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        if (len(userselected) > 0):
-            for user_id in userselected:
-                # django models 多对多添加
-                permissionsgroup_add_user(permissions_name,user_id)
-        return Response(request.data, status=status.HTTP_201_CREATED, headers=headers)
+    def list(self, request, *args, **kwargs):
+        results = []
+        queryset = self.filter_queryset(self.get_queryset())
+        for i in queryset.filter(Q(mtype=0)):
+            results.append({'id':i.id,'name':i.name,'parent_id':i.parent_id,'url':i.url,'perms':i.perms,'mtype':i.mtype,'icon':i.icon,'del_flag':i.del_flag,'children':[]})
+        for item in results:
+            for i in queryset.filter(Q(mtype=1)&Q(parent_id=item['id'])):
+                item['children'].append({'id':i.id,'name':i.name,'parent_id':i.parent_id,'url':i.url,'perms':i.perms,'mtype':i.mtype,'icon':i.icon,'del_flag':i.del_flag,'children':[]})
+        for item in results:
+            if (len(item['children']) > 0):
+                for node in item['children']:
+                    for i in queryset.filter(Q(mtype=2)&Q(parent_id=node['id'])):
+                        node['children'].append({'id':i.id,'name':i.name,'parent_id':i.parent_id,'url':i.url,'perms':i.perms,'mtype':i.mtype,'icon':i.icon,'del_flag':i.del_flag})
+        # serializer = self.get_serializer(queryset, many=True)
+        return Response(results)
+
+
+class RoleViewSet(viewsets.ModelViewSet):
+    """
+    list:
+        角色列表.
+    create:
+        创建角色.
+    delete:
+        删除角色.
+    update:
+        修改角色.
+    """
+    queryset = Role.objects.all().order_by('id')
+    serializer_class = RoleSerializer
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter,)
+    search_fields = ('name')
+    ordering_fields = ('id',)
+    # 权限相关
+    permission_classes = [CustomerPremission,]
+    module_perms = ['user:role']
 
     def update(self, request, *args, **kwargs):
-        userselected = request.data['userselected']
-        permissions_name = request.data['permissions_name']
+        edittype = request.data['type']
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        # django models 多对多清空
-        instance.user_permissions_join.clear()
-        if (len(userselected) > 0):
-            for user_id in userselected:
-                # django models 多对多添加
-                permissionsgroup_add_user(permissions_name,user_id)
-
-        if getattr(instance, '_prefetched_objects_cache', None):
-            # If 'prefetch_related' has been applied to a queryset, we need to
-            # forcibly invalidate the prefetch cache on the instance.
-            instance._prefetched_objects_cache = {}
-
+        if (edittype == 'role_perms'):
+            permsselected = request.data['permsselected']
+            instance.menu.set(permsselected)
+        elif (edittype == 'role_users'):
+            userselected = request.data['userselected']
+            instance.user_role.set(userselected)
         return Response(serializer.data)
 
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        # django models 多对多清空
-        instance.user_permissions_join.clear()
-        self.perform_destroy(instance)
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-# Create your views here.
 class UsersViewSet(viewsets.ModelViewSet):
     """
     list:
@@ -143,8 +130,11 @@ class UsersViewSet(viewsets.ModelViewSet):
     queryset = Users.objects.all().order_by('id')
     serializer_class = UsersSerializer
     filter_backends = (filters.SearchFilter, filters.OrderingFilter,)
-    search_fields = ('username','email','mobile','webcat',)
+    search_fields = ('username','email',)
     ordering_fields = ('id',)
+    # 权限相关
+    permission_classes = [CustomerPremission,]
+    module_perms = ['user:user']
 
     def create(self, request, *args, **kwargs):
         if (len(request.data['password']) == 0):
@@ -161,12 +151,10 @@ class UsersViewSet(viewsets.ModelViewSet):
             userinfo.set_password(password)
             userinfo.save()
             headers = self.get_success_headers(serializer.data)
-            group_name = request.data['group']
-            usergroup_add_user(group_name,userinfo.id)
-            maildata = {}
-            maildata['username'] = username
-            maildata['password'] = password
-            send_mail(mailtolist,1,maildata)
+            # maildata = {}
+            # maildata['username'] = username
+            # maildata['password'] = password
+            # send_mail(mailtolist,1,maildata)
         return Response(request.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def update(self, request, *args, **kwargs):
@@ -194,25 +182,17 @@ class UsersViewSet(viewsets.ModelViewSet):
             userinfo = Users.objects.get(username=username)
             userinfo.set_password(password)
             userinfo.save()
-            if ('group' in request.data.keys()):
-                group_name = request.data['group']
-                usergroup_add_user(group_name,userinfo.id)
-            send_mail(mailtolist,2,maildata)
+            
+            # send_mail(mailtolist,2,maildata)
         else:
             partial = kwargs.pop('partial', False)
             instance = self.get_object()
             serializer = self.get_serializer(instance, data=request.data, partial=partial)
             serializer.is_valid(raise_exception=True)
             self.perform_update(serializer)
-            if ('group' in request.data.keys()):
-                username = request.data['username']
-                userinfo = Users.objects.get(username=username)
-                group_name = request.data['group']
-                usergroup_add_user(group_name,userinfo.id)
 
             if getattr(instance, '_prefetched_objects_cache', None):
                 # If 'prefetch_related' has been applied to a queryset, we need to
                 # forcibly invalidate the prefetch cache on the instance.
                 instance._prefetched_objects_cache = {}
         return Response(serializer.data)
-

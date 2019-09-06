@@ -1,40 +1,40 @@
 <template>
     <div id="mailconfig" class="mailconfig">
-        <el-collapse v-model="activeNames">
-            <el-collapse-item title="Eamil配置" name="1">
-                <el-form :model="mailform" :rules="mailrules" ref="mailform" label-width="150px" size="small">
-                    <el-form-item label="邮件服务器：" prop="mail_host">
-                        <el-input style="width: 300px; float: left;" v-model="mailform.mail_host"></el-input>
-                    </el-form-item>
-                    <el-form-item label="邮件服务器端口：" prop="mail_port">
-                        <el-input style="width: 300px; float: left;" v-model="mailform.mail_port"></el-input>
-                    </el-form-item>
-                    <el-form-item label="邮件用户：" prop="mail_user">
-                        <el-input style="width: 300px; float: left;" v-model="mailform.mail_user"></el-input>
-                    </el-form-item>
-                    <el-form-item label="邮件用户密码：" prop="mail_pass">
-                        <el-input style="width: 300px; float: left;" type="password" v-model="mailform.mail_pass"></el-input>
-                    </el-form-item>
-                    <el-form-item label="备注：" prop="comment">
-                        <el-input style="width: 300px; float: left;" v-model="mailform.comment"></el-input>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-button style="float: left;" size="small" type="primary" @click="handleSaveData('mailform')">保存</el-button>                        
-                        <el-button style="float: left;" size="small" @click="handlresetForm('mailform')">重置</el-button>
-                    </el-form-item>
-                </el-form>
-            </el-collapse-item>
-            <el-collapse-item title="邮件测试" name="2">
-                <el-form :model="testmailform" :rules="testmailrules" ref="testmailform" label-width="150px" size="small">
-                    <el-form-item label="测试邮箱：" prop="mail_host">
-                        <el-input style="width: 300px; float: left;" v-model="testmailform.testmail"></el-input>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-button style="float: left;" size="small" type="primary" @click="handleTestMail('testmailform')">发送测试邮件</el-button>
-                    </el-form-item>
-                </el-form>
-            </el-collapse-item>
-        </el-collapse>
+        <el-row>
+            <el-divider content-position="left">Eamil配置</el-divider>
+            <el-form :model="mailform" :rules="mailrules" ref="mailform" label-width="150px" size="small">
+                <el-form-item label="邮件服务器：" prop="mail_host">
+                    <el-input style="width: 300px; float: left;" v-model="mailform.mail_host"></el-input>
+                </el-form-item>
+                <el-form-item label="邮件服务器端口：" prop="mail_port">
+                    <el-input style="width: 300px; float: left;" v-model="mailform.mail_port"></el-input>
+                </el-form-item>
+                <el-form-item label="邮件用户：" prop="mail_user">
+                    <el-input style="width: 300px; float: left;" v-model="mailform.mail_user"></el-input>
+                </el-form-item>
+                <el-form-item label="邮件用户密码：" prop="mail_pass">
+                    <el-input style="width: 300px; float: left;" type="password" v-model="mailform.mail_pass"></el-input>
+                </el-form-item>
+                <el-form-item label="备注：" prop="comment">
+                    <el-input style="width: 300px; float: left;" v-model="mailform.comment"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button style="float: left;" size="small" type="primary" @click="handleSaveData('mailform')">保存</el-button>                        
+                    <el-button style="float: left;" size="small" @click="handlresetForm('mailform')">重置</el-button>
+                </el-form-item>
+            </el-form>
+        </el-row>
+        <el-row>
+            <el-divider content-position="left">邮件测试</el-divider>
+            <el-form :model="testmailform" :rules="testmailrules" ref="testmailform" label-width="150px" size="small">
+                <el-form-item label="测试邮箱：" prop="mail_host">
+                    <el-input style="width: 300px; float: left;" v-model="testmailform.testmail"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button style="float: left;" size="small" type="primary" @click="handleTestMail('testmailform')">发送测试邮件</el-button>
+                </el-form-item>
+            </el-form>
+        </el-row>
     </div>
 </template>
 
@@ -53,7 +53,6 @@ export default {
                 ]
             },
             isid: false,
-            activeNames: ['1','2'],
             mailform: {
                 mail_host: '',
                 mail_port: '',

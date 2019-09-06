@@ -1,35 +1,33 @@
 <template>
     <div class="queryredis">
-        <el-collapse v-model="activeNames">
-            <el-collapse-item title="QueryRedis" name="1">
-                <div id="query-redis" class="query-redis">
-                    <el-tag>Redis实例：</el-tag>
-                    <el-select v-model="selectinst" placeholder="请选择Redis实例" @change="handleSelectredis">
-                        <el-option 
-                        v-for="item in instlist" 
-                        :key="item.instid"
-                        :label="item.instname"
-                        :value="item.instid">
-                        </el-option>
-                    </el-select>
-                    <el-tag>Redis数据库：</el-tag>
-                    <el-select v-model="selectdb" @change="handleSelectdb" placeholder="请选择Redis数据库">
-                        <el-option
-                        v-for="item in redisdbcount"
-                        :key="item-1"
-                        :label="item-1"
-                        :value="item-1">
-                        </el-option>
-                    </el-select>
-                    <el-tag>Key：</el-tag>
-                    <el-input v-model="rediskey" style="width: 50em;" placeholder="请输入Key"></el-input>
-                    <el-button @click="execGet" type="primary" >Get</el-button>
-                </div>
-                <div v-if="results" class="query-redis-results">
-                    {{results}}
-                </div>
-            </el-collapse-item>
-        </el-collapse>
+        <el-row>
+            <div id="query-redis" class="query-redis">
+                <el-tag>Redis实例：</el-tag>
+                <el-select v-model="selectinst" placeholder="请选择Redis实例" @change="handleSelectredis">
+                    <el-option 
+                    v-for="item in instlist" 
+                    :key="item.instid"
+                    :label="item.instname"
+                    :value="item.instid">
+                    </el-option>
+                </el-select>
+                <el-tag>Redis数据库：</el-tag>
+                <el-select v-model="selectdb" @change="handleSelectdb" placeholder="请选择Redis数据库">
+                    <el-option
+                    v-for="item in redisdbcount"
+                    :key="item-1"
+                    :label="item-1"
+                    :value="item-1">
+                    </el-option>
+                </el-select>
+                <el-tag>Key：</el-tag>
+                <el-input v-model="rediskey" style="width: 50em;" placeholder="请输入Key"></el-input>
+                <el-button @click="execGet" type="primary" >Get</el-button>
+            </div>
+            <div v-if="results" class="query-redis-results">
+                {{results}}
+            </div>
+        </el-row>
     </div>
 </template>
 

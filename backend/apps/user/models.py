@@ -1,36 +1,69 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-import django.utils.timezone as timezone
 import uuid
-# Create your models here.
+
+
 class UserGroup(models.Model):
-    group_name = models.CharField(max_length=80, unique=True)
-    comment = models.CharField(max_length=160, blank=True, null=False)
+    """
+    用户组表
+    """
+    group = models.CharField(max_length=64, unique=True)
+    comment = models.CharField(max_length=128, blank=True,)
 
     class Meta:
         verbose_name = u"用户组"
         verbose_name_plural = verbose_name
 
     def __unicode__(self):
-        return self.group_name
+        return self.group
 
-class PermissionsGroup(models.Model):
-    permissions_name = models.CharField(max_length=80, unique=True)
-    comment = models.CharField(max_length=160, blank=True, null=False)
+class Menu(models.Model):
+    """
+    菜单表
+    """
+    name = models.CharField(blank=False, max_length=128, verbose_name="菜单名称")
+    parent_id = models.IntegerField(blank=True, verbose_name=u"父菜单ID，一级菜单为0")
+    url = models.CharField(blank=True,  max_length=255, verbose_name="菜单对应url")
+    perms = models.CharField(blank=True,  max_length=255, verbose_name="授权(多个用逗号分隔，如sys:user:add,sys:user:edit)")
+    mtype = models.IntegerField(blank=True, verbose_name=u"菜单类型 0:目录 1:菜单 2:按钮")
+    icon = models.CharField(blank=True,  max_length=255, verbose_name="菜单对应图标")
+    creator = models.CharField(max_length=64, blank=True, verbose_name=u"创建人")
+    modifier = models.CharField(max_length=64, blank=True, verbose_name=u"最后修改人")
+    del_flag = models.IntegerField(blank=True, verbose_name=u"是否删除 -1:删除 0:正常")
+    create_time = models.DateTimeField( auto_now_add=True, verbose_name=u"创建时间")
+    update_time = models.DateTimeField(blank=True, auto_now=True, verbose_name=u"更新时间")
+    comment = models.CharField(max_length=64, blank=True, verbose_name=u"备注")
 
     class Meta:
-        verbose_name = u"权限组"
+        verbose_name = u"菜单表"
         verbose_name_plural = verbose_name
 
     def __unicode__(self):
-        return self.permissions_name
+        return self.name
+
+class Role(models.Model):
+    """
+    角色表
+    """
+    name = models.CharField(blank=True, max_length=64, verbose_name="角色名称")
+    menu = models.ManyToManyField(Menu,blank=True,related_name="role_menu")
+
+    class Meta:
+        verbose_name = u"角色表"
+        verbose_name_plural = verbose_name
+
+    def __unicode__(self):
+        return self.name
 
 class Users(AbstractUser):
-    group = models.ManyToManyField(UserGroup,blank=True,related_name="user_group_join")
-    permissions_group = models.ManyToManyField(PermissionsGroup,blank=True,related_name="user_permissions_join")
-    mobile = models.CharField(blank=True, null=False, max_length=11, verbose_name="电话")
-    webcat = models.CharField(blank=True, null=False, max_length=120, verbose_name="微信")
-    comment = models.CharField(max_length=64, blank=True, null=False, verbose_name=u"备注")
+    """
+    用户表(继承django默认用户表)
+    """
+    group = models.ForeignKey(UserGroup,blank=True,null=True,on_delete=models.SET_NULL,related_name="user_group")
+    roles = models.ManyToManyField(Role, blank=True,verbose_name='拥有的所有角色',related_name="user_role")
+    mobile = models.CharField(blank=True, max_length=11, verbose_name="电话")
+    webcat = models.CharField(blank=True, max_length=128, verbose_name="微信")
+    comment = models.CharField(max_length=64, blank=True,  verbose_name=u"备注")
     create_time = models.DateTimeField( auto_now_add=True, verbose_name=u"创建时间")
     update_time = models.DateTimeField(blank=True, auto_now=True, verbose_name=u"更新时间")
     jwt_secret = models.UUIDField(default=uuid.uuid4(), verbose_name=u"用户jwt加密秘钥")

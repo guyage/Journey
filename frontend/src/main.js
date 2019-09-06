@@ -15,8 +15,10 @@ import 'codemirror/lib/codemirror.css';
 import './assets/iconfont/iconfont.css';
 import './assets/iconfont/iconfont.js';
 import IconSvg from './components/iconsvg/IconSvg.vue';
-
-
+// form making
+import FormMaking from 'form-making'
+import 'form-making/dist/FormMaking.css'
+Vue.use(FormMaking)
 //全局进度条
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'

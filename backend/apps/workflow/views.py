@@ -1,19 +1,111 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from rest_framework import status
-from rest_framework import filters
 from rest_framework.views import APIView
-from django.db.models import Q
 from rest_framework.response import Response
 from django.db.models.query import QuerySet
-from user.models import *
+from django.db.models import Q
+from rest_framework import status
+from rest_framework import filters
 from workflow.models import *
+from user.permissions import CustomerPremission
 from workflow.serializers import *
 from api.git_api import GitLabAPI
-from api.send_mail import send_mail
+from api.workflow_api import exec_cmd
 import json
+from api.send_mail import send_mail
 
-# Create your views here.
+class WorkOrderTypeViewSet(viewsets.ModelViewSet):
+    """
+    list:
+        工单类型列表.
+    create:
+        创建工单类型.
+    delete:
+        删除工单类型.
+    update:
+        修改工单类型.
+    """
+    
+    queryset = WorkOrderType.objects.all().order_by('id')
+    serializer_class = WorkOrderTypeSerializer
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter,)
+    search_fields = ('ordertype',)
+    ordering_fields = ('id',)
+    # 权限相关
+    permission_classes = [CustomerPremission,]
+    module_perms = ['workflow:workordertype']
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        ordertype_id = serializer.data['id']
+        WorkOrderStep.objects.create(step_id=1,ordertype_id=ordertype_id,step_name='start')
+        WorkOrderStep.objects.create(step_id=2,ordertype_id=ordertype_id,step_name='finsh')
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+class ApprovalGroupViewSet(viewsets.ModelViewSet):
+    """
+    list:
+        工单审批组列表.
+    create:
+        创建工单审批组.
+    delete:
+        删除工单审批组.
+    update:
+        修改工单审批组.
+    """
+    
+    queryset = ApprovalGroup.objects.all().order_by('id')
+    serializer_class = ApprovalGroupSerializer
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter,)
+    search_fields = ('approver_group_name',)
+    ordering_fields = ('id',)
+    # 权限相关
+    permission_classes = [CustomerPremission,]
+    module_perms = ['workflow:approvergroup']
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        userselected = request.data['userselected']
+        instance.users.set(userselected)
+        return Response(serializer.data)
+
+class WorkOrderStepViewSet(viewsets.ModelViewSet):
+    """
+    list:
+        工单步骤列表.
+    create:
+        创建工单步骤.
+    delete:
+        删除工单步骤.
+    update:
+        修改工单步骤.
+    """
+    
+    queryset = WorkOrderStep.objects.all().order_by('id')
+    serializer_class = WorkOrderStepSerializer
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter,)
+    search_fields = ('step_id',)
+    ordering_fields = ('id',)
+    # 权限相关
+    permission_classes = [CustomerPremission,]
+    module_perms = ['workflow:workorderstep']
+
+    def create(self, request, *args, **kwargs):
+        # serializer = self.get_serializer(data=request.data)
+        # # serializer.is_valid(raise_exception=True)
+        # # self.perform_create(serializer)
+        # headers = self.get_success_headers(serializer.data)
+        WorkOrderStep.objects.create(**request.data)
+        finsh_new_step_id = request.data['step_id'] + 1
+        finsh_step = WorkOrderStep.objects.filter(Q(step_name='finsh'),Q(ordertype_id=request.data['ordertype_id'])).update(step_id=finsh_new_step_id)
+        return Response(status=status.HTTP_201_CREATED)
+
 class WorkOrderViewSet(viewsets.ModelViewSet):
     """
     工单
@@ -24,43 +116,103 @@ class WorkOrderViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.SearchFilter, filters.OrderingFilter,)
     search_fields = ('title')
     ordering_fields = ('id',)
+    # 权限相关
+    permission_classes = [CustomerPremission,]
+    module_perms = ['workflow:workorder']
 
     def create(self, request, *args, **kwargs):
-
-        mailtolist = []
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        workorderid = serializer.data['id']
-        operator = serializer.data['creator']
-        operation_group = serializer.data['operation_group']
-        content = serializer.data['content']
-        WorkOrderState.objects.create(wordorder_id_id=workorderid,step=1,action='开始',operator=operator)
-        userlist = PermissionsGroup.objects.get(Q(permissions_name=operation_group)).user_permissions_join.all()
-        for user in userlist:
-            mailtolist.append(Users.objects.filter(username=user)[0].email)
-        maildata = json.loads(content)
-        send_mail(mailtolist,4,maildata)
-        return Response(request.data, status=status.HTTP_201_CREATED, headers=headers)
+        ordertype_id = serializer.data['ordertype']
+        # 获取下一步骤的审批组
+        approver_group_id = WorkOrderStep.objects.get(Q(ordertype_id=ordertype_id),Q(step_id=2)).approver_group_id
+        workorder_id = serializer.data['id']
+        workorder_operator = serializer.data['operator']
+        WorkOrder.objects.filter(id=workorder_id).update(approver_group_id=approver_group_id)
+        # 获取下一步骤审批组相关用户发送邮件通知
+        try:
+            mailtolist = []
+            userlist = ApprovalGroup.objects.get(Q(id=approver_group_id)).users.all()
+            for user in userlist:
+                mailtolist.append(user.email)
+            print (mailtolist)
+            maildata = json.loads(serializer.data['content'])
+            send_mail(mailtolist,4,maildata)
+        except:
+            pass
+        # 插入创建工单步骤记录
+        WorkOrderState.objects.create(wordorder_id_id=workorder_id,step=1,action='start',operator=workorder_operator)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-    def get_queryset(self):
-        queryset = self.queryset
-        if isinstance(queryset, QuerySet):
-            # Ensure queryset is re-evaluated on each request.
-            queryset = queryset.filter(Q(creator=self.request.user.username)).order_by('-id')
-        return queryset
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        # 修改工单状态
+        self.perform_update(serializer)
+        # 获取工单类型信息
+        workorder_type_id = serializer.data['ordertype']
+        ordertypesteps_count = WorkOrderType.objects.get(id=workorder_type_id).ordertype_step.all().count()
+        # 获取工单信息
+        have_steps = instance.state_wordorder_id.all().count()
+        workorder_id = serializer.data['id']
+        status = request.data['status']
+        step = have_steps + 1
+        operator = serializer.data['operator']
+        if (status == 2):
+            #插入工单步骤
+            WorkOrderState.objects.create(wordorder_id_id=workorder_id,step=step,action='同意',operator=operator)
+            # 判断同意之后是否该系统自动执行(即判断是否为结束前一步)
+            is_end = ordertypesteps_count - step
+            if (is_end == 1):
+                # 执行脚本
+                script_cmd = []
+                script = WorkOrderType.objects.get(id=workorder_type_id).script
+                content = serializer.data['content']
+                script_cmd.append('python')
+                script_cmd.append(script)
+                script_cmd.append(content)
+                exec_status = exec_cmd(script_cmd)
+                # 判断执行脚本是否成功
+                end_step = step + 1
+                if ('success' in str(exec_status,encoding="utf8")):
+                    # 成功后改变工单状态
+                    WorkOrder.objects.filter(id=workorder_id).update(approver_group_id='',status=3)
+                    WorkOrderState.objects.create(wordorder_id_id=workorder_id,step=end_step,action='finsh',operator='系统')
+                elif ('fail' in str(exec_status,encoding="utf8")):
+                    WorkOrder.objects.filter(id=workorder_id).update(approver_group_id='',status=-1)
+                    WorkOrderState.objects.create(wordorder_id_id=workorder_id,step=end_step,action='finsh',operator='系统')
+            else:
+                # 不是结束前一步，获取下一步骤的审批组
+                approver_group_id = WorkOrderStep.objects.get(Q(ordertype_id=workorder_type_id),Q(step_id=step)).approver_group_id
+                WorkOrder.objects.filter(id=workorder_id).update(approver_group_id=approver_group_id)
+        elif (status == 4):
+            #插入工单步骤
+            WorkOrderState.objects.create(wordorder_id_id=workorder_id,step=step,action='驳回',operator=operator)
+        
+        if getattr(instance, '_prefetched_objects_cache', None):
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance.
+            instance._prefetched_objects_cache = {}
 
-class WorkOrderStateViewSet(viewsets.ModelViewSet):
-    """
-    工单
-    """
-    queryset = WorkOrderState.objects.all().order_by('id')
-    serializer_class = WorkOrderStateSerializer
-    # pagination_class = PageNumberPagination
-    filter_backends = (filters.SearchFilter, filters.OrderingFilter,)
-    search_fields = ('operator',)
-    ordering_fields = ('id',)
+        return Response(serializer.data)
+    
+
+class WorkOrderDetailViewSet(APIView):
+    # 权限相关
+    permission_classes = [CustomerPremission,]
+    module_perms = ['workflow:workorderdetail']
+    def post(self,request,format=None):
+        # username = request.data['username']
+        workorderid = request.data['workorderid']
+        workorderdetail = WorkOrder.objects.get(Q(id=workorderid))
+        workorderdetail_serializer = WorkOrderSerializer(workorderdetail)
+
+        return Response(workorderdetail_serializer.data)
+
 
 class GitLabInfoViewSet(APIView):
 
@@ -70,6 +222,12 @@ class GitLabInfoViewSet(APIView):
         if (reqtype == 'projects'):
             projects = git_api.get_all_projects()
             results = projects
+        elif (reqtype == 'groups'):
+            groups = git_api.get_all_groups()
+            results = groups
+        elif (reqtype == 'users'):
+            users = git_api.get_all_users()
+            results = users
         re = { 'results': '',}      
         re['results'] = results
         
@@ -77,103 +235,32 @@ class GitLabInfoViewSet(APIView):
 
 class ToDoWorkOrderViewSet(APIView):
 
-    def post(self,request,format=None):
-        username = request.data['username']
-        userinfo = Users.objects.get(Q(username=username))
-        permissionsgroup = []
-        todoworkorderlist = []
-        permissions_group = userinfo.permissions_group.all()
-        for i in permissions_group:
-            permissionsgroup.append(i.permissions_name)
-        # Git工单
-        workorder = WorkOrder.objects.filter(Q(status=1))
-        for workorder in workorder:
-            if (workorder.operation_group in permissionsgroup):
-                workorder_serializer = WorkOrderSerializer(workorder)
-                todoworkorderlist.append(workorder_serializer.data)
-        
-        results = todoworkorderlist
-        results = sorted(results, key=lambda e: e.__getitem__('update_time'),reverse = True)
-        re = { 'results': '',}
-        re['results'] = results
-        
-        return Response(re)
-
-class WorkOrderDetailViewSet(APIView):
-
-    def post(self,request,format=None):
-        # username = request.data['username']
-        workorderid = request.data['workorderid']
-        workorderdetail = WorkOrder.objects.get(Q(id=workorderid))
-        workorderdetail_serializer = WorkOrderSerializer(workorderdetail)
-        results = workorderdetail_serializer.data
+    def get(self,request,format=None):
+        userinfo = self.request.user
+        results = []
+        approver_group = userinfo.approver_user.all().values('id').distinct()
+        user_approver_groups = []
+        for approver_group_id in approver_group:
+            user_approver_groups.append(approver_group_id['id'])
+        todoworkorders = WorkOrder.objects.filter(Q(approver_group_id__in=user_approver_groups)).order_by('-id')
+        for todoworkorder in todoworkorders:
+            todoworkorder_serializer = WorkOrderSerializer(todoworkorder)
+            results.append(todoworkorder_serializer.data)
         re = { 'results': '',}
         re['results'] = results
         return Response(re)
 
-class WorkOrderStepViewSet(APIView):
+class MyWorkOrderViewSet(APIView):
 
-    def post(self,request,format=None):
-        # username = request.data['username']
-        workordersteps = []
-        workorderid = request.data['workorderid']
-        steps = WorkOrderState.objects.filter(Q(wordorder_id_id=workorderid)).values("step").distinct().count()
-        workorderstate = WorkOrderState.objects.filter(Q(wordorder_id_id=workorderid)).order_by('step')
-        for step in workorderstate:
-            step_serializer = WorkOrderStepSerializer(step)
-            workordersteps.append(step_serializer.data)
-        results = workordersteps
-        re = { 'results': '', 'steps': ''}
-        re['results'] = results
-        re['steps'] = steps
-        return Response(re)
-
-class ChangeWorkOrderStateViewSet(APIView):
-
-    def post(self,request,format=None):
-        real_workorderidlist = []
-        git_api = GitLabAPI()
-        changetype = request.data['changetype']
-        workorderidlist = request.data['workorderid']
-        operator = request.data['operator']
-        if isinstance(workorderidlist,int):
-            real_workorderidlist = list(str(workorderidlist))
-        elif isinstance(workorderidlist,list):
-            real_workorderidlist = workorderidlist
-        elif isinstance(workorderidlist,str):
-            real_workorderidlist = list(workorderidlist)
-        for workorderid in real_workorderidlist:
-            if (changetype == 'agree'):
-                workorderinfo = WorkOrder.objects.filter(Q(id=workorderid))[0]
-                gitlab_set_info = json.loads(workorderinfo.content)
-                gitlab_set_results = git_api.set_project_member(gitlab_set_info)
-                if (gitlab_set_results == 'ok'):
-                    workorderinfo.status = 2
-                    workorderinfo.operation_group = 'admin'
-                    workorderinfo.save()
-                    WorkOrderState.objects.create(wordorder_id_id=workorderid,step=2,action='同意',operator=operator)
-                    workorderinfo = WorkOrder.objects.filter(Q(id=workorderid))[0]
-                    workorderinfo.status = 3
-                    workorderinfo.save()
-                    WorkOrderState.objects.create(wordorder_id_id=workorderid,step=3,action='完成',operator='系统')
-                else:
-                    workorderinfo = WorkOrder.objects.filter(Q(id=workorderid))[0]
-                    workorderinfo.status = 2
-                    workorderinfo.operation_group = 'admin'
-                    workorderinfo.save()
-                    workorderinfo.status = -1
-                    workorderinfo.save()
-                    WorkOrderState.objects.create(wordorder_id_id=workorderid,step=2,action='同意',operator=operator)
-                    WorkOrderState.objects.create(wordorder_id_id=workorderid,step=-1,action='失败',operator='系统')  
-
-                # WorkOrderState.objects.create(wordorder_id_id=workorderid,step=3,action='完成',operator='系统')
-            elif (changetype == 'reject'):
-                workorderinfo = WorkOrder.objects.filter(Q(id=workorderid))[0]
-                workorderinfo.status = 4
-                workorderinfo.operation_group = ''
-                workorderinfo.save()
-                WorkOrderState.objects.create(wordorder_id_id=workorderid,step=4,action='驳回',operator=operator)
-        results = ''
-        re = { 'results': '', }
+    def get(self,request,format=None):
+        username = self.request.user.username
+        results = []
+        myworkorders = WorkOrder.objects.filter(Q(creator=self.request.user.username)).order_by('-id')
+        for myworkorder in myworkorders:
+            myworkorder_serializer = WorkOrderSerializer(myworkorder)
+            results.append(myworkorder_serializer.data)
+        re = { 'results': '',}
         re['results'] = results
         return Response(re)
+
+

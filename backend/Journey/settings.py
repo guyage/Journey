@@ -1,4 +1,3 @@
-# coding=utf-8
 """
 Django settings for Journey project.
 
@@ -12,9 +11,9 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+import configparser
 import sys
 import datetime
-import configparser
 #ldap认证相关
 import ldap
 from django_auth_ldap.config import LDAPSearch, GroupOfNamesType, PosixGroupType, LDAPGroupQuery, LDAPSearchUnion
@@ -23,11 +22,12 @@ from django_auth_ldap.config import LDAPSearch, GroupOfNamesType, PosixGroupType
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, BASE_DIR)
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'aaf@!&)99!ty!9bwly094gobl&0g@*+xeei!687bo_5*vm8(_x'
+SECRET_KEY = '%^pimvx5^5_#of7cpyxc#j8^3l*an9x7t6=ckt41^61ahavv34'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -35,17 +35,6 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = 'user.Users'
-
-# 获取配置文件信息
-config = configparser.ConfigParser()
-config.read(os.path.join(BASE_DIR,'Journey.conf'))
-# djano 数据库连接信息
-DB_HOST = config.get('db', 'host')
-DB_PORT = config.getint('db', 'port')
-DB_USER = config.get('db', 'user')
-DB_PASSWORD = config.get('db', 'password')
-DB_DATABASE = config.get('db', 'database')
-
 
 # Application definition
 
@@ -58,12 +47,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
-    'rest_framework_swagger',
-    'common',
-    'conf',
     'user',
     'db',
+    'conf',
     'query',
+    'common',
     'workflow',
 ]
 
@@ -81,9 +69,9 @@ MIDDLEWARE = [
 CORS_ORIGIN_ALLOW_ALL = True
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
+    # 'DEFAULT_PERMISSION_CLASSES': (
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ),
     #  配置默认的认证方式  帐号密码认证
     'DEFAULT_AUTHENTICATION_CLASSES' : (  
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
@@ -125,6 +113,16 @@ WSGI_APPLICATION = 'Journey.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
+# 获取配置文件信息
+config = configparser.ConfigParser()
+config.read(os.path.join(BASE_DIR,'Journey.conf'))
+# djano 数据库连接信息
+DB_HOST = config.get('db', 'host')
+DB_PORT = config.getint('db', 'port')
+DB_USER = config.get('db', 'user')
+DB_PASSWORD = config.get('db', 'password')
+DB_DATABASE = config.get('db', 'database')
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -135,6 +133,14 @@ DATABASES = {
         'PORT': DB_PORT,
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -188,6 +194,7 @@ AUTH_LDAP_GROUP_SEARCH = LDAPSearch(LADP_BASE_DN,ldap.SCOPE_SUBTREE, "(objectCla
 AUTH_LDAP_GROUP_TYPE = GroupOfNamesType(name_attr="cn") #返回的组的类型，并用来判断用户与组的从属关系
 AUTH_LDAP_MIRROR_GROUPS = True #导入用户的组信息，在用户登录的时候把用户的域组关系同步过来。每次用户登录时，都会把用户的组关系删除，重新从ldap中进行同步（解决办法参考后面）
 AUTH_LDAP_ALWAYS_UPDATE_USER = True #是否同步LDAP修改
+
 
 
 # Internationalization

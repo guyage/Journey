@@ -1,53 +1,50 @@
 <template>
     <div id="useraccessredis" class="useraccessredis">
         <div v-if="!isapply" class="useraccessredis-list">
-            <el-collapse v-model="activeNames">
-                <el-collapse-item title="Redis权限" name="1">
-                    <div class="user-operation" style="padding: 0.8em 0em 1em;">
-                        <el-button @click="applyData" style="float: left;" icon="el-icon-edit" size="small" type="primary">申请权限</el-button>
-                        <el-input v-model="searchcontent" @keyup.enter.native="searchData" style="width: 200px;float: right;" size="small" placeholder="Search">
-                            <el-button @click="searchData" slot="append" icon="el-icon-search"></el-button>
-                        </el-input>
-                    </div>
-                    <br>
-                    <UserAccessTable
-                    :TableColumn="table_columns"
-                    :TableData="table_data"
-                    :editData="editData"
-                    :delData="delData">
-                    </UserAccessTable>
-                </el-collapse-item>
-            </el-collapse> 
+            <el-row style="padding-bottom:5px;">
+                <div class="user-operation" style="padding: 0.8em 0em 1em;">
+                    <el-button @click="applyData" style="float: left;" icon="el-icon-edit" size="small" type="primary">申请权限</el-button>
+                    <el-input v-model="searchcontent" @keyup.enter.native="searchData" style="width: 200px;float: right;" size="small" placeholder="Search">
+                        <el-button @click="searchData" slot="append" icon="el-icon-search"></el-button>
+                    </el-input>
+                </div>
+            </el-row>
+            <el-row>
+                <UserAccessTable
+                :TableColumn="table_columns"
+                :TableData="table_data"
+                :editData="editData"
+                :delData="delData">
+                </UserAccessTable>
+            </el-row>
         </div>
         <div v-if="isapply" class="useraccessredis-apply">
-            <el-collapse v-model="activeNames">
-                <el-collapse-item title="申请Redis权限" name="1">
-                    <div style="padding-top: 10px;">
-                        <el-form  ref="form" :model="form" :rules="rules">
-                            <el-form-item label="申请用户：" label-width="150px" prop="username">
-                                <el-input style="width: 300px; float: left;" v-model="form.username"></el-input>
-                            </el-form-item>
-                            <el-form-item label="申请访问实例：" label-width="150px" prop="redisinst">
-                                <el-select style="width: 300px; float: left;" v-model="form.redisinst" placeholder="请选择Redis实例">
-                                    <el-option v-for="(val,index) in instlist" :key="index" :label="val.inst" :value="val.id" ></el-option>
-                                </el-select>
-                            </el-form-item>
-                            <!-- <el-form-item  label="申请访问数据库：" label-width="150px">
-                                <el-checkbox-group style="float: left;" v-model="form.user_access_db">
-                                    <el-checkbox v-for="(val,index) in instdb" :key="index" :label="val"></el-checkbox>
-                                </el-checkbox-group>
-                            </el-form-item> -->
-                            <el-form-item label="申请说明：" label-width="150px">
-                                <el-input style="width: 300px; float: left;" v-model="form.comment"></el-input>
-                            </el-form-item>
-                            <el-form-item label-width="150px">
-                                <el-button style="float: left;" type="primary" @click="handleApply">提交</el-button>
-                                <el-button style="float: left;" @click="isapply = false;">取消</el-button>
-                            </el-form-item>
-                        </el-form>
-                    </div>
-                </el-collapse-item>
-            </el-collapse> 
+            <el-row>
+                <div style="padding-top: 10px;">
+                    <el-form  ref="form" :model="form" :rules="rules">
+                        <el-form-item label="申请用户：" label-width="150px" prop="username">
+                            <el-input style="width: 300px; float: left;" v-model="form.username"></el-input>
+                        </el-form-item>
+                        <el-form-item label="申请访问实例：" label-width="150px" prop="redisinst">
+                            <el-select style="width: 300px; float: left;" v-model="form.redisinst" placeholder="请选择Redis实例">
+                                <el-option v-for="(val,index) in instlist" :key="index" :label="val.inst" :value="val.id" ></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <!-- <el-form-item  label="申请访问数据库：" label-width="150px">
+                            <el-checkbox-group style="float: left;" v-model="form.user_access_db">
+                                <el-checkbox v-for="(val,index) in instdb" :key="index" :label="val"></el-checkbox>
+                            </el-checkbox-group>
+                        </el-form-item> -->
+                        <el-form-item label="申请说明：" label-width="150px">
+                            <el-input style="width: 300px; float: left;" v-model="form.comment"></el-input>
+                        </el-form-item>
+                        <el-form-item label-width="150px">
+                            <el-button style="float: left;" type="primary" @click="handleApply">提交</el-button>
+                            <el-button style="float: left;" @click="isapply = false;">取消</el-button>
+                        </el-form-item>
+                    </el-form>
+                </div>
+            </el-row>
         </div>
     </div>
 </template>
@@ -65,7 +62,6 @@ export default {
     },
     data () {
         return {
-            activeNames: ['1'],
             searchcontent: '',
             //用户列表参数
             table_data: [],

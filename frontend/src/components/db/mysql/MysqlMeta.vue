@@ -1,42 +1,38 @@
 <template>
     <div class="mysqlmeta" id="mysqlmeta">
-        <el-collapse v-model="activeNames">
-            <el-collapse-item title="MySQL元数据" name="1">
-                <div class="mysqlmeta-tree" style="padding: 0.8em 0em 1em;">
-                    <el-input
-                    class="mysqlmeta-filterinput"
-                    placeholder="输入关键字进行过滤"
-                    v-model="filterText">
-                    </el-input>
-                        <div class="mysqlmeta-tree-data">
-                            <el-tree
-                            class="filter-tree"
-                            ref="tree"
-                            :data="treedata"
-                            lazy
-                            accordion
-                            highlight-current
-                            :load="loadTreeData"
-                            :props="treeprops"
-                            @node-click="handleNodeClick"
-                            :filter-node-method="filterNode">
-                            </el-tree>
-                        </div>      
-                </div>
-                <div class="mysqlmeta-table" style="padding: 0.8em 0em 1em;">
-                    <el-table v-loading="loading" :element-loading-text="loadingtext" border :data="tablecol.results">
-                        <el-table-column align="left" v-for="(val, key) in tablecol.col" v-if="key == 0" width="300px" :key="key" :label="val" :prop="val">
-                        </el-table-column>
-                        <el-table-column align="left" v-for="(val, key) in tablecol.col" v-if="key != 0" :key="key" :label="val" :prop="val">
-                        </el-table-column>
-                        <!-- <el-table-column align="left" label="Table" prop="Table">
-                        </el-table-column>
-                        <el-table-column align="left" label="Create Table" prop="Create Table">
-                        </el-table-column> -->
-                    </el-table>
-                </div>
-            </el-collapse-item>
-        </el-collapse>
+        <div class="mysqlmeta-tree">
+            <el-input
+            class="mysqlmeta-filterinput"
+            placeholder="输入关键字进行过滤"
+            v-model="filterText">
+            </el-input>
+                <div class="mysqlmeta-tree-data">
+                    <el-tree
+                    class="filter-tree"
+                    ref="tree"
+                    :data="treedata"
+                    lazy
+                    accordion
+                    highlight-current
+                    :load="loadTreeData"
+                    :props="treeprops"
+                    @node-click="handleNodeClick"
+                    :filter-node-method="filterNode">
+                    </el-tree>
+                </div>      
+        </div>
+        <div class="mysqlmeta-table" style="padding: 0.8em 0em 1em;">
+            <el-table v-loading="loading" :element-loading-text="loadingtext" border :data="tablecol.results">
+                <el-table-column align="left" v-for="(val, key) in tablecol.col" v-if="key == 0" width="300px" :key="key" :label="val" :prop="val">
+                </el-table-column>
+                <el-table-column align="left" v-for="(val, key) in tablecol.col" v-if="key != 0" :key="key" :label="val" :prop="val">
+                </el-table-column>
+                <!-- <el-table-column align="left" label="Table" prop="Table">
+                </el-table-column>
+                <el-table-column align="left" label="Create Table" prop="Create Table">
+                </el-table-column> -->
+            </el-table>
+        </div>
     </div>
 </template>
 
@@ -47,7 +43,6 @@ export default {
     name: 'mysqlmeta',
     data () {
         return {
-            activeNames: ['1'],
             loading: false,
             loadingtext: '拼命加载中...',
             instid: 0,

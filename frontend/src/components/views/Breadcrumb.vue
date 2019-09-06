@@ -7,10 +7,10 @@
         <!-- <icon-svg iconClass="icon-Logout"></icon-svg> -->
             <div class="right-header" id="right-header">
                 <el-button title="项目GitHub" class="userinfo-button" @click="handleOpengit" size="mini" circle>
-                    <icon-svg class="right-header-icon" iconClass="icon-github"></icon-svg>
+                    <icon-svg class="right-header-icon" iconClass="icongithub-fill"></icon-svg>
                 </el-button>
                 <el-button title="退出" class="logout-button" @click="handleLogout" size="mini" circle >
-                    <icon-svg class="right-header-icon" iconClass="icon-Logout"></icon-svg>
+                    <icon-svg class="right-header-icon" iconClass="iconpoweroff"></icon-svg>
                 </el-button>
             </div>
         </el-breadcrumb>

@@ -5,45 +5,47 @@ from user.models import *
 
 class UserGroupSerializer(serializers.ModelSerializer):
     
-    usercount = serializers.SerializerMethodField('get_group_usercount')
-    userlist = serializers.SerializerMethodField('get_group_userlist')
+    hasuser = serializers.SerializerMethodField('get_usergroup_hasuser')
     class Meta:
         model = UserGroup
-        fields = ('id','group_name','comment','usercount','userlist')
-
-    def get_group_usercount(self,obj):
-        # django models ManyToManyField Query(多对多反向查询)
-        return obj.user_group_join.all().count()
-    def get_group_userlist(self,obj):
+        fields = ('id','group','comment','hasuser')
+    
+    def get_usergroup_hasuser(self,obj):
         userlist = []
-        for user in obj.user_group_join.all():
+        for user in obj.user_group.all():
             userlist.append(user.id)
         return userlist
 
+class MenuSerializer(serializers.ModelSerializer):
 
-class PermissionsGroupSerializer(serializers.ModelSerializer):
-
-    usercount = serializers.SerializerMethodField('get_group_usercount')
-    userlist = serializers.SerializerMethodField('get_group_userlist')
     class Meta:
-        model = PermissionsGroup
-        fields = ('id','permissions_name','comment','usercount','userlist')
+        model = Menu
+        fields = ('id','name','parent_id','url','perms','mtype','icon','creator','modifier','del_flag','create_time','update_time','comment')
 
-    def get_group_usercount(self,obj):
-        # django models ManyToManyField Query(多对多反向查询)
-        return obj.user_permissions_join.all().count()
-    def get_group_userlist(self,obj):
+class RoleSerializer(serializers.ModelSerializer):
+
+    hasmenu = serializers.SerializerMethodField('get_role_hasmenu')
+    hasuser = serializers.SerializerMethodField('get_role_hasuser')
+    class Meta:
+        model = Role
+        fields = ('id','name','hasmenu','hasuser')
+
+    def get_role_hasmenu(self,obj):
+        hasmenulist = []
+        for menu in obj.menu.all():
+            hasmenulist.append(menu.id)
+        return hasmenulist
+    def get_role_hasuser(self,obj):
         userlist = []
-        for user in obj.user_permissions_join.all():
+        for user in obj.user_role.all():
             userlist.append(user.id)
         return userlist
 
 class UsersSerializer(serializers.ModelSerializer):
-    
+
     password = serializers.CharField(style={'input_type': 'password'}, write_only=True,)
-    group = serializers.SlugRelatedField(many=True,read_only=True,slug_field='group_name')
-    permissions_group = serializers.SlugRelatedField(many=True,read_only=True,slug_field='permissions_name')
+    group = serializers.SlugRelatedField(read_only=True,slug_field='group')
+    roles = serializers.SlugRelatedField(many=True,read_only=True,slug_field='name')
     class Meta:
         model = Users
-        fields = ('id','username','group','password','last_name','first_name','is_superuser','is_active','permissions_group','email','mobile','webcat','comment')
-
+        fields = ('id','username','password','email','is_superuser','is_active','last_name','first_name','group','roles','comment')

@@ -18,17 +18,19 @@
         </el-aside>
         <el-container :class="{collapse:isCollapse}">
             <el-header>
-            <icon-svg v-if="!isCollapse" @click.native="isCollapse=true" class="nav-header-icon" iconClass="icon-menu"></icon-svg>
-            <icon-svg v-if="isCollapse" @click.native="isCollapse=false" class="nav-header-icon" iconClass="icon-menu-y"></icon-svg>
+            <icon-svg v-if="!isCollapse" @click.native="isCollapse=true" class="nav-header-icon" iconClass="iconmenu"></icon-svg>
+            <icon-svg style="transform: rotate(90deg);" v-if="isCollapse" @click.native="isCollapse=false" class="nav-header-icon" iconClass="iconmenu"></icon-svg>
             <Breadcrumb></Breadcrumb>
             <TagsView></TagsView>
             </el-header>
           <el-main>
-            <transition :name="transitionName">
-              <keep-alive :include="cachedViews">
-                <router-view></router-view>
-              </keep-alive>
-            </transition>
+            <el-card class="box-card">
+              <transition :name="transitionName">
+                <keep-alive :include="cachedViews">
+                  <router-view></router-view>
+                </keep-alive>
+              </transition>
+            </el-card>
           </el-main>
         </el-container>
       </el-container>
@@ -71,12 +73,12 @@ export default {
   margin: 0;
   padding: 0;
 }
-.el-container{
+.nav .el-container{
   min-height: 100%;
   position: absolute;
   width: 100%;
 }
-.el-header {
+.nav .el-header {
   background-color: rgb(255,255,255);
   color: #333;
   text-align: center;
@@ -88,7 +90,7 @@ export default {
   
 }
   
-.el-aside {
+.nav .el-aside {
   color: #333;
   text-align: center;
   line-height: 200px;
@@ -102,19 +104,19 @@ export default {
   overflow: hidden;
 }
   
-.el-main {
+.nav .el-main {
   background-color: #f0f2f5;
   color: #333;
   text-align: center;
   /* line-height: 160px; */
 }
-.el-menu-vertical-demo:not(.el-menu--collapse) {
+.nav .el-menu-vertical-demo:not(.el-menu--collapse) {
     width: 200px;
     min-height: 400px;
     
 }
 
-.is-vertical{
+.nav .is-vertical{
   margin-left:200px;
   position: relative;
   min-height: 100%;
@@ -130,14 +132,17 @@ export default {
   width: 20px;
   height: 20px;
 }
-.el-menu--vertical{
+.nav .el-menu--vertical{
   left: 50px!important;
 }
-.el-aside.collapse{
+.nav .el-aside.collapse{
   width: 50px!important;
 }
-.el-container.is-vertical.collapse{
+.nav .el-container.is-vertical.collapse{
   margin-left: 50px;
+}
+.nav .box-card {
+  min-height: 100%;
 }
 /* 可以设置不同的进入和离开动画 */
 /* 设置持续时间和动画函数 */

@@ -2,21 +2,21 @@
     <div id="navmenu" class="navmenu" >
         <label v-for="parentMenu in NavMenus" :key="parentMenu.id">
             
-            <el-menu-item v-if="parentMenu.childs == null&&parentMenu.state==='ENABLE'" :index="parentMenu.alias" :route="parentMenu.url">
+            <el-menu-item v-if="parentMenu.children.length == 0" :index="parentMenu.name" :route="parentMenu.path">
                 <!-- <template slot="title"> -->
                     <icon-svg class="navmenu-menu-icon" :iconClass="parentMenu.icon"></icon-svg>
-                    <span>{{ parentMenu.alias }}</span>
+                    <span>{{ parentMenu.name }}</span>
                 <!-- </template> -->
             </el-menu-item>
-            <el-submenu v-if="parentMenu.childs != null&&parentMenu.state==='ENABLE'" :index="parentMenu.alias" :route="parentMenu.url">
+            <el-submenu v-if="parentMenu.children.length != 0" :index="parentMenu.name" :route="parentMenu.path">
                 <template slot="title">
                     <icon-svg class="navmenu-menu-icon" :iconClass="parentMenu.icon"></icon-svg>
-                    <span>{{ parentMenu.alias }}</span>
+                    <span>{{ parentMenu.name }}</span>
                 </template>
-                    <el-menu-item v-for="childMenu in parentMenu.childs" v-if="childMenu.state==='ENABLE'" :key="childMenu.id" :index="childMenu.alias" :route="childMenu.url">
+                    <el-menu-item v-for="childMenu in parentMenu.children" :key="childMenu.id" v-if="childMenu.icon"  :index="childMenu.name" :route="childMenu.path">
                         <template slot="title">
                             <icon-svg class="navmenu-menu-icon" :iconClass="childMenu.icon"></icon-svg>
-                        <span >{{ childMenu.alias }}</span>
+                        <span >{{ childMenu.name }}</span>
                         </template>
                     </el-menu-item>
             </el-submenu>
@@ -43,8 +43,8 @@ export default {
             console.log(indexPath);    
         },
         setMenu() {
-            if (store.getters.menus) {
-                this.NavMenus = store.getters.menus
+            if (store.getters.menu) {
+                this.NavMenus = store.getters.menu
             }
         }
     }

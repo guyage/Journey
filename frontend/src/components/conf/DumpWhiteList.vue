@@ -1,22 +1,22 @@
 <template>
     <div id="dumpwhitelist" class="dumpwhitelist">
-        <el-collapse v-model="activeNames">
-            <el-collapse-item title="导出白名单" name="1">
-                <div class="mysqlinst-operation" style="padding: 0.8em 0em 1em;">
-                    <el-button @click="addData" style="float: left;" icon="el-icon-edit" size="small" type="primary">添加</el-button>
-                    <el-input v-model="searchcontent" @keyup.enter.native="searchData" style="width: 200px;float: right;" size="small" placeholder="Search">
-                        <el-button @click="searchData" slot="append" icon="el-icon-search"></el-button>
-                    </el-input>
-                </div>
-                <br>
-                <el-table
-                size="small"
-                ref="multipleTable"
-                :data="table_data.slice((currentPage-1)*pagesize,currentPage*pagesize)"
-                border
-                strip
-                style="width: 100%"
-                @selection-change="handleSelectionChange">
+        <el-row style="padding-bottom:5px;">
+            <div class="mysqlinst-operation">
+                <el-button @click="addData" style="float: left;" icon="el-icon-edit" size="small" type="primary">添加</el-button>
+                <el-input v-model="searchcontent" @keyup.enter.native="searchData" style="width: 200px;float: right;" size="small" placeholder="Search">
+                    <el-button @click="searchData" slot="append" icon="el-icon-search"></el-button>
+                </el-input>
+            </div>
+        </el-row>
+        <el-row>
+            <el-table
+            size="small"
+            ref="multipleTable"
+            :data="table_data.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+            border
+            strip
+            style="width: 100%"
+            @selection-change="handleSelectionChange">
                 <el-table-column align="center" type="selection" width="55"></el-table-column>
                 <el-table-column align="center" type="index" label="序号" width="55">
                     <template slot-scope="scope"><span>{{scope.$index+(currentPage - 1) * pagesize + 1}} </span></template>
@@ -49,16 +49,18 @@
                     <el-button @click="handleDelete(scope.$index,scope.row)" size="mini" type="danger">删除</el-button>
                 </template>
                 </el-table-column>
-                </el-table>
-                <el-pagination
-                background
-                layout="total, prev, pager, next, jumper"
-                :total="table_data.length"
-                :page-size="pagesize"
-                @current-change="current_change">
-                </el-pagination>
-            </el-collapse-item>
-        </el-collapse>
+            </el-table>
+        </el-row>
+        <el-row>
+            <el-pagination
+            background
+            layout="total, prev, pager, next, jumper"
+            :total="table_data.length"
+            :page-size="pagesize"
+            @current-change="current_change">
+            </el-pagination>
+        </el-row>       
+                
     </div>
 </template>
 
@@ -69,7 +71,6 @@ export default {
     name: 'dumpwhitelist',
     data () {
         return {
-            activeNames: ['1'],
             searchcontent: '',
             table_data: [],
             // 分页参数

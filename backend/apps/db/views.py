@@ -9,6 +9,7 @@ from django.db.models import Q
 from rest_framework.response import Response
 from django.db.models.query import QuerySet
 from rest_framework import status
+from user.permissions import CustomerPremission
 
 
 class MySQLInstViewSet(viewsets.ModelViewSet):
@@ -28,6 +29,10 @@ class MySQLInstViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.SearchFilter, filters.OrderingFilter,)
     search_fields = ('inst_name','inst_host','inst_port','role','services','comment')
     ordering_fields = ('id',)
+    # 权限相关
+    permission_classes = [CustomerPremission,]
+    module_perms = ['db:mysqlinst']
+    
 
 class MongoDBInstViewSet(viewsets.ModelViewSet):
     """
@@ -46,6 +51,9 @@ class MongoDBInstViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.SearchFilter, filters.OrderingFilter,)
     search_fields = ('inst_name','inst_host','inst_port','role','services','comment')
     ordering_fields = ('id',)
+    # 权限相关
+    permission_classes = [CustomerPremission,]
+    module_perms = ['db:mongodbinst']
 
 class RedisInstViewSet(viewsets.ModelViewSet):
     """
@@ -64,6 +72,9 @@ class RedisInstViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.SearchFilter, filters.OrderingFilter,)
     search_fields = ('inst_name','inst_host','inst_port','role','services','comment')
     ordering_fields = ('id',)
+    # 权限相关
+    permission_classes = [CustomerPremission,]
+    module_perms = ['db:redisinst']
 
 class UserAccessMySQLViewSet(viewsets.ModelViewSet):
     """
@@ -76,6 +87,9 @@ class UserAccessMySQLViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.SearchFilter, filters.OrderingFilter,)
     search_fields = ('username','user_access_db','comment','status')
     ordering_fields = ('id',)
+    # 权限相关
+    permission_classes = [CustomerPremission,]
+    module_perms = ['db:useraccessmysql']
 
     def create(self, request, *args, **kwargs):
         real_data = request.data
@@ -110,6 +124,10 @@ class UserAccessMySQLViewSet(viewsets.ModelViewSet):
 
 class MySQLMetaViewSet(APIView):
 
+    # 权限相关
+    permission_classes = [CustomerPremission,]
+    module_perms = ['db:mysqlmeta']
+
     def post(self,request,format=None):
         dbapi = db_api()
         request_type = request.data['type']
@@ -137,6 +155,10 @@ class MySQLMetaViewSet(APIView):
         return Response(re)
 
 class UserAccessDbViewSet(APIView):
+
+    # 权限相关
+    permission_classes = [CustomerPremission,]
+    module_perms = ['db:useraccessdb']
 
     def post(self,request,format=None):
 
@@ -197,6 +219,9 @@ class UserAccessDbViewSet(APIView):
         return Response(re)
 
 class MySQLUserViewSet(APIView):
+    # 权限相关
+    permission_classes = [CustomerPremission,]
+    module_perms = ['db:mysqluser']
 
     def post(self,request,format=None):
         dbapi = db_api()
@@ -242,6 +267,9 @@ class MySQLUserViewSet(APIView):
         return Response(re)
 
 class MySQLStatusViewSet(APIView):
+    # 权限相关
+    permission_classes = [CustomerPremission,]
+    module_perms = ['db:mysqlstatus']
 
     def post(self,request,format=None):
         dbapi = db_api()
@@ -290,6 +318,10 @@ class UserAccessMongoDBViewSet(viewsets.ModelViewSet):
     search_fields = ('username','comment','status')
     ordering_fields = ('id',)
 
+    # 权限相关
+    permission_classes = [CustomerPremission,]
+    module_perms = ['db:useraccessmongodb']
+
     def create(self, request, *args, **kwargs):
         real_data = request.data
         userhavedb = UserAccessMongoDB.objects.filter(Q(username=request.data['username']),Q(mongodbinst=request.data['mongodbinst']),Q(status=1)|Q(status=2)).count()
@@ -329,6 +361,10 @@ class UserAccessRedisViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.SearchFilter, filters.OrderingFilter,)
     search_fields = ('username','comment','status')
     ordering_fields = ('id',)
+    # 权限相关
+    permission_classes = [CustomerPremission,]
+    module_perms = ['db:useraccessredis']
+
 
     def create(self, request, *args, **kwargs):
         real_data = request.data

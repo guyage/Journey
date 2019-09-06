@@ -1,30 +1,31 @@
 <template>
     <div id="redisinst" class="redisinst">
-        <el-collapse v-model="activeNames">
-            <el-collapse-item title="Redis实例" name="1">
-                <div class="redisinst-operation" style="padding: 0.8em 0em 1em;">
-                    <el-button @click="addData" style="float: left;" icon="el-icon-edit" size="small" type="primary">添加</el-button>
-                    <el-input v-model="searchcontent" @keyup.enter.native="searchData" style="width: 200px;float: right;" size="small" placeholder="Search">
-                        <el-button @click="searchData" slot="append" icon="el-icon-search"></el-button>
-                    </el-input>
-                </div>
-                <br>
-                <RedisInstTable
-                ref="datatable"
-                :TableData="table_data"
-                :TableColumn="table_columns"
-                :delData="delData"
-                :editData="editData">
-                </RedisInstTable>
-                <RedisInstDialog
-                ref="datadialog"
-                :show.sync="show"
-                :form="form"
-                :rules="rules"
-                :saveData="saveData">
-                </RedisInstDialog>
-            </el-collapse-item>
-        </el-collapse> 
+        <el-row style="padding-bottom:5px;">
+            <div class="redisinst-operation">
+                <el-button @click="addData" style="float: left;" icon="el-icon-edit" size="small" type="primary">添加</el-button>
+                <el-input v-model="searchcontent" @keyup.enter.native="searchData" style="width: 200px;float: right;" size="small" placeholder="Search">
+                    <el-button @click="searchData" slot="append" icon="el-icon-search"></el-button>
+                </el-input>
+            </div>
+        </el-row>
+        <el-row>
+            <RedisInstTable
+            ref="datatable"
+            :TableData="table_data"
+            :TableColumn="table_columns"
+            :delData="delData"
+            :editData="editData">
+            </RedisInstTable>
+        </el-row>
+        <el-row>
+            <RedisInstDialog
+            ref="datadialog"
+            :show.sync="show"
+            :form="form"
+            :rules="rules"
+            :saveData="saveData">
+            </RedisInstDialog>
+        </el-row> 
     </div>
 </template>
 

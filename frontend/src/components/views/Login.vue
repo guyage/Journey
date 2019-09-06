@@ -11,12 +11,12 @@
                     <el-form ref="ldaploginform" :model="ldaploginform" :rules="ldaploginrules" class="loginform">
                         <el-form-item lable="用户名" prop="username">
                             <el-input v-model="ldaploginform.username" placeholder="username">
-                                <icon-svg iconClass="icon-user" slot="prepend"></icon-svg>
+                                <icon-svg iconClass="iconuser" slot="prepend"></icon-svg>
                             </el-input>
                         </el-form-item>
                         <el-form-item lable="密码" prop="password">
                             <el-input type="password" v-model="ldaploginform.password" placeholder="password" @keyup.enter.native="handleldapLogin">
-                                <icon-svg iconClass="icon-lock" slot="prepend"></icon-svg>
+                                <icon-svg iconClass="iconlock" slot="prepend"></icon-svg>
                             </el-input>
                         </el-form-item>
                         <el-button :loading="loading" class="loginbutton" type="primary" @click="handleldapLogin">Login</el-button>
@@ -26,48 +26,18 @@
                     <el-form ref="normalloginform" :model="normalloginform" :rules="normalloginrules" class="loginform">
                         <el-form-item lable="用户名" prop="username">
                             <el-input v-model="normalloginform.username" placeholder="username">
-                                <icon-svg iconClass="icon-user" slot="prepend"></icon-svg>
+                                <icon-svg iconClass="iconuser" slot="prepend"></icon-svg>
                             </el-input>
                         </el-form-item>
                         <el-form-item lable="密码" prop="password">
                             <el-input type="password" v-model="normalloginform.password" placeholder="password" @keyup.enter.native="handlenormalLogin">
-                                <icon-svg iconClass="icon-lock" slot="prepend"></icon-svg>
+                                <icon-svg iconClass="iconlock" slot="prepend"></icon-svg>
                             </el-input>
                         </el-form-item>
                         <el-button :loading="loading" class="loginbutton" type="primary" @click="handlenormalLogin">Login</el-button>
                     </el-form>
                 </el-tab-pane>
             </el-tabs>
-            <el-dialog
-            title="说明"
-            :visible.sync="dialogVisible"
-            width="50%"
-            :before-close="handleClose">
-            <el-alert
-                title="1. 系统通过LDAP认证登陆 (即JIRA帐号)."
-                type="error"
-                :closable="false">
-            </el-alert>
-            <el-alert
-                title="2. 登陆后访问数据库需通过数据库权限申请."
-                type="error"
-                :closable="false">
-            </el-alert>
-            <el-alert
-                title="3. 增加SQL提示功能."
-                type="error"
-                :closable="false">
-            </el-alert>
-            <el-alert
-                title="4. 测试阶段，如有问题，联系管理员."
-                type="error"
-                :closable="false">
-            </el-alert>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-            </span>
-            </el-dialog>
         </div>
     </div>
 </template>
@@ -81,14 +51,12 @@ export default {
     },
     data () {
         return {
-            dialogVisible: true,
             backgroundcolor: {
                 color: '0,0,0',
                 count: 199,
                 opacity: 0.7,
             },
             activeName: '1',
-            api: '/login',
             loading: false,
             normalloginform: {
                 username: '',
@@ -117,13 +85,6 @@ export default {
         }
     },
     methods: {
-        handleClose(done) {
-            this.$confirm('确认关闭？')
-            .then(_ => {
-                done();
-            })
-            .catch(_ => {});
-        },
         handlenormalLogin() {
             this.$refs['normalloginform'].validate((valid)=>{
                 if(valid){
@@ -181,7 +142,7 @@ export default {
 .login .login-form {
     margin: 120px auto;
     max-width: 100%;
-    padding: 10px 35px 15px;
+    /* padding: 10px 35px 15px; */
     right: 0;
     width: 400px;
     margin-top: 0.1em;

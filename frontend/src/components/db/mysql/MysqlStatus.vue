@@ -1,58 +1,60 @@
 <template>
     <div class="mysqlstatus">
-        <el-collapse v-model="activeNames">
-            <el-collapse-item title="MySQL实例状态" name="1">
-                <div class="mysqlstatus-inst" style="padding: 0.8em 0em 1em;">
-                    <el-select v-model="selectinst" placeholder="请选择MySQL实例" @change="handleSelect">
-                        <el-option 
-                        v-for="item in instlist" 
-                        :key="item.instid"
-                        :label="item.instname"
-                        :value="item.instid">
-                        </el-option>
-                    </el-select>
-                </div>
-                <div class="mysqlstatus-button">
-                    <el-button @click="getMysqlInstStatus('full')" type="primary">SHOW FULL PROCESSLIST</el-button>
-                    <el-button @click="getMysqlInstStatus('active')" type="primary">SHOW ACTIVE</el-button>
-                    <el-button @click="getMysqlInstStatus('innodb')" type="primary">SHOW ENGINE INNODB STATUS</el-button>
-                    <el-button @click="getMysqlInstStatus('master')" type="primary">SHOW MASTER STATUS</el-button>
-                    <el-button @click="getMysqlInstStatus('slave')" type="primary">SHOW SLAVE STATUS</el-button>
-                </div>
-                <div class="mysqlstatus-results">
-                    <el-table :element-loading-text="loadingtext" v-loading="loading" v-if="results.length > 0 && type != 'innodb' && type != 'slave'" size="mini" style="width: 100%" highlight-current-row show-overflow-tooltip="true" max-height="700" border :data="results.slice((currentPage-1)*pagesize,currentPage*pagesize)">
-                        <el-table-column  align="center" v-for="(val, key) in col"  :key="key" :label="val" :prop="val">
-                        </el-table-column>
-                        <el-table-column v-if="type == 'full' || type == 'active'" width="100px" align="center" label="操作">
-                        <template slot-scope="scope">
-                            <el-button size="mini" type="danger" @click="handleKillSession(scope.$index,scope.row)">KILL</el-button>
-                        </template>
+        <el-row style="padding-bottom:5px;">
+            <div class="mysqlstatus-inst">
+                <el-select v-model="selectinst" placeholder="请选择MySQL实例" @change="handleSelect">
+                    <el-option 
+                    v-for="item in instlist" 
+                    :key="item.instid"
+                    :label="item.instname"
+                    :value="item.instid">
+                    </el-option>
+                </el-select>
+            </div>
+        </el-row>
+        <el-row>
+            <div class="mysqlstatus-button">
+                <el-button @click="getMysqlInstStatus('full')" type="primary">SHOW FULL PROCESSLIST</el-button>
+                <el-button @click="getMysqlInstStatus('active')" type="primary">SHOW ACTIVE</el-button>
+                <el-button @click="getMysqlInstStatus('innodb')" type="primary">SHOW ENGINE INNODB STATUS</el-button>
+                <el-button @click="getMysqlInstStatus('master')" type="primary">SHOW MASTER STATUS</el-button>
+                <el-button @click="getMysqlInstStatus('slave')" type="primary">SHOW SLAVE STATUS</el-button>
+            </div>
+        </el-row>
+        <el-row>
+            <div class="mysqlstatus-results">
+                <el-table :element-loading-text="loadingtext" v-loading="loading" v-if="results.length > 0 && type != 'innodb' && type != 'slave'" size="mini" style="width: 100%" highlight-current-row show-overflow-tooltip="true" max-height="700" border :data="results.slice((currentPage-1)*pagesize,currentPage*pagesize)">
+                    <el-table-column  align="center" v-for="(val, key) in col"  :key="key" :label="val" :prop="val">
+                    </el-table-column>
+                    <el-table-column v-if="type == 'full' || type == 'active'" width="100px" align="center" label="操作">
+                    <template slot-scope="scope">
+                        <el-button size="mini" type="danger" @click="handleKillSession(scope.$index,scope.row)">KILL</el-button>
+                    </template>
+                    </el-table-column>
+                </el-table>
+                <el-table :element-loading-text="loadingtext" v-loading="loading" v-if="results.length > 0 && type == 'slave'" size="mini" style="width: 100%" highlight-current-row show-overflow-tooltip="true" max-height="700" border :data="results.slice((currentPage-1)*pagesize,currentPage*pagesize)">
+                    <el-table-column :width="val.length*12" align="center" v-for="(val, key) in col"  :key="key" :label="val" :prop="val">
+                    </el-table-column>
+                </el-table>
+                <div class="mysqlstatus-innodbresults">
+                    <el-table :element-loading-text="loadingtext" v-loading="loading" v-if="results.length > 0 && type == 'innodb'" size="mini" style="width: 100%" highlight-current-row max-height="700" border :data="results.slice((currentPage-1)*pagesize,currentPage*pagesize)">
+                        <el-table-column align="center" v-for="(val, key) in col" v-if="val == 'Status'" :fixed="key===0?true:false" :key="key" :label="val" :prop="val">
                         </el-table-column>
                     </el-table>
-                    <el-table :element-loading-text="loadingtext" v-loading="loading" v-if="results.length > 0 && type == 'slave'" size="mini" style="width: 100%" highlight-current-row show-overflow-tooltip="true" max-height="700" border :data="results.slice((currentPage-1)*pagesize,currentPage*pagesize)">
-                        <el-table-column :width="val.length*12" align="center" v-for="(val, key) in col"  :key="key" :label="val" :prop="val">
-                        </el-table-column>
-                    </el-table>
-                    <div class="mysqlstatus-innodbresults">
-                        <el-table :element-loading-text="loadingtext" v-loading="loading" v-if="results.length > 0 && type == 'innodb'" size="mini" style="width: 100%" highlight-current-row max-height="700" border :data="results.slice((currentPage-1)*pagesize,currentPage*pagesize)">
-                            <el-table-column align="center" v-for="(val, key) in col" v-if="val == 'Status'" :fixed="key===0?true:false" :key="key" :label="val" :prop="val">
-                            </el-table-column>
-                        </el-table>
-                    </div>
-                    
-                    <el-pagination
-                    v-if="results.length > 0"
-                    background
-                    layout="total, sizes,prev, pager, next, jumper"
-                    :total="results.length"
-                    :page-sizes="[10, 20, 30]"
-                    :page-size="pagesize"
-                    @current-change="handleCurrentChange"
-                    @size-change="handleSizeChange">
-                    </el-pagination>
                 </div>
-            </el-collapse-item>
-        </el-collapse>
+                
+                <el-pagination
+                v-if="results.length > 0"
+                background
+                layout="total, sizes,prev, pager, next, jumper"
+                :total="results.length"
+                :page-sizes="[10, 20, 30]"
+                :page-size="pagesize"
+                @current-change="handleCurrentChange"
+                @size-change="handleSizeChange">
+                </el-pagination>
+            </div>
+        </el-row>     
     </div>
 </template>
 
@@ -65,7 +67,6 @@ export default {
         return {
             loading: false,
             loadingtext: '拼命加载中...',
-            activeNames: ['1'],
             // 分页参数
             total: 0,
             currentPage: 1,
