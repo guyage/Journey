@@ -23,6 +23,8 @@ pip install -r requirements.txt
 创建数据库
 ```bash
 create database journey;
+导入菜单
+source 在项目backend/initsql/menus.sql
 ```
 创建用户
 ```
