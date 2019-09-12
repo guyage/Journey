@@ -77,6 +77,8 @@ QuerySQL页面：
 工单页面：
 ![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/10.png)
 ![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/11.png)
+## 其他
+工单配置功能中动态Form功能参考(https://github.com/GavinZhuLei/vue-form-making)
 ## 使用交流
 * QQ群：521745114
 
