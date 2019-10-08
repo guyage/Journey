@@ -23,8 +23,6 @@ pip install -r requirements.txt
 创建数据库
 ```bash
 create database journey;
-导入菜单
-source 在项目backend/initsql/menus.sql
 ```
 创建用户
 ```
@@ -36,46 +34,15 @@ cd /app/Journey
 vim Journey.conf
 ```
 配置文件说明如下：
-```ini
 # 项目访问地址：可自定义(需注意，自定义修改前端项目配置文件对应域名，Journey/frontend/config/下env.js文件)
-[domain_name]                            
-domain = journey.xs.jf                    
-# 后端服务MySQL连接信息
-[db]
-host = X.X.X.X                            
-port = 3306
-user = journey
-password = journey
-database = journey
- # 邮件服务器连接信息
-[mail]
-mail_host = smtp.163.com
-mail_user = XX
-mail_pass = XX
-mail_postfix = 163.com
-# 创建用户默认密码，现已修改为随机密码
-[userinfo]
-default_passwd = aaa111
- # MySQL查询默认limit
-[sqllimit]
-limit = 100
-# LDAP认证信息
-[ldap]
-ldap_uri = ldap://X.X.X.X:389             # LDAP服务连接地址及端口
-ldap_base_dn = OU=X,DC=X,DC=com           # LDAP base_dn
-ldap_bind_dn = CN=X                       # LDAP查找用户(可为LDAP任意用户，建议单独创建一个用户)
-ldap_bind_passwd = X                      # LDAP查找用户密码
-# soar执行文件信息
-[soar]
-soar_path = /app/soar/soar
-soar_log = /app/soar/soar.log
-soar_file_tmp = /app/soar/sqltempfile/
-```
 配置完配置文件后初始化django models到数据库
 ```bash
 cd /app/Journey
 python manage.py makemigrations
 python manage.py migrate
+成功后
+导入菜单
+source 在项目backend/initsql/menus.sql
 ```
 5. 配置gunicorn
 ```bash
@@ -101,7 +68,6 @@ proc_name = 'Journey'
 cd /app/Journey
 python manage.py createsuperuser
 根据提示创建用户，用户后续使用普通登录方式
-注：创建用户需要将group修改为admin，才为管理员账户
 ```
 启动后端Django服务
 ```bash
