@@ -34,7 +34,7 @@ cd /app/Journey
 vim Journey.conf
 ```
 配置文件说明如下：
-# 项目访问地址：可自定义(需注意，自定义修改前端项目配置文件对应域名，Journey/frontend/config/下env.js文件)
+## 项目访问地址：可自定义(需注意，自定义修改前端项目配置文件对应域名，Journey/frontend/config/下env.js文件)
 配置完配置文件后初始化django models到数据库
 ```bash
 cd /app/Journey
