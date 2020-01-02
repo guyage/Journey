@@ -194,6 +194,7 @@ export const getApprovalGroup = params => {
         return request.get('/approvalgroup/');
     }
 };
+export const searchApprovalGroup = params => { return request.get('/approvalgroup/'+'?search='+params.searchcontent) };
 export const addApprovalGroup = params => { return request.post('/approvalgroup/',params);};
 export const editApprovalGroup = params => { return request.patch('/approvalgroup/'+params.id+'/',params);};
 // workorderstep
@@ -225,3 +226,41 @@ export const getGitLabInfo = params =>  { return request.post('/gitlabinfo/',par
 export const getMyWorkOrder = () =>  { return request.get('/myworkorder/'); };
 //todoworkorder
 export const getToDoWorkOrder = () =>  { return request.get('/todoworkorder/'); };
+
+//// sqlorder
+export const getMySqlOrder = () =>  { return request.get('/mysqlorder/'); };
+export const getToDoSqlOrder = () =>  { return request.get('/todosqlorder/'); };
+export const getSqlOrderType = params => {
+    if (params) {
+        return request.get('/sqlordertype/'+params.id+'/');
+    }
+    else {
+        return request.get('/sqlordertype/');
+    }
+};
+export const getSqlOrderDetail = params => { return request.post('/sqlorderdetail/',params); };
+export const getSqlOrder = params => {
+    if (params) {
+        return request.get('/sqlorder/'+params.id+'/');
+    }
+    else {
+        return request.get('/sqlorder/');
+    }
+};
+
+export const getSqlText = params => {
+    if (params) {
+        return request.get('/sqltext/'+params.id+'/');
+    }
+    else {
+        return request.get('/sqltext/');
+    }
+};
+export const editSqlFile = params => { return request.patch('/sqlfile/'+params.id+'/',params);};
+
+export const addSqlOrder = params => { return request.post('/sqlorder/',params); };
+export const editSqlOrder = params => { return request.patch('/sqlorder/'+params.id+'/',params);};
+
+
+
+export const Inception = params =>  { return request.post('/inception/',params); };

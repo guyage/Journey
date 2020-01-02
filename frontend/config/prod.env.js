@@ -1,6 +1,6 @@
 'use strict'
 
-const baseUrl = '"http://journey.test.xs.jf/api"'
+const baseUrl = '"http://journey.xs.jf/api"'
 
 module.exports = {
   NODE_ENV: '"production"',

@@ -192,6 +192,7 @@ class WorkOrderViewSet(viewsets.ModelViewSet):
         elif (status == 4):
             #插入工单步骤
             WorkOrderState.objects.create(wordorder_id_id=workorder_id,step=step,action='驳回',operator=operator)
+            WorkOrder.objects.filter(id=workorder_id).update(approver_group_id='')
         
         if getattr(instance, '_prefetched_objects_cache', None):
             # If 'prefetch_related' has been applied to a queryset, we need to

@@ -57,26 +57,9 @@ def send_mail(to_list,type=None,maildata=None):
         res = send_mail_fun(to_list,sub,content)
 
     elif (type == 4):
-        if (maildata['git_permission'] == 'Developer'):
-            permission = '读写'
-            project = maildata['git_project']
-        elif (maildata['git_permission'] == 'Reporter'):
-            permission = '只读'
-            project = maildata['git_project']
-        elif (maildata['git_permission'] == 'None'):
-            permission = '移除权限'
-            project = maildata['git_project']
-        elif (maildata['git_permission'] == 'Create'):
-            permission = '创建新项目+读写权限'
-            project = maildata['git_project_group'] + '/' + maildata['git_project']
-        elif (maildata['git_permission'] == 'New'):
-            permission = '创建新项目组及新项目+读写权限'
-            project = maildata['git_project_group'] + '/' + maildata['git_project']
-        sub = 'Git权限工单'
-        content = '您好，Git权限工单待审批!\n \
-        Git账户: %s \n \
-        Git项目: %s \n \
-        Git权限: %s \n' % (maildata['git_user'], project,permission)
+        sub = '新工单待审批通知'
+        content = '您好，工单待审批!\n \
+        工单内容如下: %s \n' % (maildata)
         res = send_mail_fun(to_list,sub,content)
 
     return res

@@ -11,8 +11,7 @@
             ref="datatable"
             :TableColumn="table_columns"
             :TableData="table_data"
-            :editData="editData"
-            :delData="delData">
+            :editData="editData">
             </UserTable>
         </el-row>
         <el-row>

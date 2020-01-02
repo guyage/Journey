@@ -36,6 +36,10 @@ ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = 'user.Users'
 
+
+MEDIA_ROOT = os.path.join(BASE_DIR, "uploads")
+MEDIA_URL = "/uploads/"
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -47,12 +51,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
+    'rest_framework_swagger',
     'user',
     'db',
     'conf',
     'query',
     'common',
     'workflow',
+    'sqlorder',
 ]
 
 MIDDLEWARE = [
@@ -192,7 +198,7 @@ AUTH_LDAP_USER_SEARCH = LDAPSearch(
 
 AUTH_LDAP_GROUP_SEARCH = LDAPSearch(LADP_BASE_DN,ldap.SCOPE_SUBTREE, "(objectClass=group)" )  #搜索某个OU下组信息
 AUTH_LDAP_GROUP_TYPE = GroupOfNamesType(name_attr="cn") #返回的组的类型，并用来判断用户与组的从属关系
-AUTH_LDAP_MIRROR_GROUPS = True #导入用户的组信息，在用户登录的时候把用户的域组关系同步过来。每次用户登录时，都会把用户的组关系删除，重新从ldap中进行同步（解决办法参考后面）
+# AUTH_LDAP_MIRROR_GROUPS = True #导入用户的组信息，在用户登录的时候把用户的域组关系同步过来。每次用户登录时，都会把用户的组关系删除，重新从ldap中进行同步（解决办法参考后面）
 AUTH_LDAP_ALWAYS_UPDATE_USER = True #是否同步LDAP修改
 
 

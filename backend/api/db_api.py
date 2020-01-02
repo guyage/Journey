@@ -194,3 +194,32 @@ class db_api():
             get_next = token.lower() in ["from", "join"]
 
         return result
+
+    def inception(self,connectinfo,sql):
+        conn_host = connectinfo['conn_host']
+        conn_port = connectinfo['conn_port']
+        conn_user = connectinfo['conn_user']
+        conn_passwd = connectinfo['conn_passwd']
+        # conn_db = connectinfo['conn_db']
+        try:
+            conn = pymysql.connect(host=conn_host,port=int(conn_port),user=conn_user,passwd=conn_passwd,charset='utf8',cursorclass = pymysql.cursors.DictCursor)
+            cursor = conn.cursor()
+            ret = cursor.execute(sql)
+            index = cursor.description
+            check_col = []
+            # get column name
+            try:
+                for i in index:
+                    check_col.append(i[0])
+            except Exception as e:
+                conn.commit()
+                cursor.close()
+                conn.close()
+                return (['ok'],''), ['set']
+            check_results=cursor.fetchall()
+            cursor.close()
+            conn.close()
+            return (check_col,check_results)
+        except Exception as e:
+             # print "Mysql Error %d: %s" % (e.args[0], e.args[1])
+             return([str(e)],''),['error']
