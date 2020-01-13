@@ -71,7 +71,7 @@
             layout="total, sizes,prev, pager, next, jumper"
             :total="table_data.length"
             :page-size="pagesize"
-            :page-sizes="[10, 20, 30]"
+            :page-sizes="[10, 15, 20, 30]"
             @current-change="current_change"
             @size-change="handleSizeChange">
             </el-pagination>

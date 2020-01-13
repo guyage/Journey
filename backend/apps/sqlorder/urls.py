@@ -21,6 +21,7 @@ urlpatterns = [
     url(r'inception', InceptionViewSet.as_view()),
     url(r'sqlorderdetail', SqlOrderDetailViewSet.as_view()),
     url(r'todosqlorder', ToDoSqlOrderViewSet.as_view()),
+    url(r'allsqlorder', AllSqlOrderViewSet.as_view()),
     # 上传附件
     # path('uploads/<path:path>',serve,{'document_root':settings.MEDIA_ROOT}),
 ]

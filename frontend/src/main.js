@@ -22,6 +22,9 @@ Vue.use(FormMaking)
 //全局进度条
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
+// 引入echarts
+import echarts from 'echarts'
+Vue.prototype.$echarts = echarts
 //全局注册icon-svg
 Vue.component('icon-svg', IconSvg)
 //全局配置vue-codemirror

@@ -2,7 +2,7 @@
     <div id="sqlordertype" class="sqlordertype">
         <el-row style="padding-bottom:5px;">
             <div class="sqlordertype-operation">
-                <el-button @click="addData" style="float: left;" icon="el-icon-edit" size="small" type="primary">添加</el-button>
+                <el-button @click="handleAdd" style="float: left;" icon="el-icon-edit" size="small" type="primary">添加</el-button>
                 <el-input v-model="searchcontent" @keyup.enter.native="searchData" style="width: 200px;float: right;" size="small" placeholder="Search">
                     <el-button @click="searchData" slot="append" icon="el-icon-search"></el-button>
                 </el-input>
@@ -22,29 +22,10 @@
                     <template slot-scope="scope"><span>{{scope.$index+(currentPage - 1) * pagesize + 1}} </span></template>
                 </el-table-column>
                 <el-table-column width="200" align="center" label="类型" prop="ordertype" >
-                    <template slot-scope="scope">
-                        <template v-if="scope.row.isedit">
-                            <el-input size="small" v-model="ordertype_temp"></el-input>
-                        </template>
-                        <span v-if="!scope.row.isedit">{{scope.row.ordertype}}</span>
-                    </template>
-                    
                 </el-table-column>
                 <el-table-column align="center" label="一级审批" prop="first_approver" >
-                    <!-- <template slot-scope="scope">
-                        <template v-if="scope.row.isadd">
-                            <el-input size="small" v-model="white_user_temp"></el-input>
-                        </template>
-                        <span v-if="!scope.row.isadd">{{scope.row.white_user}}</span>  
-                    </template> -->
                 </el-table-column>
                 <el-table-column align="center" label="二级审批" prop="second_approver" >
-                    <!-- <template slot-scope="scope">
-                        <template v-if="scope.row.isadd">
-                            <el-input size="small" v-model="white_user_temp"></el-input>
-                        </template>
-                        <span v-if="!scope.row.isadd">{{scope.row.white_user}}</span>  
-                    </template> -->
                 </el-table-column>
                 <el-table-column align="center" width="100" label="自动执行" prop="is_auto" >
                     <template slot-scope="scope">
@@ -61,16 +42,8 @@
                 </el-table-column>
                 <el-table-column width="300" align="center" label="操作">
                 <template slot-scope="scope">
-                    <div v-if="scope.row.isedit">
-                        <el-button v-if="!scope.row.isadd" @click="saveData('edit',scope.row)" size="mini" type="success">ok</el-button>
-                        <el-button v-if="scope.row.isadd" @click="saveData('add',scope.row)" size="mini" type="success">ok</el-button>
-                        <el-button v-if="!scope.row.isadd" @click="handleCancel('edit',scope.$index,scope.row)" size="mini" type="warning">cancel</el-button>
-                        <el-button v-if="scope.row.isadd" @click="handleCancel('add',scope.$index,scope.row)" size="mini" type="warning">cancel</el-button>
-                    </div>
-                    <div v-if="!scope.row.isedit">
-                        <el-button @click="handleEdit(scope.$index,scope.row)" size="mini" type="primary">编辑</el-button>
-                        <el-button @click="handleDelete(scope.$index,scope.row)" size="mini" type="danger">删除</el-button>
-                    </div>
+                    <el-button @click="handleEdit(scope.$index,scope.row)" size="mini" type="primary">编辑</el-button>
+                    <el-button @click="handleDelete(scope.$index,scope.row)" size="mini" type="danger">删除</el-button>
                 </template>
                 </el-table-column>
             </el-table>
@@ -83,13 +56,48 @@
             :page-size="pagesize"
             @current-change="current_change">
             </el-pagination>
-        </el-row> 
+        </el-row>
+        <el-row>
+            <div class="sqlordertype-dialog">
+                <el-dialog
+                :title="isEdit?'编辑SQL工单类型':'添加SQL工单类型'"
+                :visible.sync="dialogVisible"
+                :before-close="handleClose">
+                <el-card>
+                    <el-form :model="form" ref="form">
+                        <el-form-item label="工单类型 : " label-width="100px" prop="ordertype">
+                            <el-input style="width: 300px; float: left;" v-model="form.ordertype" auto-complete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="一级审核 : " label-width="100px" prop="first_approver">
+                            <el-select clearable style="width: 300px; float: left;" v-model="form.first_approver" placeholder="请选择一级审核组">
+                                <el-option v-for="(val,index) in approvalgroup_list" :key="index" :label="val.approver_group_name" :value="val.id" ></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="二级审核 : " label-width="100px" prop="second_approver">
+                            <el-select clearable style="width: 300px; float: left;" v-model="form.second_approver" placeholder="请选择二级审核组">
+                                <el-option v-for="(val,index) in approvalgroup_list" :key="index" :label="val.approver_group_name" :value="val.id" ></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="DBA审核 : " label-width="100px" prop="dba_approver">
+                            <el-select clearable style="width: 300px; float: left;" v-model="form.dba_approver" placeholder="请选择DBA审核组">
+                                <el-option v-for="(val,index) in approvalgroup_list" :key="index" :label="val.approver_group_name" :value="val.id" ></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label-width="100px">
+                            <el-button style="float: left;" type="primary" @click="handleSumit">提交</el-button>
+                            <el-button style="float: left;" @click="dialogVisible = false;">取消</el-button>
+                        </el-form-item>
+                    </el-form>
+                </el-card>
+                </el-dialog>
+            </div>
+        </el-row>
     </div>
 </template>
 
 <script>
 import store from '@/store/store.js';
-import { getSqlOrderType } from '@/api/api.js';
+import { getSqlOrderType,getApprovalGroup } from '@/api/api.js';
 export default {
     name: 'sqlordertype',
     data () {
@@ -100,26 +108,63 @@ export default {
             total: 0,
             currentPage: 1,
             pagesize: 20,
-            // 编辑参数
-            ordertype_temp: '',
+            // 添加编辑参数
+            ordertypeid: '',
+            approvalgroup_list: [],
+            form: {
+                ordertype: '',
+                first_approver: '',
+                second_approver: '',
+                dba_approver: '',
+                is_file: '',
+            },
+            initform: {
+                ordertype: '',
+                first_approver: '',
+                second_approver: '',
+                dba_approver: '',
+                is_file: '',
+            },
+            isEdit: false,
+            dialogVisible: false,
         }
     },
     methods: {
+        resetForm() {
+            this.form = this.initform
+        },
         handleSelectionChange(val) {
             this.multipleSelection = val; 
         },
         current_change(currentPage){
             this.currentPage = currentPage;
         },
-        handleEdit($index,row) {
-            row.isedit = true;
-            console.log(row);
-            this.ordertype_temp = row.ordertype
-            
+        handleClose(done) {
+            this.$confirm('确认关闭？')
+            .then(_ => {
+                done();
+            })
+            .catch(_ => {});
         },
-        addData() {
-            this.ordertype_temp = ''
-            this.table_data.unshift({ordertype:'',isadd:true,isedit:true})
+        handleSumit(){
+
+        },
+        handleAdd(){
+            this.resetForm();
+            this.dialogVisible = true;
+            this.isEdit = false;
+        },
+        handleEdit($index,row) {
+            this.ordertypeid = row.id
+            getSqlOrderType({'id':this.ordertypeid}).then((response) => {
+                console.log(response.data);
+                this.form = response.data
+                this.dialogVisible = true;
+                this.isEdit = true;
+            })  
+        },
+        saveData() {
+            
         },
         searchData() {
 
@@ -127,19 +172,24 @@ export default {
         getDataList() {
             getSqlOrderType().then((response) => {
                 console.log(response.data);
-                
-                for (let i=0;i<response.data.length;i++) {
-                    response.data[i].isedit = false
-                    // response.data[i].isadd = false
-                }
                 this.table_data = response.data
             }).catch((error) => {
                 console.log(error);
             })
         },
+        getApprovalGroupList() {
+            getApprovalGroup().then((response) => {
+                console.log(response.data);
+                
+                this.approvalgroup_list = response.data
+            }).catch((error) => {
+                console.log(error);
+            })
+        }
     },
     mounted() {
         this.getDataList()
+        this.getApprovalGroupList()
     },
 }
 </script>
@@ -150,5 +200,8 @@ export default {
     font-weight: bold;
     padding-left: 0.5em;
     border-bottom: 1px solid #dcdfe6;
+}
+.sqlordertype-dialog{
+    text-align: left;
 }
 </style>

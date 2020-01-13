@@ -46,6 +46,8 @@ urlpatterns = [
     path(r'api/', include('workflow.urls')),
     # sqlorder
     path(r'api/', include('sqlorder.urls')),
+    # charts
+    path(r'api/', include('charts.urls')),
     # 上传附件
     path('uploads/<path:path>',serve,{'document_root':settings.MEDIA_ROOT}),
 

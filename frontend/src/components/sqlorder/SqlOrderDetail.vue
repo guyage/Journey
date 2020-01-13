@@ -223,51 +223,83 @@ export default {
             .catch(_ => {});
         },
         handleExec(action,exectype) {
+            let prompt = ''
+            if (action == 'agree') {
+                prompt = '执行'
+            } else {
+                prompt = '取消执行'
+            }
             let change_data = {};
             change_data.id = this.sqlorderid
             change_data.operator = store.getters.username
             change_data.action = action
             change_data.exectype = exectype
-            editSqlOrder(change_data).then((response) => {
-                this.getSqlOrderDetail()
-                this.$message.success('处理成功!');
-                this.loading = false
-            }).catch((error) => {
-                console.log(error);
-                this.$message.error('处理失败!');
-                this.loading = false
+            this.$confirm('确认'+prompt+'?')
+            .then(_ => {
+                editSqlOrder(change_data).then((response) => {
+                    this.getSqlOrderDetail()
+                    this.$message.success('处理成功!');
+                    this.loading = false
+                }).catch((error) => {
+                    console.log(error);
+                    this.$message.error('处理失败!');
+                    this.loading = false
+                })
             })
+            .catch(_ => {});
+            
         },
         handleCheck(action,checktype) {
+            let prompt = ''
+            if (checktype == 'success') {
+                prompt = '验证成功'
+            } else {
+                prompt = '验证失败'
+            }
             let change_data = {};
             change_data.id = this.sqlorderid
             change_data.operator = store.getters.username
             change_data.action = action
             change_data.checktype = checktype
-            editSqlOrder(change_data).then((response) => {
-                this.getSqlOrderDetail()
-                this.$message.success('处理成功!');
-                this.loading = false
-            }).catch((error) => {
-                console.log(error);
-                this.$message.error('处理失败!');
-                this.loading = false
+            this.$confirm('确认'+prompt+'?')
+            .then(_ => {
+                editSqlOrder(change_data).then((response) => {
+                    this.getSqlOrderDetail()
+                    this.$message.success('处理成功!');
+                    this.loading = false
+                }).catch((error) => {
+                    console.log(error);
+                    this.$message.error('处理失败!');
+                    this.loading = false
+                })
             })
+            .catch(_ => {});
+            
         },
         handleAction(action) {
+            let prompt = ''
+            if (action == 'agree') {
+                prompt = '通过'
+            } else {
+                prompt = '驳回'
+            }
             let change_data = {};
             change_data.id = this.sqlorderid
             change_data.operator = store.getters.username
             change_data.action = action
-            editSqlOrder(change_data).then((response) => {
-                this.getSqlOrderDetail()
-                this.$message.success('处理成功!');
-                this.loading = false
-            }).catch((error) => {
-                console.log(error);
-                this.$message.error('处理失败!');
-                this.loading = false
+            this.$confirm('确认'+prompt+'?')
+            .then(_ => {
+                editSqlOrder(change_data).then((response) => {
+                    this.getSqlOrderDetail()
+                    this.$message.success('处理成功!');
+                    this.loading = false
+                }).catch((error) => {
+                    console.log(error);
+                    this.$message.error('处理失败!');
+                    this.loading = false
+                })
             })
+            .catch(_ => {});
         },
         getApproverGroupUsers(states,ortertype_info) {
             this.approver_group_hasuser = []

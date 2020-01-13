@@ -230,6 +230,8 @@ export const getToDoWorkOrder = () =>  { return request.get('/todoworkorder/'); 
 //// sqlorder
 export const getMySqlOrder = () =>  { return request.get('/mysqlorder/'); };
 export const getToDoSqlOrder = () =>  { return request.get('/todosqlorder/'); };
+export const getAllSqlOrder = () =>  { return request.get('/allsqlorder/'); };
+export const SearchAllSqlOrder = params => { return request.post('/allsqlorder/'+params.id+'/',params);};
 export const getSqlOrderType = params => {
     if (params) {
         return request.get('/sqlordertype/'+params.id+'/');
@@ -260,6 +262,9 @@ export const editSqlFile = params => { return request.patch('/sqlfile/'+params.i
 
 export const addSqlOrder = params => { return request.post('/sqlorder/',params); };
 export const editSqlOrder = params => { return request.patch('/sqlorder/'+params.id+'/',params);};
+
+
+
 
 
 

@@ -70,7 +70,7 @@
             background
             layout="total, sizes,prev, pager, next, jumper"
             :total="table_data.length"
-            :page-sizes="[10, 20, 30]"
+            :page-sizes="[10, 15, 20, 30]"
             :page-size="pagesize"
             @current-change="current_change"
             @size-change="handleSizeChange">

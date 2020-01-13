@@ -232,7 +232,7 @@ const DynamicRouter = [
                 path: '/sqlordertype', 
                 component: resolve => require(['@/components/sqlorder/SqlOrderType.vue'],resolve), 
                 name: 'sqlordertype',
-                meta: { tag: '工单类型',title: ['SQL工单','工单类型']},
+                meta: { tag: 'SQL工单类型',title: ['SQL工单','SQL工单类型']},
             },
             {
                 path: '/mysqlorder', 
@@ -245,6 +245,12 @@ const DynamicRouter = [
                 component: resolve => require(['@/components/sqlorder/ToDoSqlOrder.vue'],resolve), 
                 name: 'todosqlorder',
                 meta: { tag: '待办SQL工单',title: ['SQL工单','待办SQL工单']},
+            },
+            {
+                path: '/allsqlorder', 
+                component: resolve => require(['@/components/sqlorder/AllSqlOrder.vue'],resolve), 
+                name: 'allsqlorder',
+                meta: { tag: '全部SQL工单',title: ['SQL工单','全部SQL工单']},
             },
             {
                 path: '/newsqlorder', 

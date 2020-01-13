@@ -196,8 +196,10 @@ export default {
                     this.loading = true;
                     addSqlOrder(this.form).then((response) => {
                         this.loading = false;
+                        this.$message.success('提交成功!');
                         if (response) {
                             this.$refs.sqlfile.submitUpload(response.data.id)
+                            this.$router.push({ path: '/mysqlorder'})
                         }
                     }).catch((error) => {
                         this.$message.error('提交失败!');
@@ -213,16 +215,22 @@ export default {
         handleSumit() {
             this.loading = true;
             this.form.sql_data = this.sqlform
-            addSqlOrder(this.form).then((response) => {
-                this.$message.success('提交成功!');
-                this.dialogVisible = false;
-                this.loading = false;
-            }).catch((error) => {
-                this.$message.error('提交失败!');
-                console.log(error);
-                this.dialogVisible = false;
-                this.loading = false;
+            this.$confirm('确认提交?')
+            .then(_ => {
+                addSqlOrder(this.form).then((response) => {
+                    this.$message.success('提交成功!');
+                    this.dialogVisible = false;
+                    this.loading = false;
+                    this.$router.push({ path: '/mysqlorder'})
+                }).catch((error) => {
+                    this.$message.error('提交失败!');
+                    console.log(error);
+                    this.dialogVisible = false;
+                    this.loading = false;
+                })
             })
+            .catch(_ => {});
+            
         },
         handleSelectOrderType(val) {
             let selectordertype = []
@@ -267,6 +275,8 @@ export default {
                 let check_data = {}
                 check_data.type = 'check'
                 check_data.sql_data = this.sqlform.sqlcontent[i]
+                console.log(check_data);
+                
                 Inception(check_data).then((response) => {
                     this.checkinfo_data.push(...response.data.results)
                     this.is_show = true                    
