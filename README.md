@@ -36,10 +36,15 @@
   * QuerySql：mysql查询功能，提供语法提示功能，导出查询结果功能，limit限制可通过QueryLimit动态调整
   * QueryMongoDB：MongoDB查询功能
   * QueryRedis：Redis查询功能
-* 工单系统：
+* 自助工单申请：
   * 新建工单：创建工单
   * 我创建的：查看自己创建的工单
   * 我待办的：待办工单
+* SQL工单：
+  * 新建SQL工单：新建SQL工单(审核部分集成inception，inception已闭源，见个人fork项目)
+  * 我的SQL工单：我创建的SQL工单
+  * 待办SQL工单：我待办的SQL工单
+  * 全部SQL工单：全部历史工单，默认显示近7日的工单，可通过时间搜索
 ## 环境
 * 后端
   * python 3.6
@@ -55,10 +60,15 @@
 ## 部分功能展示
 登录界面(支持LADP和普通登陆)：
 ![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/1.png)
+dashboard页面：
+![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/111.png)
 菜单管理：
 ![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/12.png)
 角色管理：
 ![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/2.png)
+SQL工单功能页面：
+![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/112.png)
+![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/113.png)
 MySQL功能页面：
 MySQL用户列表页面：
 ![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/6.png)
