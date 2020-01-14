@@ -41,7 +41,7 @@
   * 我创建的：查看自己创建的工单
   * 我待办的：待办工单
 * SQL工单：
-  * 新建SQL工单：新建SQL工单(审核部分集成inception，inception已闭源，见个人fork项目)
+  * 新建SQL工单：新建SQL工单，可添加多个数据库上线(审核部分集成inception，inception已闭源，见个人fork项目)
   * 我的SQL工单：我创建的SQL工单
   * 待办SQL工单：我待办的SQL工单
   * 全部SQL工单：全部历史工单，默认显示近7日的工单，可通过时间搜索
