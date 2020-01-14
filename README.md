@@ -67,6 +67,8 @@ dashboard页面：
 角色管理：
 ![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/2.png)
 SQL工单功能页面：
+![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/115.png)
+![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/114.png)
 ![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/112.png)
 ![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/113.png)
 MySQL功能页面：
