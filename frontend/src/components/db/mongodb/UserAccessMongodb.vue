@@ -54,7 +54,7 @@
 <script>
 import store from '@/store/store.js';
 import UserAccessTable from '../mysql/UserAccessTable.vue';
-import { getUserAccessMongoDB,getMongoDBInst,execQueryMongodb,editUserAccessMongoDB,delUserAccessMongoDB,addUserAccessMongoDB,searchUserAccessMongoDB } from '@/api/api.js';
+import { getUserAccessMongoDB,getMongoDBInst,execQueryMongodb,editUserAccessMongoDB,delUserAccessMongoDB,addUserAccessMongoDB,searchUserAccessMongoDB } from '@/api/db.js';
 export default {
     name: "useraccessmongodb",
     components: {

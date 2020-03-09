@@ -64,7 +64,7 @@
                 <div id="hisSqlOrder" style="width:100%;height:300px;"></div>
             </el-card>
             </div> -->
-            <DrawLine :title="title" :options="options"></DrawLine>
+            <DrawLine v-if="isshow" :title="title" :options="options"></DrawLine>
         </el-row>
     </div>
 </template>
@@ -78,6 +78,7 @@ export default {
     },
     data () {
         return {
+            isshow: false,
             sqlorder_total: '',
             title: '最近7天工单数(个)',
             options: {
@@ -85,7 +86,7 @@ export default {
                     trigger: 'axis'
                 },
                 legend: {
-                    data: ['SQL工单', 'OPS工单',]
+                    data: []
                 },
                 grid: {
                     left: '3%',
@@ -101,30 +102,18 @@ export default {
                 xAxis: {
                     type: 'category',
                     boundaryGap: false,
-                    data: ['2020-01-01', '2020-01-02', '2020-01-03', '2020-01-04', '2020-01-05', '2020-01-06', '2020-01-07']
+                    data: []
                 },
                 yAxis: {
                     type: 'value'
                 },
                 series: [
-                    {
-                        name: 'SQL工单',
-                        type: 'line',
-                        stack: '总量',
-                        data: [1, 5, 1, 5, 10, 3, 1]
-                    },
-                    {
-                        name: 'OPS工单',
-                        type: 'line',
-                        stack: '总量',
-                        data: [12, 1, 11, 1, 5, 3, 7]
-                    },
                 ]
             },
         }
     },
     methods: {
-        ShowInitCharts(flag) {
+        ShowInitCharts() {
             ShowCharts({'flag':0}).then((response) => {
                 let col = ''
                 col = response.data.col[0]
@@ -132,9 +121,41 @@ export default {
                 console.log('sqlorder_total',this.sqlorder_total);
             })
         },
+        showHisSqlOrder() {
+            ShowCharts({'flag':1}).then((response) => {
+                if (response) {
+                    this.options.legend.data.push('SQL工单')
+                    let hissqlorder = { name: 'SQL工单',type: 'line',stack: '总量',data: response.data.results.histotal}
+                    this.options.series.push(hissqlorder)
+                    this.options.xAxis.data = response.data.results.hisdate
+                    this.isshow = true
+                }
+            })
+        },
+        // dateList() {
+        //     let dateArray = [];
+        //     let myDate = new Date(); //获取今天日期
+        //     myDate.setDate(myDate.getDate() - 7);
+        //     let dateTemp;  // 临时日期数据
+        //     let flag = 1; 
+        //     for (let i = 0; i < 7; i++) {
+        //         dateTemp = myDate.getFullYear() + '-' +(myDate.getMonth()+1)+"-"+myDate.getDate();
+        //         dateArray.push(dateTemp);
+        //         myDate.setDate(myDate.getDate() + flag);
+        //     }
+        //     console.log(dateArray);
+        //     this.options.xAxis.data = dateArray
+        //     console.log(this.options.xAxis.data);
+            
+            
+        // },
     },
     mounted() {
         this.ShowInitCharts()
+        this.showHisSqlOrder()
+    },
+    created() {
+        // this.showHisSqlOrder()
     },
 }
 </script>

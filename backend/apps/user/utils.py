@@ -1,6 +1,7 @@
 # coding=utf-8
 from user.models import *
 from django.db.models import Q
+from utils.get_config import get_conf
 
 def generate_menu(menus_id,type):
     menus = []
@@ -56,7 +57,12 @@ def init_permissions(user,type):
         return generate_menu(menus_id,'perms')
     elif (type == 'router'):
         return generate_menu(menus_id,'router')
-    
+
+# 获取部署环境
+def get_env():
+
+    env = get_conf('deployment','environment')
+    return env
 
 def jwt_response_payload_handler(token, user=None, request=None):
     """
@@ -69,4 +75,5 @@ def jwt_response_payload_handler(token, user=None, request=None):
         'menu': init_permissions(user,'menu'),
         'perms': init_permissions(user,'perms'),
         'router': init_permissions(user,'router'),
+        'environment': get_env(),
     }

@@ -135,7 +135,8 @@
 <script>
 import store from '@/store/store.js';
 import SqlFile from './SqlFile.vue';
-import { getSqlOrderType,getMysqlInst,getMysqlMeta,addSqlOrder,Inception } from '@/api/api.js';
+import { getMysqlInst,getMysqlMeta } from '@/api/db.js';
+import { getSqlOrderType,addSqlOrder,Inception } from '@/api/sqlorder.js';
 export default {
     name: 'newsqlorder',
     components: {

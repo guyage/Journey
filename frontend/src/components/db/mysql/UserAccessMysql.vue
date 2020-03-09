@@ -54,7 +54,7 @@
 <script>
 import store from '@/store/store.js';
 import UserAccessTable from './UserAccessTable.vue';
-import { getUserAccessMysql,getMysqlInst,getMysqlMeta,editUserAccessMysql,delUserAccessMysql,addUserAccessMysql,searchUserAccessMysql } from '@/api/api.js';
+import { getUserAccessMysql,getMysqlInst,getMysqlMeta,editUserAccessMysql,delUserAccessMysql,addUserAccessMysql,searchUserAccessMysql } from '@/api/db.js';
 export default {
     name: "useraccessmysql",
     components: {

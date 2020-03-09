@@ -6,7 +6,7 @@
         effect="dark">
         </el-alert>
         <el-row>
-            <OrderCharts></OrderCharts>
+            <!-- <OrderCharts></OrderCharts> -->
         </el-row>
     </div>
 </template>

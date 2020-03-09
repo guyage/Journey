@@ -4,7 +4,7 @@ from db.serializers import *
 from rest_framework import filters
 from rest_framework import viewsets
 from rest_framework.views import APIView
-from api.db_api import db_api
+from utils.db_api import db_api
 from django.db.models import Q
 from rest_framework.response import Response
 from django.db.models.query import QuerySet

@@ -78,7 +78,7 @@
 </template>
 
 <script>
-import { getRole,getMenus,addRole,getUser,editRole } from '@/api/api.js';
+import { getRole,getMenus,addRole,getUser,editRole } from '@/api/user.js';
 export default {
     name: 'role',
     data () {
@@ -224,5 +224,25 @@ export default {
     justify-content: space-between;
     font-size: 14px;
     padding-right: 8px;
+}
+.role .el-checkbox{
+    width: 100%;
+}
+/* 设置滚动条的样式 */
+.role .el-transfer-panel__list::-webkit-scrollbar {
+    width: 4px;
+    height: 6px;
+}
+/* 滚动槽 */
+.role .el-transfer-panel__list::-webkit-scrollbar-track{
+    border-radius: 2px;
+    /* background: hsla(220,4%,58%,.3); */
+    /* background: rgba(0, 0, 0, 0.3); */
+}
+/* 滚动条滑块 */
+.role .el-transfer-panel__list::-webkit-scrollbar-thumb{
+    border-radius: 2px;
+    background: hsla(220,4%,58%,.3);
+    /* background: rgba(0, 0, 0, 0.3); */
 }
 </style>

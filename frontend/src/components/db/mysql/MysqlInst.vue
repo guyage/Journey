@@ -32,7 +32,7 @@
 <script>
 import MysqlInstTable from './MysqlInstTable.vue';
 import MysqlInstDialog from './MysqlInstDialog.vue';
-import { getMysqlInst, searchMysqlInst, addMysqlInst, delMysqlInst, editMysqlInst } from '@/api/api.js';
+import { getMysqlInst, searchMysqlInst, addMysqlInst, delMysqlInst, editMysqlInst } from '@/api/db.js';
 export default {
     name: 'mysqlinst',
     components:{

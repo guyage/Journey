@@ -3,14 +3,23 @@ from django.core import serializers
 from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from api.db_api import db_api
+from utils.db_api import db_api
 import json,datetime,time
 from db.models import *
 from conf.models import *
 import re
 from user.permissions import CustomerPremission
+import logging
+# 生成一个以当前文件名为名字的logger实例
+logger = logging.getLogger(__name__)
+# 生成一个名为collect的logger实例
+collect_logger = logging.getLogger("collect")
 
 class QuerySqlViewSet(APIView):
+    """
+        QuerySql.
+    """
+
     # 权限相关
     permission_classes = [CustomerPremission,]
     module_perms = ['query:querysql']
@@ -72,10 +81,12 @@ class QuerySqlViewSet(APIView):
             explain_sql = 'explain %s' % sql
             col,results = dbapi.mysql_query(connectinfo,explain_sql)
         result = { 'col': '', 'results': '',}
-        for i in results:
-            for k,v in i.items():
-                if(isinstance(v,int)):
-                    i[k] = str(v)
+        if (len(results) > 0):
+            if (results[0] != 'error'):
+                for i in results:
+                    for k,v in i.items():
+                        if(isinstance(v,int)):
+                            i[k] = str(v)
         # real_results = []
         # for i in results:
         #     new_item = {}

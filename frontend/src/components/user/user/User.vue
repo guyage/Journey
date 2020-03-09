@@ -30,7 +30,7 @@
 import store from '@/store/store.js';
 import UserTable from './UserTable.vue';
 import UserDialog from './UserDialog.vue';
-import { getUser,searchUser,addUser,delUser,editUser,getUserGroup } from '@/api/api.js';
+import { getUser,searchUser,addUser,delUser,editUser,getUserGroup } from '@/api/user.js';
 export default {
     name: 'user',
     components: {

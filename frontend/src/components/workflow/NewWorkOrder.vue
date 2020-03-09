@@ -55,7 +55,7 @@
 
 <script>
 import store from '@/store/store.js';
-import { getWorkOrderType,getGitLabInfo,addWorkOrder} from '@/api/api.js';
+import { getWorkOrderType,getGitLabInfo,addWorkOrder} from '@/api/workflow.js';
 export default {
     // name: 'newworkorder',
     data () {

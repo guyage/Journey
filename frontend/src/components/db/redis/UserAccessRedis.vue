@@ -54,7 +54,7 @@
 <script>
 import store from '@/store/store.js';
 import UserAccessTable from '../mysql/UserAccessTable.vue';
-import { getUserAccessRedis,getRedisInst,editUserAccessRedis,delUserAccessRedis,addUserAccessRedis,searchUserAccessRedis } from '@/api/api.js';
+import { getUserAccessRedis,getRedisInst,editUserAccessRedis,delUserAccessRedis,addUserAccessRedis,searchUserAccessRedis } from '@/api/db.js';
 export default {
     name: "useraccessredis",
     components: {

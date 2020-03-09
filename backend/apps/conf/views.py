@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework import filters
 from rest_framework.response import Response
-from api.send_mail import send_mail
+from utils.send_mail import send_mail
 from user.permissions import CustomerPremission
 
 

@@ -60,7 +60,7 @@
 
 <script>
 import store from '@/store/store.js';
-import { getUserAccessDb,getMysqlStatus } from '@/api/api.js';
+import { getUserAccessDb,getMysqlStatus } from '@/api/db.js';
 export default {
     name: 'mysqlstatus',
     data () {

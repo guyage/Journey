@@ -3,7 +3,7 @@
         <vueCanvasNest :config="backgroundcolor"></vueCanvasNest>
         <div class="login-title">
             <img src="../../assets/logo.png">
-            <h3 class="logintitletext">Welcome to Journey DB平台</h3>
+            <h3 class="logintitletext">Welcome to Journey平台</h3>
         </div>
         <div class="login-form">
             <el-tabs v-model="activeName" type="card">

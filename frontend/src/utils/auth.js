@@ -3,25 +3,25 @@
 const obj_key = ['userperms','menu','router']
 
 export function getCookies(Key) {
-    if (sessionStorage.getItem(Key) == 'false') {
+    if (localStorage.getItem(Key) == 'false') {
         return false;
     }
-    else if (sessionStorage.getItem(Key) == 'true') {
+    else if (localStorage.getItem(Key) == 'true') {
         return true;
     }
     else if (obj_key.indexOf(Key) > -1) {
-        return JSON.parse(sessionStorage.getItem(Key));
+        return JSON.parse(localStorage.getItem(Key));
     }
     else {
-        return sessionStorage.getItem(Key);
+        return localStorage.getItem(Key);
     }
     
 }
   
 export function setCookies(Key,value) {
-    return sessionStorage.setItem(Key,value);
+    return localStorage.setItem(Key,value);
 }
   
 export function removeCookies(Key) {
-    return sessionStorage.removeItem(Key);
+    return localStorage.removeItem(Key);
 }

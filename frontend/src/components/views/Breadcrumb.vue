@@ -20,7 +20,7 @@
 
 <script>
 import store from '@/store/store.js'
-import { Logout } from '@/api/api.js'
+import { Logout } from '@/api/base.js'
 export default {
     methods: {
         handleLogout () {

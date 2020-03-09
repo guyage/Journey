@@ -32,7 +32,7 @@
 <script>
 import RedisInstTable from './RedisInstTable.vue';
 import RedisInstDialog from './RedisInstDialog.vue';
-import { getRedisInst, searchRedisInst, addRedisInst, delRedisInst, editRedisInst } from '@/api/api.js';
+import { getRedisInst, searchRedisInst, addRedisInst, delRedisInst, editRedisInst } from '@/api/db.js';
 export default {
     name: 'redisinst',
     components:{

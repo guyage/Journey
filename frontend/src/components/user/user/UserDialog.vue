@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { getUserGroup } from '@/api/api.js';
+import { getUserGroup } from '@/api/user.js';
 export default {
     name: 'userdialog',
     data () {

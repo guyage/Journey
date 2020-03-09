@@ -33,7 +33,8 @@
 
 <script>
 import store from '@/store/store.js';
-import { getUserAccessDb,execQueryRedis } from '@/api/api.js';
+import { getUserAccessDb } from '@/api/db.js';
+import { execQueryRedis } from '@/api/query.js';
 export default {
     name: 'queryredis',
     data () {

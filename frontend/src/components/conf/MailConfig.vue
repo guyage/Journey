@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import { getMailConfig, setMailConfig, execMailTest } from '@/api/api.js';
+import { getMailConfig, setMailConfig, execMailTest } from '@/api/conf.js';
 export default {
     name: 'mailconfig',
     data () {

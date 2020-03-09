@@ -1,6 +1,6 @@
 /*jshint esversion: 6 */
 import { getCookies, setCookies, removeCookies } from '@/utils/auth.js';
-import { Login, LdapAuth } from '@/api/api.js';
+import { Login, LdapAuth } from '@/api/base.js';
 // import { Menus } from '@/global/menu.js';
 
 const TokenKey = 'Authorization'
@@ -9,6 +9,7 @@ const UserIsSuperKey = 'userissuper'
 const UserPerms = 'userperms'
 const MenuKey = 'menu'
 const RouterKey = 'router'
+const EnvironmentKey = 'environment'
 
 const user = {
     state: {
@@ -18,6 +19,7 @@ const user = {
         menu: getCookies(MenuKey),
         router: [],
         userperms: getCookies(UserPerms),
+        environment: getCookies(EnvironmentKey),
     },
 
 
@@ -39,6 +41,9 @@ const user = {
         },
         SET_USERPERMS: (state, userperms) => {
             state.userperms = userperms
+        },
+        SET_ENVIRONMENT: (state, environment) => {
+            state.environment = environment
         },
     },
 
@@ -73,6 +78,9 @@ const user = {
                     setCookies(RouterKey,JSON.stringify(response.data.router));
                     commit('SET_USERPERMS',response.data.perms);
                     setCookies(UserPerms,JSON.stringify(response.data.perms));
+                    // 部署环境
+                    commit('SET_ENVIRONMENT',response.data.environment);
+                    setCookies(EnvironmentKey,response.data.environment);
                     resolve(response);
                 }).catch(error => {
                     reject(error)
@@ -87,12 +95,14 @@ const user = {
                 removeCookies(MenuKey);
                 removeCookies(RouterKey);
                 removeCookies(UserPerms);
+                removeCookies(EnvironmentKey);
                 commit('SET_TOKEN', '');
                 commit('SET_USERNAME', '');
                 commit('SET_ISSUPER', '');
                 commit('SET_MENU', []);
                 commit('SET_ROUTER', []);
                 commit('SET_USERPERMS', []);
+                commit('SET_ENVIRONMENT', []);
                 resolve()
             })
         },
@@ -117,6 +127,9 @@ const user = {
                         setCookies(RouterKey,JSON.stringify(response.data.router));
                         commit('SET_USERPERMS',response.data.perms);
                         setCookies(UserPerms,JSON.stringify(response.data.perms));
+                        // 部署环境
+                        commit('SET_ENVIRONMENT',response.data.environment);
+                        setCookies(EnvironmentKey,response.data.environment);
                         resolve(response);
                     }
                     else  {

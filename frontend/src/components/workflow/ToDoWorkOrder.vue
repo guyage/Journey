@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import {getToDoWorkOrder,getWorkOrderType} from '@/api/api.js';
+import {getToDoWorkOrder,getWorkOrderType} from '@/api/workflow.js';
 import WorkOrderTable from './WorkOrderTable.vue';
 export default {
     name: 'todoworkorder',

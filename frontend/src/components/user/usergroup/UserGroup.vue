@@ -49,7 +49,7 @@
 
 <script>
 import store from '@/store/store.js';
-import { getUserGroup,getUser,addUserGroup,editUserGroup } from '@/api/api.js';
+import { getUserGroup,getUser,addUserGroup,editUserGroup } from '@/api/user.js';
 export default {
     name: 'usergroup',
     data () {

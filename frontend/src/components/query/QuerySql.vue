@@ -77,7 +77,8 @@ import FileSaver from 'file-saver';
 import XLSX from 'xlsx';
 import store from '@/store/store.js';
 import Editor from '@/components/common/Editor.vue';
-import { getUserAccessDb,execQuerySql,getMysqlMeta } from '@/api/api.js';
+import { getUserAccessDb,getMysqlMeta } from '@/api/db.js';
+import { execQuerySql } from '@/api/query.js';
 export default {
     name: 'querysql',
     components: {

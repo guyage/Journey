@@ -62,7 +62,7 @@
 
 <script>
 import store from '@/store/store.js';
-import { editUser } from '@/api/api.js';
+import { editUser } from '@/api/user.js';
 export default {
     name: 'usertable',
     data () {

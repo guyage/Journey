@@ -47,7 +47,8 @@
 
 <script>
 import store from '@/store/store.js';
-import { getUserAccessDb,execQueryMongodb } from '@/api/api.js';
+import { getUserAccessDb } from '@/api/db.js';
+import { execQueryMongodb } from '@/api/query.js';
 export default {
     name: 'querymongodb',
     data () {

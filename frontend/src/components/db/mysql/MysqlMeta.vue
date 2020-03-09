@@ -38,7 +38,7 @@
 
 <script>
 import store from '@/store/store.js';
-import { getUserAccessDb,getMysqlMeta } from '@/api/api.js';
+import { getUserAccessDb,getMysqlMeta } from '@/api/db.js';
 export default {
     name: 'mysqlmeta',
     data () {

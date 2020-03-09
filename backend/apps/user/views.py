@@ -24,18 +24,27 @@ class UserGroupViewSet(viewsets.ModelViewSet):
         删除用户组.
     update:
         修改用户组.
+    retrieve:
+        查看用户组详情.
+    partial_update:
+        更新当前用户组部分记录.
     """
+
+    # 权限相关
+    permission_classes = [CustomerPremission,]
+    module_perms = ['user:usergroup']
     
     queryset = UserGroup.objects.all().order_by('id')
     serializer_class = UserGroupSerializer
     filter_backends = (filters.SearchFilter, filters.OrderingFilter,)
     search_fields = ('group','comment',)
     ordering_fields = ('id',)
-    # 权限相关
-    permission_classes = [CustomerPremission,]
-    module_perms = ['user:usergroup']
+    
 
     def update(self, request, *args, **kwargs):
+        """
+        用户组修改，多对多同时更新与用户表关联
+        """
         partial = kwargs.pop('partial', False)
         userselected = request.data['userselected']
         instance = self.get_object()
@@ -55,16 +64,21 @@ class MenuViewSet(viewsets.ModelViewSet):
         删除菜单.
     update:
         修改菜单.
+    retrieve:
+        查看菜单详情.
+    partial_update:
+        更新当前菜单部分记录.
     """
+    # 权限相关
+    permission_classes = [CustomerPremission,]
+    module_perms = ['user:menu']
+
     queryset = Menu.objects.all().order_by('id')
     serializer_class = MenuSerializer
     filter_backends = (filters.SearchFilter, filters.OrderingFilter,)
     # search_fields = ('mtype',)
     ordering_fields = ('id',)
-    # 权限相关
-    permission_classes = [CustomerPremission,]
-    module_perms = ['user:menu']
-
+    
     def list(self, request, *args, **kwargs):
         results = []
         queryset = self.filter_queryset(self.get_queryset())
@@ -92,15 +106,22 @@ class RoleViewSet(viewsets.ModelViewSet):
         删除角色.
     update:
         修改角色.
+    retrieve:
+        查看角色详情.
+    partial_update:
+        更新当前角色部分记录.
     """
+
+    # 权限相关
+    permission_classes = [CustomerPremission,]
+    module_perms = ['user:role']
+
     queryset = Role.objects.all().order_by('id')
     serializer_class = RoleSerializer
     filter_backends = (filters.SearchFilter, filters.OrderingFilter,)
     search_fields = ('name')
     ordering_fields = ('id',)
-    # 权限相关
-    permission_classes = [CustomerPremission,]
-    module_perms = ['user:role']
+    
 
     def update(self, request, *args, **kwargs):
         edittype = request.data['type']
@@ -126,15 +147,22 @@ class UsersViewSet(viewsets.ModelViewSet):
         删除用户.
     update:
         修改用户.
+    retrieve:
+        查看用户详情.
+    partial_update:
+        更新当前用户部分记录.
     """
+
+    # 权限相关
+    permission_classes = [CustomerPremission,]
+    module_perms = ['user:user']
+    
     queryset = Users.objects.all().order_by('id')
     serializer_class = UsersSerializer
     filter_backends = (filters.SearchFilter, filters.OrderingFilter,)
     search_fields = ('username','email',)
     ordering_fields = ('id',)
-    # 权限相关
-    permission_classes = [CustomerPremission,]
-    module_perms = ['user:user']
+    
 
     def create(self, request, *args, **kwargs):
         if (len(request.data['password']) == 0):

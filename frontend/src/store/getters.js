@@ -6,6 +6,7 @@ const getters = {
     userissuper: state => state.user.userissuper,
     menu: state => state.user.menu,
     router: state => state.user.router,
+    environment: state => state.user.environment,
     visitedViews: state => state.tagsview.visitedViews,
     cachedViews: state => state.tagsview.cachedViews,
 }

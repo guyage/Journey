@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { getMenus,editMenus,addMenus,searchMenus } from '@/api/api.js';
+import { getMenus,editMenus,addMenus,searchMenus } from '@/api/user.js';
 import MenusTable from './MenusTable.vue';
 import MenusDialog from './MenusDialog.vue';
 export default {

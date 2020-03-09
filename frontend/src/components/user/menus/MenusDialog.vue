@@ -76,7 +76,7 @@
 
 <script>
 import store from '@/store/store.js';
-import { getMenus } from '@/api/api.js';
+import { getMenus } from '@/api/user.js';
 export default {
     name: 'menusdialog',
     data () {

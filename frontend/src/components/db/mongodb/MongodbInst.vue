@@ -32,7 +32,7 @@
 <script>
 import MongodbInstTable from './MongodbInstTable.vue';
 import MongodbInstDialog from './MongodbInstDialog.vue';
-import { getMongoDBInst, searchMongoDBInst, addMongoDBInst, delMongoDBInst, editMongoDBInst } from '@/api/api.js';
+import { getMongoDBInst, searchMongoDBInst, addMongoDBInst, delMongoDBInst, editMongoDBInst } from '@/api/db.js';
 export default {
     name: 'mongodbinst',
     components:{

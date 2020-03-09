@@ -8,12 +8,9 @@
 ![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/vue.js-2.5.2-brightgreen.svg)
 ![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/element--ui-2.4.6-brightgreen.svg)
 ## 功能简介
-* 全局配置
-  * 邮件配置：配置平台邮件服务
-  * QueryLimit：设置查询返回行数限制
-  * 导出白名单：提供个别需求需要查询超出limit限制数据，针对用户的白名单
-  * 工单配置：配置工单(添加不同的工单需求，可定制工单参数，审批流程，执行脚本)
-  * 审批组：工单相关的审批组
+* 全局管理
+  * 系统配置：配置平台邮件服务，后期系统相关配置集成于此
+  * 系统日志：用户操作相关日志
 * 用户权限
   * 菜单：系统菜单配置，分为一级目录，二级菜单对应相应路由(内部跳转路由不配置图标即可不显示)，三级按钮(实际为对应二级菜单路由的post、patch、delete请求)
   * 用户组：用户所属用户组，便于公司内部人员分组，跟其他功能无相关
@@ -32,19 +29,18 @@
   * MongoDB权限：用户默认无可访问MongoDB权限，通过申请，待管理员同意后，方可访问
   * Redis权限：用户默认无可访问Redis权限，通过申请，待管理员同意后，方可访问
 * Query
+  * QueryConfig：QueryLimit、导出白名单，Query相关配置
   * 数据库元数据：显示MySQL表结构
   * QuerySql：mysql查询功能，提供语法提示功能，导出查询结果功能，limit限制可通过QueryLimit动态调整
   * QueryMongoDB：MongoDB查询功能
   * QueryRedis：Redis查询功能
-* 自助工单申请：
-  * 新建工单：创建工单
-  * 我创建的：查看自己创建的工单
-  * 我待办的：待办工单
-* SQL工单：
-  * 新建SQL工单：新建SQL工单，可添加多个数据库上线(审核部分集成inception，inception已闭源，见个人fork项目)
-  * 我的SQL工单：我创建的SQL工单
-  * 待办SQL工单：我待办的SQL工单
-  * 全部SQL工单：全部历史工单，默认显示近7日的工单，可通过时间搜索
+* 工单系统：
+  * 新建工单：新建SQL工单，可添加多个数据库上线(审核部分集成inception，inception已闭源，见个人fork项目)，新建自助工单
+  * 全部SQL工单：全部工单，默认显示近7日的工单，可显示我的工单我的待办，可通过时间搜索
+* 工单配置
+  * 审批组：工单相关审批组管理
+  * SQL工单类型：SQL工单类型管理
+  * 自助工单类型：自助工单类型配置管理
 ## 环境
 * 后端
   * python 3.6
@@ -83,12 +79,9 @@ QueryLimit页面：
 QuerySQL页面：
 ![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/5.png)
 工单相关页面：
-工单配置：
-![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/3.png)
-![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/4.png)
 工单页面：
-![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/10.png)
-![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/11.png)
+![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/116.png)
+![Image text](https://github.com/guyage/Journey/blob/master/frontend/github_img/117.png)
 ## 其他
 工单配置功能中动态Form功能参考(https://github.com/GavinZhuLei/vue-form-making)
 ## 使用交流

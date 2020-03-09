@@ -32,8 +32,6 @@ export default {
         },
     },
     mounted() {
-        console.log(this.options);
-        
         this.drawLine(this.options)
     },
 }

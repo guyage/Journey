@@ -106,7 +106,7 @@
 
 <script>
 import store from '@/store/store.js';
-import { getUserAccessDb,getMysqlMeta,execMysqlUser } from '@/api/api.js';
+import { getUserAccessDb,getMysqlMeta,execMysqlUser } from '@/api/db.js';
 export default {
     name: 'mysqluser',
     data () {
