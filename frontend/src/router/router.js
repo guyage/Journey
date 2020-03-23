@@ -19,9 +19,9 @@ import WorkOrderRouter from './modules/workorder.js';
 import ApprovalGroupRouter from './modules/approvalgroup.js';
 import AutoOrderRouter from './modules/autoorder.js';
 
-
 // 引入错误页面组件
 import Error_404 from '@/components/views/error_page/Error_404.vue';
+
 
 // 配置路由   注意：名字
 const login = {

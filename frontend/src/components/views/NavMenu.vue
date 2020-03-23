@@ -13,7 +13,7 @@
                     <icon-svg class="navmenu-menu-icon" :iconClass="parentMenu.icon"></icon-svg>
                     <span>{{ parentMenu.name }}</span>
                 </template>
-                    <el-menu-item v-for="childMenu in parentMenu.children" :key="childMenu.id" v-if="childMenu.icon"  :index="childMenu.name" :route="childMenu.path">
+                    <el-menu-item v-for="childMenu in parentMenu.children" :key="childMenu.id" v-if="childMenu.mtype !=2" :index="childMenu.name" :route="childMenu.path">
                         <template slot="title">
                             <icon-svg class="navmenu-menu-icon" :iconClass="childMenu.icon"></icon-svg>
                         <span >{{ childMenu.name }}</span>

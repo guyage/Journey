@@ -6,17 +6,17 @@
         effect="dark">
         </el-alert>
         <el-row>
-            <!-- <OrderCharts></OrderCharts> -->
+            <!-- <ShowCharts></ShowCharts> -->
         </el-row>
     </div>
 </template>
 
 <script>
-import OrderCharts from './charts/OrderCharts.vue';
+import ShowCharts from './charts/ShowCharts.vue';
 export default {
     name: 'dashboard',
     components: {
-        OrderCharts
+        ShowCharts
     },
     data () {
         return {

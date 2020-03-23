@@ -28,7 +28,7 @@ class ShowCharts():
                    ORDER BY `date`) hisdate \
                    LEFT JOIN \
                    (SELECT COUNT(*) AS total,LEFT(create_time,10) AS total_date \
-                   FROM `sqlorder_sqlorder` \
+                   FROM `workorder_workorderbase` \
                    WHERE LEFT(create_time,10) \
                    GROUP BY LEFT(create_time,10)) hissqlordersum \
                    ON hissqlordersum.total_date = hisdate.date order by `date`;"

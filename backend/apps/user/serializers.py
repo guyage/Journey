@@ -20,15 +20,22 @@ class MenuSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Menu
-        fields = ('id','name','parent_id','url','perms','mtype','icon','creator','modifier','del_flag','create_time','update_time','comment')
+        fields = ('id','name','parent_id','url','mtype','icon','creator','modifier','del_flag','create_time','update_time','comment')
+
+class PermsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Perms
+        fields = '__all__'
 
 class RoleSerializer(serializers.ModelSerializer):
 
     hasmenu = serializers.SerializerMethodField('get_role_hasmenu')
     hasuser = serializers.SerializerMethodField('get_role_hasuser')
+    hasperms = serializers.SerializerMethodField('get_role_hasperms')
     class Meta:
         model = Role
-        fields = ('id','name','hasmenu','hasuser')
+        fields = ('id','name','hasmenu','hasuser','hasperms')
 
     def get_role_hasmenu(self,obj):
         hasmenulist = []
@@ -40,6 +47,11 @@ class RoleSerializer(serializers.ModelSerializer):
         for user in obj.user_role.all():
             userlist.append(user.id)
         return userlist
+    def get_role_hasperms(self,obj):
+        haspermslist = []
+        for perm in obj.perms.all():
+            haspermslist.append(perm.id)
+        return haspermslist
 
 class UsersSerializer(serializers.ModelSerializer):
 

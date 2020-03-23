@@ -155,7 +155,8 @@ export default {
             }
         },
         handleSql(action) {
-            if (this.selectinst > 0 && this.selectdb.length > 0) {
+            let exec_sql = this.$refs.sqleditor.code
+            if (this.selectinst > 0 && this.selectdb.length > 0 && exec_sql.toLowerCase().indexOf('select')>-1) {
                 let querysql_data = {}
                 querysql_data.instid = this.selectinst
                 querysql_data.dbname = this.selectdb

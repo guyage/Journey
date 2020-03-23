@@ -11,11 +11,11 @@
                 range-separator="至"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
-                @change="handleSearch('time')">
+                @change="handleSearch()">
                 </el-date-picker>
             </div>
-            <el-input v-model="searchcontent" @keyup.enter.native="searchData" style="width: 200px;float: right;" size="small" placeholder="Search">
-                <el-button @click="searchData" slot="append" icon="el-icon-search"></el-button>
+            <el-input v-model="searchcontent" @keyup.enter.native="handleSearch" style="width: 250px;float: right;" size="small" placeholder="Search By UserName">
+                <el-button @click="handleSearch" slot="append" icon="el-icon-search"></el-button>
             </el-input>
         </el-row>
         <el-row>
@@ -25,6 +25,7 @@
             :data="table_data.slice((currentPage-1)*pagesize,currentPage*pagesize)"
             border
             strip
+            v-loading="loading"
             style="width: 100%">
                 <!-- <el-table-column align="center" type="selection" width="55"></el-table-column> -->
                 <el-table-column align="center" type="index" label="序号" width="55">
@@ -97,6 +98,7 @@ export default {
     name:'syslog',
     data () {
         return {
+            loading: false,
             searchcontent: '',
             table_data: [],
             // 分页参数
@@ -139,23 +141,34 @@ export default {
         //     this.dialogVisible = true
         //     this.showdata = data            
         // },
-        handleSearch(searchtype) {
+        handleSearch() {
+            this.loading = true
             let filter_data = {}
             filter_data.timerange = this.timerange
+            if (this.searchcontent) {
+                filter_data.username = this.searchcontent
+            }
+            console.log(filter_data);
+            
             getCrudEvent(filter_data).then((response) => {
                 console.log(response.data);
                 this.table_data = response.data.results
+                this.loading = false
             }).catch((error) => {
                 console.log(error);
+                this.loading = false
             })
         },
-        searchData() {
-
-        },
         getDataList() {
+            this.loading = true
+            this.timerange = []
+            this.searchcontent = ''
             getCrudEvent().then((response) => {
-                console.log(response);
                 this.table_data = response.data.results
+                this.loading = false
+            }).catch((error) => {
+                console.log(error);
+                this.loading = true
             })
         }
     },

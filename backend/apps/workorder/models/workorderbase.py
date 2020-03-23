@@ -11,8 +11,9 @@ STATUS_CHOICE = (
     (5, u'已执行，待验证'),
     (6, u'已验证'),
     (7, u'已取消'),
-    (8,u'未接受'),
     (9,u'正在处理'),
+    (10,u'待接受'),
+
 )
 
 class WorkOrderBase(models.Model):

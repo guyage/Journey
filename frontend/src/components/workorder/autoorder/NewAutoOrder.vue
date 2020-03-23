@@ -69,7 +69,7 @@ export default {
                 creator: '',
                 operator: '',
                 content: '',
-                classify: 'OpsOnline',
+                classify: 'AutoOnline',
             },
             rules: {
                 ordertype: [
@@ -140,7 +140,7 @@ export default {
                 this.form.operator = store.getters.username
                 // console.log(this.form);
                 addAutoOrder(this.form).then((response) => {
-                    this.$router.push({ path: '/myworkorder'})
+                    this.$router.push({ path: '/allworkorder'})
                     this.$message.success('提交成功!');
                 }).catch((error) => {
                     console.log(error);

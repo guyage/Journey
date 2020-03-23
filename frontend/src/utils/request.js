@@ -57,6 +57,13 @@ axios.interceptors.response.use(response => {
           break;
         case 401:
           err.message = '未授权，请重新登录'
+          router.push({
+            path: "/login",
+            // query:{
+            //  参数
+            //   clearProject:true
+            // }
+          });
           break;
         case 403:
           err.message = '拒绝访问'

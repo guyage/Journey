@@ -81,3 +81,4 @@ xpinyin==0.5.6
 zipp==0.6.0
 pyOpenSSL==19.1.0
 elasticsearch6==6.4.2
+qingcloud-sdk==1.2.10

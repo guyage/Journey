@@ -5,7 +5,7 @@
                 <div slot="header" class="clearfix">
                     <span>{{title}}</span>
                 </div>
-                <div id="show-drawline" style="width:100%;height:300px;"></div>
+                <div :id="elementid" style="width:100%;height:300px;"></div>
             </el-card>
         </div>
     </div>
@@ -15,6 +15,9 @@
 export default {
     name: '',
     props: {
+        elementid: {
+            type: String
+        },
         title: {
             type: String
         },
@@ -26,7 +29,7 @@ export default {
         // 画图函数
         drawLine(options){
             // 基于准备好的dom，初始化echarts实例
-            let myChart = this.$echarts.init(document.getElementById('show-drawline'))
+            let myChart = this.$echarts.init(document.getElementById(this.elementid))
             // 绘制图表
             myChart.setOption(options);
         },

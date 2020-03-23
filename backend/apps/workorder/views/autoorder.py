@@ -122,7 +122,6 @@ class AutoOrderViewSet(viewsets.ModelViewSet):
     module_perms = ['workorder:autoorder']
 
     def create(self, request, *args, **kwargs):
-        print ('111',request.data)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -223,7 +222,9 @@ class AutoOrderDetailViewSet(APIView):
 
 
 class GitLabInfoViewSet(APIView):
-
+    # 权限相关
+    permission_classes = [CustomerPremission,]
+    module_perms = ['workorder:gitlabinfo']
     def post(self,request,format=None):
         git_api = GitLabAPI()
         reqtype = request.data['reqtype']

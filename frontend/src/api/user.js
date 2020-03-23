@@ -13,6 +13,20 @@ export const getMenus = params => {
 export const searchMenus = params => { return request.get('/menu/'+'?search='+params.searchcontent) };
 export const addMenus = params => { return request.post('/menu/',params)};
 export const editMenus = params => { return request.patch('/menu/'+params.id+'/',params)};
+////---------------------user文件夹组件api
+// perms
+export const getPerms = params => {
+    if (params) {
+        return request.get('/perms/'+params.id+'/');
+    }
+    else {
+        return request.get('/perms/');
+    }
+};
+export const searchPerms = params => { return request.get('/perms/'+'?search='+params.searchcontent) };
+export const addPerms = params => { return request.post('/perms/',params)};
+export const editPerms = params => { return request.patch('/perms/'+params.id+'/',params)};
+export const delPerms = params => { return request.delete('/perms/'+params.id+'/') };
 // role
 export const getRole = params => {
     if (params) {

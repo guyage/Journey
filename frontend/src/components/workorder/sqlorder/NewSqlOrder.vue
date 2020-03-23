@@ -300,7 +300,9 @@ export default {
         getMySQLInst() {
             getMysqlInst().then((response) => {
                 for (let i=0;i<response.data.length;i++) {
-                    this.instlist.push({'value':response.data[i].id,'label':response.data[i].inst_name})
+                    if (response.data[i].is_enabled == 'ENABLED' && response.data[i].role == 'Master') {
+                        this.instlist.push({'value':response.data[i].id,'label':response.data[i].inst_name})
+                    }
                 }
             }).catch((error) => {
                 console.log(error);

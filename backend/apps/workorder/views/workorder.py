@@ -29,12 +29,14 @@ class AllWorkOrderViewSet(BaseApiViewSet):
         for sqlorder in laste_sqlorders:
             sqlorder_serializer = AllWorkOrderSerializer(sqlorder)
             results.append(sqlorder_serializer.data)
+
         # 获取自助工单列表
         for autoorder in laste_autoorders:
             autoorder_serializer = AllWorkOrderSerializer(autoorder)
             results.append(autoorder_serializer.data)
+        sort_results = sorted(results, key=lambda k: k['create_time'],reverse=True)
         re = { 'results': '',}
-        re['results'] = results
+        re['results'] = sort_results
         return Response(re)
 
     def post(self,request,format=None):
@@ -60,6 +62,31 @@ class AllWorkOrderViewSet(BaseApiViewSet):
                 date_to = timerange[1]
                 searchsqlorders = SqlOrder.objects.filter(Q(create_time__range=(date_from,date_to))).order_by('-id')
                 searchautoorders = AutoOrder.objects.filter(Q(create_time__range=(date_from,date_to))).order_by('-id')
+        # 获取待办的工单
+        elif (searchtype == 'todo'):
+            todo_order_status = [-1,1,2]
+            user_approvalgroup_list = []
+            for i in userinfo.approver_user.all():
+                user_approvalgroup_list.append(i.id)
+            if (timerange):
+                date_from = timerange[0]
+                date_to = timerange[1]
+                searchsqlorders = SqlOrder.objects.filter(~Q(status__in=todo_order_status),Q(approver_group_id__in=user_approvalgroup_list),Q(create_time__range=(date_from,date_to))).order_by('-id')
+                searchautoorders = AutoOrder.objects.filter(~Q(status__in=todo_order_status),Q(approver_group_id__in=user_approvalgroup_list),Q(create_time__range=(date_from,date_to))).order_by('-id')
+            else:
+                searchsqlorders = SqlOrder.objects.filter(~Q(status__in=todo_order_status),Q(approver_group_id__in=user_approvalgroup_list),Q(create_time__gt=laste_time)).order_by('-id')
+                searchautoorders = AutoOrder.objects.filter(~Q(status__in=todo_order_status),Q(approver_group_id__in=user_approvalgroup_list),Q(create_time__gt=laste_time)).order_by('-id')
+        elif (searchtype == 'search'):
+            searchcontent = request.data['searchcontent']
+            if (timerange):
+                date_from = timerange[0]
+                date_to = timerange[1]
+                searchsqlorders = SqlOrder.objects.filter(Q(title__contains=searchcontent)|Q(creator__contains=searchcontent),Q(create_time__range=(date_from,date_to))).order_by('-id')
+                searchautoorders = AutoOrder.objects.filter(Q(title__contains=searchcontent)|Q(creator__contains=searchcontent),Q(create_time__range=(date_from,date_to))).order_by('-id')
+            else:
+                searchsqlorders = SqlOrder.objects.filter(Q(title__contains=searchcontent)|Q(creator__contains=searchcontent),Q(create_time__gt=laste_time)).order_by('-id')
+                searchautoorders = AutoOrder.objects.filter(Q(title__contains=searchcontent)|Q(creator__contains=searchcontent),Q(create_time__gt=laste_time)).order_by('-id')
+        
         # //获取sql工单列表
         for sqlorder in searchsqlorders:
             sqlorder_serializer = AllWorkOrderSerializer(sqlorder)
@@ -68,6 +95,8 @@ class AllWorkOrderViewSet(BaseApiViewSet):
         for autoorder in searchautoorders:
             autoorder_serializer = AllWorkOrderSerializer(autoorder)
             results.append(autoorder_serializer.data)
+        
+        sort_results = sorted(results, key=lambda k: k['create_time'],reverse=True)
         re = { 'results': '',}
-        re['results'] = results
+        re['results'] = sort_results
         return Response(re)

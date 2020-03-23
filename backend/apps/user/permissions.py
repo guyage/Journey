@@ -17,9 +17,9 @@ class CustomerPremission(permissions.DjangoModelPermissions):
     message = 'No Permission to Access.'
     
     def has_permission(self, request, view):
-        patch_map = 'edit'
-        deletel_map = 'del'
-        post_map = 'add'
+        patch_map = 'patch'
+        deletel_map = 'deletel'
+        post_map = 'post'
         need_perms = ''
         module_perms = view.module_perms
         if (ENVIRONMENT == 'dev'):

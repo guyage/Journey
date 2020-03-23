@@ -5,7 +5,13 @@ const UserRouter = [
         path: '/menu', 
         component: resolve => require(['@/components/user/menus/Menus.vue'],resolve), 
         name: 'menu',
-        meta: { tag: '菜单', title: ['用户权限','菜单']},
+        meta: { tag: '菜单路由', title: ['用户权限','菜单路由']},
+    },
+    { 
+        path: '/perms', 
+        component: resolve => require(['@/components/user/perms/Perms.vue'],resolve), 
+        name: 'perms',
+        meta: { tag: '接口权限', title: ['用户权限','接口权限']},
     },
     { 
         path: '/role', 

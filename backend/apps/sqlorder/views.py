@@ -10,9 +10,9 @@ from sqlorder.models import *
 from sqlorder.serializers import *
 from db.models import MySQLInst
 # from workflow.models import ApprovalGroup
-from api.db_api import db_api
+from utils.db_api import db_api
 import time,datetime
-from api.get_config import get_conf
+from utils.get_config import get_conf
 
 class SqlOrderTypeViewSet(viewsets.ModelViewSet):
     """

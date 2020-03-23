@@ -7,6 +7,13 @@
             </el-input> -->
         </el-row>
         <el-row>
+            <el-alert
+            title="菜单路由配置，配置左侧菜单及子路由(内部跳转使用)，路由均需与前端路由一致!"
+            type="success"
+            effect="dark">
+            </el-alert>
+        </el-row>
+        <el-row>
             <MenusTable
             ref="datatable"
             :TableColumn="table_columns"
@@ -44,10 +51,18 @@ export default {
                 id: 'id',
                 name: '名称',
                 icon: '图标',
-                url: 'url',
+                url: '路由',
                 mtype: '类型',
-                perms: '权限标识',
                 del_flag: '禁用',
+            },
+            initform: {
+                name: '',
+                url: '',
+                parent_id: '',
+                icon: '',
+                mtype: 0,
+                del_flag:0,
+                creator: '',
             },
 
         }
@@ -80,27 +95,59 @@ export default {
         //     }
         // },
         addData() {
+            this.$refs.datadialog.form = this.initform
+            this.$refs.datadialog.isEdit = false
             this.openDialog()
+
         },
-        editData(req_data) {
-            editMenus(req_data).then((response) => {
-                this.$message.success('处理成功!');
-                this.getData()
-            }).catch((error) => {
-                console.log(error);
-                this.$message.error('处理失败!');
+        getDataDeatil(req_data) {
+            getMenus(req_data).then((response) => {
+                this.$refs.datadialog.isEdit = true
+                this.$refs.datadialog.getSelectMenusList()
+                this.$refs.datadialog.mtype = response.data.mtype
+                this.$refs.datadialog.form = response.data
+                this.openDialog()
             })
         },
-        saveData(req_data) {
-            addMenus(req_data).then((response) => {
-                this.$message.success('添加成功!');
-                this.getData()
-                this.closeDialog()
-            }).catch((error) => {
-                console.log(error);
-                this.$message.error('添加失败!');
-                this.closeDialog()
-            })
+        editData(req_data,type) {
+            if (type == 'status') {
+                editMenus(req_data).then((response) => {
+                    this.$message.success('处理成功!');
+                    this.getData()
+                }).catch((error) => {
+                    console.log(error);
+                    this.$message.error('处理失败!');
+                })
+            }
+            else if (type == 'content') {
+                this.getDataDeatil(req_data)
+            }
+            
+        },
+        saveData(isedit,req_data) {
+            if (isedit) {
+                editMenus(req_data).then((response) => {
+                    this.$message.success('编辑成功!');
+                    this.getData()
+                    this.closeDialog()
+                }).catch((error) => {
+                    console.log(error);
+                    this.$message.error('编辑失败!');
+                    this.closeDialog()
+                })
+            }
+            else {
+                addMenus(req_data).then((response) => {
+                    this.$message.success('添加成功!');
+                    this.getData()
+                    this.closeDialog()
+                }).catch((error) => {
+                    console.log(error);
+                    this.$message.error('添加失败!');
+                    this.closeDialog()
+                })
+            }
+            
         }
     },
     mounted () {

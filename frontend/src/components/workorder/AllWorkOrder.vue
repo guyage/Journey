@@ -3,7 +3,7 @@
         <el-row style="padding-bottom:5px;">
             <el-button @click="getDataList" style="float: left;" size="mini" type="danger" plain>重置</el-button>
             <el-button @click="handleSearch('my')" style="float: left;" size="mini" type="primary" plain>我的工单</el-button>
-            <el-button @click="handleSearch('my')" style="float: left;" size="mini" type="primary" plain>我的待办</el-button>
+            <el-button @click="handleSearch('todo')" style="float: left;" size="mini" type="primary" plain>我的待办</el-button>
             <div style="float: left;">
                 <el-date-picker
                 size="mini"
@@ -20,6 +20,10 @@
                 <el-button @click="searchData" slot="append" icon="el-icon-search"></el-button>
             </el-input>
         </el-row>
+        <el-alert
+        title="默认显示最近7天内工单，历史工单请筛选时间，或搜索，时间选项可与其他搜索功能组合使用!"
+        type="info">
+        </el-alert>
         <el-row>
             <el-table
                 size="small"
@@ -31,8 +35,8 @@
                     <!-- <el-table-column align="center" type="selection" width="55"></el-table-column> -->
                     <el-table-column align="center" label="工单号" width="150" prop="id">
                         <template slot-scope="scope">
-                            <el-link v-if="scope.row.classify == 'OpsOnline'" :href="'#/autoorderdetail/'+scope.row.classify+'-'+scope.row.id" type="primary">{{scope.row.classify}}-{{scope.row.id}}</el-link>
-                            <el-link style="color:#fa8c16;" v-if="scope.row.classify == 'SqlOnline'" :href="'#/sqlorderdetail/'+scope.row.classify+'-'+scope.row.id" type="primary">{{scope.row.classify}}-{{scope.row.id}}</el-link>
+                            <el-link v-if="scope.row.classify == 'AutoOnline'" :href="'#/autoorderdetail/'+scope.row.classify+'-'+scope.row.id" type="primary">{{scope.row.classify}}-{{scope.row.id}}</el-link>
+                            <el-link style="color:#2ec7c9;" v-if="scope.row.classify == 'SqlOnline'" :href="'#/sqlorderdetail/'+scope.row.classify+'-'+scope.row.id" type="primary">{{scope.row.classify}}-{{scope.row.id}}</el-link>
                         </template>
                     </el-table-column>
                     <el-table-column align="center" label="主题" prop="title"></el-table-column>
@@ -52,6 +56,8 @@
                             <el-tag size="small" style="color:#13c2c2;background:#e6fffb;border-color:#87e8de;" type="warning" v-else-if="scope.row.status == 4">待执行</el-tag>
                             <el-tag size="small" style="color:#faad14;background:#fffbe6;border-color:#ffe58f;" type="warning" v-else-if="scope.row.status == 5">已执行，待验证</el-tag>
                             <el-tag size="small" style="color:#722ed1;background:#f9f0ff;border-color:#d3adf7;" type="danger" v-else-if="scope.row.status == 6">已验证</el-tag>
+                            <el-tag size="small" style="color:#722ed1;background:#f9f0ff;border-color:#d3adf7;" type="danger" v-else-if="scope.row.status == 10">待接收</el-tag>
+                             <el-tag size="small" style="color:#722ed1;background:#f9f0ff;border-color:#d3adf7;" type="danger" v-else-if="scope.row.status == 9">正在处理</el-tag>
                             <el-tag size="small" type="info" v-else-if="scope.row.status == 7">已取消</el-tag>
                             <el-tag size="small" type="danger" v-else="scope.row.status == -1">已失败</el-tag>
                         </template>
@@ -118,7 +124,6 @@ export default {
             if (searchtype == 'my') {
                 filter_data.searchtype = 'my'
                 SearchAllWorkOrder(filter_data).then((response) => {
-                    console.log(response.data);
                     this.table_data = response.data.results
                 }).catch((error) => {
                     console.log(error);
@@ -128,21 +133,43 @@ export default {
                 filter_data.searchtype = 'time'
                 if (this.timerange) {
                     SearchAllWorkOrder(filter_data).then((response) => {
-                        console.log(response.data);
                         this.table_data = response.data.results
                     }).catch((error) => {
                         console.log(error);
                     })
                 }
             }
+            else if (searchtype == 'todo') {
+                filter_data.searchtype = 'todo'
+                SearchAllWorkOrder(filter_data).then((response) => {
+                    this.table_data = response.data.results
+                }).catch((error) => {
+                    console.log(error);
+                })
+            }
         },
         searchData() {
-
+            if (this.searchcontent) {
+                let filter_data = {}
+                filter_data.searchtype = 'search'
+                filter_data.timerange = this.timerange
+                filter_data.searchcontent = this.searchcontent
+                SearchAllWorkOrder(filter_data).then((response) => {
+                    this.table_data = response.data.results
+                }).catch((error) => {
+                    console.log(error);
+                })
+            }
+            else {
+                this.getDataList()
+            }
+            
         },
         getDataList() {
             getAllWorkOrder().then((response) => {
-                console.log(response);
                 this.table_data = response.data.results
+                this.timerange = []
+                this.searchcontent = ''
             })
         }
     },

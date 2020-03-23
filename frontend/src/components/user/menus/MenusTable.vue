@@ -12,7 +12,7 @@
                 <template slot-scope="scope">
                     <el-tag size="small" v-if="scope.row.mtype == 0">目录</el-tag>
                     <el-tag size="small" v-else-if="scope.row.mtype == 1" type="warning">菜单</el-tag>
-                    <el-tag size="small" v-else-if="scope.row.mtype == 2" type="success">按钮</el-tag>
+                    <el-tag size="small" v-else-if="scope.row.mtype == 2" type="success">子路由</el-tag>
                 </template>
             </el-table-column>
             <el-table-column prop="icon" :label="TableColumn.icon">
@@ -21,7 +21,7 @@
                 </template>
             </el-table-column>
             <el-table-column prop="url" :label="TableColumn.url"></el-table-column>
-            <el-table-column prop="perms" :label="TableColumn.perms"></el-table-column>
+            <!-- <el-table-column prop="perms" :label="TableColumn.perms"></el-table-column> -->
             <el-table-column prop="del_flag" :label="TableColumn.del_flag">
                 <template slot-scope="scope">
                     <el-tag size="small" style="color:#13c2c2;background-color:#e6fffb;border-color:#87e8de" v-if="scope.row.del_flag == 0">正常</el-tag>
@@ -77,16 +77,16 @@ export default {
         },
         handleData(index,row,type) {
             if (type == 'edit') {
-                console.log(row);
-                
+                let req_data = {'id':row.id}
+                this.editData(req_data,'content')
             }
             else if (type == 'disable') {
                 let req_data = {'id':row.id,'del_flag':-1}
-                this.editData(req_data)
+                this.editData(req_data,'status')
             }
             else if (type == 'enable') {
                 let req_data = {'id':row.id,'del_flag':0}
-                this.editData(req_data)
+                this.editData(req_data,'status')
             }
         },
     }

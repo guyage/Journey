@@ -9,6 +9,7 @@ router.register(r'user', UsersViewSet, base_name="user")
 router.register(r'usergroup', UserGroupViewSet, base_name="usergroup")
 router.register(r'role', RoleViewSet, base_name="role")
 router.register(r'menu', MenuViewSet, base_name="menu")
+router.register(r'perms', PermsViewSet, base_name="perms")
 
 urlpatterns = [
     url(r'^', include(router.urls)),

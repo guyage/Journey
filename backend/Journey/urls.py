@@ -29,6 +29,7 @@ from rest_framework_swagger.renderers import SwaggerUIRenderer, OpenAPIRenderer
 from rest_framework_jwt.views import obtain_jwt_token
 schema_view = get_schema_view(title='Journey API', renderer_classes=[OpenAPIRenderer, SwaggerUIRenderer])
 
+
 urlpatterns = [
     url(r'^api/docs/', include_docs_urls('Journey API')), 
     url('^api/swagger-docs/', schema_view), # swagger doc
@@ -54,6 +55,8 @@ urlpatterns = [
     path(r'api/', include('charts.urls')),
     # 上传附件
     path('uploads/<path:path>',serve,{'document_root':settings.MEDIA_ROOT}),
+
     # easyaudit
     path(r'api/', include('easyaudit.urls')),
+
 ]

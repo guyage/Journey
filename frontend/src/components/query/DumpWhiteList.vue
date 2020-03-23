@@ -26,9 +26,9 @@
                         <template v-if="scope.row.isadd">
                             <el-input size="small" v-model="white_user_temp"></el-input>
                         </template>
-                        <span v-if="!scope.row.isadd">{{scope.row.white_user}}</span>  
+                        <span v-if="!scope.row.isadd">{{scope.row.white_user}}</span>
                     </template>
-                </el-table-column>                
+                </el-table-column>
                 <el-table-column align="left" label="白名单表" prop="white_table" >
                     <template slot-scope="scope">
                         <template v-if="scope.row.isedit">
@@ -59,8 +59,8 @@
             :page-size="pagesize"
             @current-change="current_change">
             </el-pagination>
-        </el-row>       
-                
+        </el-row>
+
     </div>
 </template>
 
@@ -83,7 +83,7 @@ export default {
     },
     methods: {
         handleSelectionChange(val) {
-            this.multipleSelection = val; 
+            this.multipleSelection = val;
         },
         current_change(currentPage){
             this.currentPage = currentPage;

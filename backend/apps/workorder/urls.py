@@ -9,6 +9,7 @@ from apps.workorder.views.sqlorder import *
 from apps.workorder.views.autoorder import *
 from apps.workorder.views.workorder import *
 from apps.workorder.views.ag_views import *
+from utils.send_dingding  import SendDingTalk,SendOp,SendAll
 
 router = routers.DefaultRouter()
 
@@ -19,10 +20,14 @@ router.register(r'sqltext', SqlTextViewSet, base_name="sqltext")
 router.register(r'sqlfile', SqlFileViewSet, base_name="sqlfile")
 # workorder-approvalgroup
 router.register(r'approvalgroup', ApprovalGroupViewSet, base_name="approvalgroup")
+
 # workorder-autoorder
 router.register(r'autoordertype', AutoOrderTypeViewSet, base_name="autoordertype")
 router.register(r'autoorderstep', AutoOrderStepViewSet, base_name="autoorderstep")
 router.register(r'autoorder', AutoOrderViewSet, base_name="autoorder")
+
+
+
 
 
 
@@ -36,4 +41,5 @@ urlpatterns = [
     # url(r'allsqlorder', AllSqlOrderViewSet.as_view()),
     # workorder
     url(r'allworkorder', AllWorkOrderViewSet.as_view()),
+
 ]

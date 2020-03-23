@@ -68,7 +68,6 @@ INSTALLED_APPS = [
     # 'sqlorder',
     'charts',
     'workorder',
-
 ]
 
 MIDDLEWARE = [
