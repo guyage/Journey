@@ -8,7 +8,7 @@ from email.mime.text import MIMEText
 from conf.models import MailConfig
 
 # 平台域名
-platform_domain = 'http://journey.xs.jf'
+platform_domain = 'http://journey.com'
 
 def send_mail_fun(to_list,sub,content):
     mailconfig = MailConfig.objects.get(id=1)

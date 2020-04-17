@@ -6,7 +6,6 @@ from user.permissions import CustomerPremission
 from utils.charts_api import ShowCharts
 from user.models import Users
 from workorder.models.workorderbase import WorkOrderBase
-# from cmdb.models.server import Server,Idc
 import datetime
 
 class ShowChartsViewSet(APIView):
@@ -34,9 +33,6 @@ class ShowChartsViewSet(APIView):
         # 获取今日工单数
         today_workorder = WorkOrderBase.objects.filter(Q(create_time__contains=datetime.date.today())).count()
         results['today_workorder'] = today_workorder
-        # 获取主机总数
-        server_total = Server.objects.all().count()
-        results['server_total'] = server_total
         # 获取最近7天时间列表
         laste_data = []
         for i in range(6,-1,-1):

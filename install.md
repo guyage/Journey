@@ -42,7 +42,7 @@ python manage.py makemigrations
 python manage.py migrate
 成功后
 导入菜单
-source 在项目backend/initsql/menus.sql
+source 在项目backend/initsql/user_menu.sql,backend/initsql/user_perms.sql
 ```
 5. 配置gunicorn
 ```bash
@@ -61,6 +61,15 @@ accesslog = '/logs/Journey/gunicorn.access.log'
 proc_name = 'Journey'
 ```
 6. 创建用户后并启动后端Django服务，确认是否启动成功
+因加密字段存储加密salt配置在环境变量，启动之前需要设置环境变量
+```bash
+pip install cryptography
+>>> from cryptography.fernet import Fernet
+>>> cipher_key = Fernet.generate_key()
+>>> cipher_key
+b'APM1JDVgT8WDGOWBgQv6EIhvxl4vDYvUnVdg-Vjdt0o='
+export saltkey='APM1JDVgT8WDGOWBgQv6EIhvxl4vDYvUnVdg-Vjdt0o='
+```
 这里测试的时候可以通过python manage.py runserver 0.0.0.0:8888启动，生产建议用下面方式启动
 
 创建用户

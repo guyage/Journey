@@ -3,5 +3,5 @@
 import subprocess
 
 def exec_cmd(cmd):
-    res = subprocess.Popen(args=cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    res = subprocess.Popen(args=cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     return res.stdout.read()

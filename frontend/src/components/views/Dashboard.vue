@@ -6,7 +6,7 @@
         effect="dark">
         </el-alert>
         <el-row>
-            <!-- <ShowCharts></ShowCharts> -->
+            <ShowCharts></ShowCharts>
         </el-row>
     </div>
 </template>

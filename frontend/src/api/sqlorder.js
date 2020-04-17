@@ -16,6 +16,11 @@ export const getSqlOrderType = params => {
         return request.get('/sqlordertype/');
     }
 };
+export const searchSqlOrderType = params => { return request.get('/sqlordertype/'+'?search='+params.searchcontent) };
+export const addSqlOrderType = params => { return request.post('/sqlordertype/',params) };
+export const delSqlOrderType = params => { return request.delete('/sqlordertype/'+params.id+'/') };
+export const editSqlOrderType = params => { return request.patch('/sqlordertype/'+params.id+'/',params) };
+
 export const getSqlOrderDetail = params => { return request.post('/sqlorderdetail/',params); };
 export const getSqlOrder = params => {
     if (params) {

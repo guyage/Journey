@@ -10,6 +10,8 @@ from rest_framework.response import Response
 from django.db.models.query import QuerySet
 from rest_framework import status
 from user.permissions import CustomerPremission
+from utils.cryption import decypt
+import os
 
 
 class MySQLInstViewSet(viewsets.ModelViewSet):
@@ -33,6 +35,40 @@ class MySQLInstViewSet(viewsets.ModelViewSet):
     permission_classes = [CustomerPremission,]
     module_perms = ['db:mysqlinst']
     
+    def create(self, request, *args, **kwargs):
+        # de = decypt(os.environ.get("saltkey"))
+        de = decypt(saltkey=None)
+        manage_userpwd = request.data['manage_userpwd']
+        read_userpwd = request.data['read_userpwd']
+        request.data['manage_userpwd'] = de.get_encrypted_key(manage_userpwd)
+        request.data['read_userpwd'] = de.get_encrypted_key(read_userpwd)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def update(self, request, *args, **kwargs):
+        de = decypt(saltkey=None)
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        if ('manage_userpwd' in request.data):
+            manage_userpwd = request.data['manage_userpwd']
+            request.data['manage_userpwd'] = de.get_encrypted_key(manage_userpwd)
+        if ('read_userpwd' in request.data):
+            read_userpwd = request.data['read_userpwd']
+            request.data['read_userpwd'] = de.get_encrypted_key(read_userpwd)
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance.
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
+    
 
 class MongoDBInstViewSet(viewsets.ModelViewSet):
     """
@@ -55,6 +91,40 @@ class MongoDBInstViewSet(viewsets.ModelViewSet):
     permission_classes = [CustomerPremission,]
     module_perms = ['db:mongodbinst']
 
+    def create(self, request, *args, **kwargs):
+        # de = decypt(os.environ.get("saltkey"))
+        de = decypt(saltkey=None)
+        manage_userpwd = request.data['manage_userpwd']
+        read_userpwd = request.data['read_userpwd']
+        request.data['manage_userpwd'] = de.get_encrypted_key(manage_userpwd)
+        request.data['read_userpwd'] = de.get_encrypted_key(read_userpwd)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def update(self, request, *args, **kwargs):
+        de = decypt(saltkey=None)
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        if ('manage_userpwd' in request.data):
+            manage_userpwd = request.data['manage_userpwd']
+            request.data['manage_userpwd'] = de.get_encrypted_key(manage_userpwd)
+        if ('read_userpwd' in request.data):
+            read_userpwd = request.data['read_userpwd']
+            request.data['read_userpwd'] = de.get_encrypted_key(read_userpwd)
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance.
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
+
 class RedisInstViewSet(viewsets.ModelViewSet):
     """
     list:
@@ -75,6 +145,35 @@ class RedisInstViewSet(viewsets.ModelViewSet):
     # 权限相关
     permission_classes = [CustomerPremission,]
     module_perms = ['db:redisinst']
+
+    def create(self, request, *args, **kwargs):
+        # de = decypt(os.environ.get("saltkey"))
+        de = decypt(saltkey=None)
+        password = request.data['password']
+        request.data['password'] = de.get_encrypted_key(password)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def update(self, request, *args, **kwargs):
+        de = decypt(saltkey=None)
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        if ('password' in request.data):
+            password = request.data['password']
+            request.data['password'] = de.get_encrypted_key(password)
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance.
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
 
 class UserAccessMySQLViewSet(viewsets.ModelViewSet):
     """
@@ -129,6 +228,7 @@ class MySQLMetaViewSet(APIView):
     module_perms = ['db:mysqlmeta']
 
     def post(self,request,format=None):
+        de = decypt(saltkey=None)
         dbapi = db_api()
         request_type = request.data['type']
         instid = request.data['instid']
@@ -138,7 +238,7 @@ class MySQLMetaViewSet(APIView):
         connectinfo['conn_host'] = instinfo.inst_host
         connectinfo['conn_port'] = instinfo.inst_port
         connectinfo['conn_user'] = instinfo.read_user
-        connectinfo['conn_passwd'] = instinfo.read_userpwd
+        connectinfo['conn_passwd'] = de.decryptV(instinfo.read_userpwd)
         if (str(request_type) == 'database'):
             instid = request.data['instid']
             col,results = dbapi.get_metadata(0,connectinfo)
@@ -224,6 +324,7 @@ class MySQLUserViewSet(APIView):
     module_perms = ['db:mysqluser']
 
     def post(self,request,format=None):
+        de = decypt(saltkey=None)
         dbapi = db_api()
         instid = request.data['instid']
         request_type = request.data['type']
@@ -234,7 +335,7 @@ class MySQLUserViewSet(APIView):
         connectinfo['conn_host'] = instinfo.inst_host
         connectinfo['conn_port'] = instinfo.inst_port
         connectinfo['conn_user'] = instinfo.manage_user
-        connectinfo['conn_passwd'] = instinfo.manage_userpwd
+        connectinfo['conn_passwd'] = de.decryptV(instinfo.manage_userpwd)
         connectinfo['conn_db'] = 'mysql'
         col,dblists = dbapi.get_metadata(0,connectinfo)
         dblist = []
@@ -272,6 +373,7 @@ class MySQLStatusViewSet(APIView):
     module_perms = ['db:mysqlstatus']
 
     def post(self,request,format=None):
+        de = decypt(saltkey=None)
         dbapi = db_api()
         instid = request.data['instid']
         request_type = request.data['type']
@@ -282,7 +384,7 @@ class MySQLStatusViewSet(APIView):
         connectinfo['conn_host'] = instinfo.inst_host
         connectinfo['conn_port'] = instinfo.inst_port
         connectinfo['conn_user'] = instinfo.manage_user
-        connectinfo['conn_passwd'] = instinfo.manage_userpwd
+        connectinfo['conn_passwd'] = de.decryptV(instinfo.manage_userpwd)
         connectinfo['conn_db'] = 'information_schema'
         # 查询关键字
         col = []

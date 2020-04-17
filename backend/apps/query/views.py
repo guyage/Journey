@@ -3,17 +3,38 @@ from django.core import serializers
 from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import filters
+from rest_framework import viewsets
 from utils.db_api import db_api
 import json,datetime,time
 from db.models import *
 from conf.models import *
+from query.models import *
+from query.serializers import *
 import re
+from utils.cryption import decypt
 from user.permissions import CustomerPremission
 import logging
 # 生成一个以当前文件名为名字的logger实例
 logger = logging.getLogger(__name__)
 # 生成一个名为collect的logger实例
 collect_logger = logging.getLogger("collect")
+
+
+class QuerySqlLogViewSet(viewsets.ModelViewSet):
+    """
+    list:
+        SQL查询日志表.
+    """
+    # 权限相关
+    permission_classes = [CustomerPremission,]
+    module_perms = ['query:querysqllog']
+    
+    queryset = QuerySqlLog.objects.all().order_by('id')
+    serializer_class = QuerySqlLogSerializer
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter,)
+    search_fields = ('operator','dbname','sql')
+    ordering_fields = ('id',)
 
 class QuerySqlViewSet(APIView):
     """
@@ -24,6 +45,9 @@ class QuerySqlViewSet(APIView):
     permission_classes = [CustomerPremission,]
     module_perms = ['query:querysql']
     def post(self,request,format=None):
+        de = decypt(saltkey=None)
+        userinfo = self.request.user
+        username = userinfo.username
         try:
             limitinfo = QueryLimit.objects.get(Q(query_type='mysql'))
         except:
@@ -40,7 +64,7 @@ class QuerySqlViewSet(APIView):
         connectinfo['conn_host'] = instinfo.inst_host
         connectinfo['conn_port'] = instinfo.inst_port
         connectinfo['conn_user'] = instinfo.read_user
-        connectinfo['conn_passwd'] = instinfo.read_userpwd
+        connectinfo['conn_passwd'] = de.decryptV(instinfo.read_userpwd)
         connectinfo['conn_db'] = dbname
         # sql = 'select * from student;'
         exectype = request.data['exectype']
@@ -66,10 +90,13 @@ class QuerySqlViewSet(APIView):
                 difftables = execsqltables - whitelist_tables
                 if (len(difftables) > 0):
                     col,results = dbapi.mysql_query(connectinfo,limit_sql,default_limit)
+                    QuerySqlLog.objects.create(operator=username,mysqlinst=instinfo,dbname=dbname,sql=limit_sql)
                 else:
                     col,results = dbapi.mysql_query(connectinfo,limit_sql)
+                    QuerySqlLog.objects.create(operator=username,mysqlinst=instinfo,dbname=dbname,sql=limit_sql)
             else:
                 col,results = dbapi.mysql_query(connectinfo,limit_sql,default_limit)
+                QuerySqlLog.objects.create(operator=username,mysqlinst=instinfo,dbname=dbname,sql=limit_sql)
             
             # whitelist_tables = set(dump_white_list.split(","))
             # difftables = execsqltables - whitelist_tables
@@ -105,6 +132,7 @@ class QueryMongodbViewSet(APIView):
     permission_classes = [CustomerPremission,]
     module_perms = ['query:querymongodb']
     def post(self,request,format=None):
+        de = decypt(saltkey=None)
         try:
             limitinfo = QueryLimit.objects.get(Q(query_type='mongodb'))
         except:
@@ -123,7 +151,7 @@ class QueryMongodbViewSet(APIView):
         connectinfo['conn_host'] = instinfo.inst_host
         connectinfo['conn_port'] = instinfo.inst_port
         connectinfo['conn_user'] = instinfo.read_user
-        connectinfo['conn_passwd'] = instinfo.read_userpwd
+        connectinfo['conn_passwd'] = de.decryptV(instinfo.read_userpwd)
         if (exectype == 'db'):
             query_results = dbapi.mongodb_query(0, connectinfo)
         elif (exectype == 'collection'):
@@ -157,6 +185,7 @@ class QueryRedisViewSet(APIView):
     permission_classes = [CustomerPremission,]
     module_perms = ['query:queryredis']
     def post(self,request,format=None):
+        de = decypt(saltkey=None)
         dbapi = db_api()
         exectype = request.data['exectype']
         redisinst = request.data['selectredis']
@@ -166,7 +195,7 @@ class QueryRedisViewSet(APIView):
         connectinfo = {'conn_host':'','conn_port':'','conn_passwd':'','conn_db':''}
         connectinfo['conn_host'] = instinfo.inst_host
         connectinfo['conn_port'] = instinfo.inst_port
-        connectinfo['conn_passwd'] = instinfo.password
+        connectinfo['conn_passwd'] = de.decryptV(instinfo.password)
         connectinfo['conn_db'] = selectdb
 
         if (exectype == 'getkey'):

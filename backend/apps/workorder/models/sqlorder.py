@@ -20,7 +20,7 @@ class SqlOrderType(models.Model):
     """
     ordertype = models.CharField(blank=True,  max_length=128, verbose_name="工单类型")
     first_approver = models.ForeignKey(ApprovalGroup,blank=True,null=True,on_delete=models.SET_NULL,related_name="sqlorder_firstapprover")
-    second_approver = models.ForeignKey(ApprovalGroup,blank=True,null=True,on_delete=models.SET_NULL,related_name="sqlorder_secondapprover")
+    second_approver = models.ForeignKey(ApprovalGroup,blank=True,null=True,on_delete=models.SET_NULL,related_name="sqlorder_secondapprover")    
     dba_approver = models.ForeignKey(ApprovalGroup,blank=True,null=True,on_delete=models.SET_NULL,related_name="sqlorder_dbaapprover")
     is_auto = models.CharField(choices=IS_AUTO_CHOICE,max_length=12, default='DISABLED',verbose_name=u"是否启用自动执行")
     is_file = models.CharField(choices=IS_ENABLED_CHOICE,max_length=12, default='DISABLED',verbose_name=u"是否启用附件")
@@ -37,6 +37,7 @@ class SqlOrder(WorkOrderBase):
     """
     SQL工单表
     """
+    id = models.AutoField(primary_key=True)
     ordertype = models.ForeignKey(SqlOrderType,blank=True,null=True,on_delete=models.SET_NULL,related_name="sqlorder_type")
     approver_group = models.ForeignKey(ApprovalGroup,blank=True,null=True,on_delete=models.SET_NULL,related_name="sqlorder_approvergroup")
 

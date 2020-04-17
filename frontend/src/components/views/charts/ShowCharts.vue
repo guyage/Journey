@@ -37,8 +37,8 @@
                             <icon-svg iconClass="iconxingzhuanggongnengtubiao-1"></icon-svg>
                         </div>
                         <div style="display:inline-block;margin-top:20px;">
-                            <p style="color:rgb(36, 170, 125);font-size:32px;">{{server_total}}</p>
-                            <p style="color:#99a9bf;">主机</p>
+                            <!-- <p style="color:rgb(36, 170, 125);font-size:32px;">{{server_total}}</p>
+                            <p style="color:#99a9bf;">主机</p> -->
                         </div>
                     </el-card>
                 </div>
@@ -62,9 +62,9 @@
           <el-col :span="6" style="margin-right:10px;">
               <DrawLine v-if="isshow" :elementid="WorkOrderPieCharts" :title="WorkOrderPietitle" :options="WorkOrderPieOptions"></DrawLine>
           </el-col>
-          <el-col :span="6">
+          <!-- <el-col :span="6">
               <DrawLine v-if="isshow" :elementid="IdcPieCharts" :title="IdcPieTitle" :options="IdcPieOptions"></DrawLine>
-          </el-col>
+          </el-col> -->
         </el-row>
         <el-row style="margin-top:10px;">
             <el-col>
@@ -225,9 +225,9 @@ export default {
                 this.todo_workorder = response.data.results.todo_workorder
                 this.workorder_total = response.data.results.workorder_total
                 this.user_total = response.data.results.user_total
-                this.server_total = response.data.results.server_total
+                // this.server_total = response.data.results.server_total
                 //idc主机分布饼图
-                this.showIdcPieCharts(response.data.results.idc_dis_count)
+                // this.showIdcPieCharts(response.data.results.idc_dis_count)
                 // 工单饼图
                 this.showWorkOrderPieCharts(response.data.results.hissql_total,response.data.results.hisops_total,response.data.results.hisauto_total)
                 // 折线图数据

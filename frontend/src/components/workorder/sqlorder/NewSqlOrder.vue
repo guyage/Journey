@@ -112,7 +112,7 @@
                 @size-change="handleSizeChange">
                 </el-pagination>
             </div>
-            <span slot="footer" class="dialog-footer">
+            <span slot="footer" class="dialog-footer" v-if="is_show">
                 <el-button size="mini" @click="dialogVisible = false">取消</el-button>
                 <el-button v-loading="loading" size="mini" v-if="checkinfo_data.length == 0" type="primary" @click="handleSumit()">提交SQL工单</el-button>
             </span>
@@ -277,9 +277,9 @@ export default {
                 let check_data = {}
                 check_data.type = 'check'
                 check_data.sql_data = this.sqlform.sqlcontent[i]
-                console.log(check_data);
-                
                 Inception(check_data).then((response) => {
+                    console.log(response);
+                    
                     this.checkinfo_data.push(...response.data.results)
                     this.is_show = true                    
                 })

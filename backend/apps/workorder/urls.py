@@ -9,7 +9,6 @@ from apps.workorder.views.sqlorder import *
 from apps.workorder.views.autoorder import *
 from apps.workorder.views.workorder import *
 from apps.workorder.views.ag_views import *
-from utils.send_dingding  import SendDingTalk,SendOp,SendAll
 
 router = routers.DefaultRouter()
 

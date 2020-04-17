@@ -13,6 +13,7 @@ from db.models import MySQLInst
 from utils.db_api import db_api
 import time,datetime
 from utils.get_config import get_conf
+from utils.cryption import decypt
 
 import logging
 # 生成一个以当前文件名为名字的logger实例
@@ -243,6 +244,7 @@ class SqlOrderViewSet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def inception_exec(self,sqlorderid):
+        de = decypt(saltkey=None)
         # inception连接信息
         inception_info = {'conn_host':'','conn_port':'','conn_user':'','conn_passwd':''}
         inception_info['conn_host'] = get_conf('inception','inc_host')
@@ -259,7 +261,7 @@ class SqlOrderViewSet(viewsets.ModelViewSet):
             instinfo = sqlinfo.instid
             # sql
             sql = sqlinfo.sqltext
-            exec_sql = '/*--user=%s;--password=%s;--host=%s;--enable-execute;--enable-remote-backup;--port=%d;*/inception_magic_start;use %s;%sinception_magic_commit;' % (instinfo.manage_user,instinfo.manage_userpwd,instinfo.inst_host, instinfo.inst_port, dbname,sql)
+            exec_sql = '/*--user=%s;--password=%s;--host=%s;--enable-execute;--enable-remote-backup;--port=%d;*/inception_magic_start;use %s;%sinception_magic_commit;' % (instinfo.manage_user,de.decryptV(instinfo.manage_userpwd),instinfo.inst_host, instinfo.inst_port, dbname,sql)
             col,results = dbapi.inception(inception_info,exec_sql)
             sqlexecstatus = 1
             
@@ -326,6 +328,7 @@ class InceptionViewSet(APIView):
     module_perms = ['sqlorder:inception']
     def post(self,request,format=None):
         result = { 'col': '', 'results': ''}
+        de = decypt(saltkey=None)
         # inception连接信息
         inception_info = {'conn_host':'','conn_port':'','conn_user':'','conn_passwd':''}
         inception_info['conn_host'] = get_conf('inception','inc_host')
@@ -340,15 +343,22 @@ class InceptionViewSet(APIView):
             dbname = inception_sql_data['dbname'][1]
             instinfo = MySQLInst.objects.get(Q(id=inst_id))
             sql = inception_sql_data['sqltext']
-            check_sql= '/*--user=%s;--password=%s;--host=%s;--enable-check;--enable-remote-backup;--port=%d;*/inception_magic_start;use %s;%sinception_magic_commit;' % (instinfo.manage_user,instinfo.manage_userpwd,instinfo.inst_host, instinfo.inst_port, dbname,sql)
+            check_sql= '/*--user=%s;--password=%s;--host=%s;--enable-check;--enable-remote-backup;--port=%d;*/inception_magic_start;use %s;%sinception_magic_commit;' % (instinfo.manage_user,de.decryptV(instinfo.manage_userpwd),instinfo.inst_host, instinfo.inst_port, dbname,sql)
             col,results = dbapi.inception(inception_info,check_sql)
             check_info = []
-            for info in results:
-                if (info['errlevel'] != 0):
-                    check_info.append(info)
+            print ('SQL审核结果',col,results)
+            if (results[0] == 'error'):
+                check_info.append({'errormessage':col})
+            else:
+                for info in results:
+                    if (info['errlevel'] != 0):
+                        check_status = 'error'
+                        check_info.append(info)
+
             result['col'] = col
             result['results'] = check_info
-        return Response(result)
+            print (result)
+            return Response(result)
 
 class AllSqlOrderViewSet(APIView):
     # 权限相关

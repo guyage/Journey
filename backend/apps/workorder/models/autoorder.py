@@ -50,6 +50,7 @@ class AutoOrder(WorkOrderBase):
     """
     自助工单表
     """
+    id = models.AutoField(primary_key=True)
     # title = models.CharField(max_length=128, blank=True, null=True, verbose_name=u"工单主题")
     ordertype = models.ForeignKey(AutoOrderType,blank=True,null=True,on_delete=models.SET_NULL,related_name="autoorder_type")
     # status = models.IntegerField(choices=STATUS_CHOICE, default=1, verbose_name=u"工单状态")

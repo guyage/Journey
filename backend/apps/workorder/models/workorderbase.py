@@ -20,6 +20,7 @@ class WorkOrderBase(models.Model):
     """
     工单基础信息表
     """
+    workorder_id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=128, blank=True, null=True, verbose_name=u"工单主题")
     classify = models.CharField(max_length=50, blank=True,verbose_name=u"分类")
     status = models.IntegerField(choices=STATUS_CHOICE, default=0, verbose_name=u"工单状态")
