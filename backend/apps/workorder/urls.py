@@ -13,17 +13,17 @@ from apps.workorder.views.ag_views import *
 router = routers.DefaultRouter()
 
 # workorder-sqlorder
-router.register(r'sqlordertype', SqlOrderTypeViewSet, base_name="sqlordertype")
-router.register(r'sqlorder', SqlOrderViewSet, base_name="sqlorder")
-router.register(r'sqltext', SqlTextViewSet, base_name="sqltext")
-router.register(r'sqlfile', SqlFileViewSet, base_name="sqlfile")
+router.register(r'sqlordertype', SqlOrderTypeViewSet, basename="sqlordertype")
+router.register(r'sqlorder', SqlOrderViewSet, basename="sqlorder")
+router.register(r'sqltext', SqlTextViewSet, basename="sqltext")
+router.register(r'sqlfile', SqlFileViewSet, basename="sqlfile")
 # workorder-approvalgroup
-router.register(r'approvalgroup', ApprovalGroupViewSet, base_name="approvalgroup")
+router.register(r'approvalgroup', ApprovalGroupViewSet, basename="approvalgroup")
 
 # workorder-autoorder
-router.register(r'autoordertype', AutoOrderTypeViewSet, base_name="autoordertype")
-router.register(r'autoorderstep', AutoOrderStepViewSet, base_name="autoorderstep")
-router.register(r'autoorder', AutoOrderViewSet, base_name="autoorder")
+router.register(r'autoordertype', AutoOrderTypeViewSet, basename="autoordertype")
+router.register(r'autoorderstep', AutoOrderStepViewSet, basename="autoorderstep")
+router.register(r'autoorder', AutoOrderViewSet, basename="autoorder")
 
 
 

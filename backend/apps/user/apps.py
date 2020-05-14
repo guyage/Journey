@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class RbcaConfig(AppConfig):
-    name = 'rbca'
+class UserConfig(AppConfig):
+    name = 'user'

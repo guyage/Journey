@@ -24,8 +24,6 @@ class Menu(models.Model):
     name = models.CharField(blank=False, max_length=128, verbose_name="菜单名称")
     parent_id = models.IntegerField(blank=True, verbose_name=u"父菜单ID，一级菜单为0")
     url = models.CharField(blank=True,  max_length=255, verbose_name="菜单对应url")
-    # api = models.CharField(blank=True,  max_length=255, verbose_name="后端api接口地址")
-    # perms = models.CharField(blank=True,  max_length=255, verbose_name="授权(多个用逗号分隔，如sys:user:post,sys:user:patch)")
     mtype = models.IntegerField(blank=True, verbose_name=u"菜单类型 0:目录 1:菜单 2:内部跳转url ")
     icon = models.CharField(blank=True,  max_length=255, verbose_name="菜单对应图标")
     creator = models.CharField(max_length=64, blank=True, verbose_name=u"创建人")
@@ -94,3 +92,4 @@ class Users(AbstractUser):
 
 def jwt_get_secret_key(Users):
     return Users.jwt_secret
+

@@ -1,12 +1,17 @@
 from django.shortcuts import render
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework import viewsets
 from django.db.models import Q
 from rest_framework import filters
 from user.models import *
 from user.serializers import *
 from user.permissions import CustomerPremission
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly, AllowAny
+from django.conf import settings
+import ldap
+
 import random, string
 
 def random_str(randomlength=10):
@@ -31,7 +36,7 @@ class UserGroupViewSet(viewsets.ModelViewSet):
     """
 
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['user:usergroup']
     
     queryset = UserGroup.objects.all().order_by('id')
@@ -70,7 +75,7 @@ class MenuViewSet(viewsets.ModelViewSet):
         更新当前菜单路由部分记录.
     """
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['user:menu']
 
     queryset = Menu.objects.all().order_by('id')
@@ -109,7 +114,7 @@ class PermsViewSet(viewsets.ModelViewSet):
     """
 
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['user:perms']
 
     queryset = Perms.objects.all().order_by('id')
@@ -176,7 +181,7 @@ class RoleViewSet(viewsets.ModelViewSet):
     """
 
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['user:role']
 
     queryset = Role.objects.all().order_by('id')
@@ -220,7 +225,7 @@ class UsersViewSet(viewsets.ModelViewSet):
     """
 
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['user:user']
     
     queryset = Users.objects.all().order_by('id')
@@ -290,3 +295,62 @@ class UsersViewSet(viewsets.ModelViewSet):
                 # forcibly invalidate the prefetch cache on the instance.
                 instance._prefetched_objects_cache = {}
         return Response(serializer.data)
+
+class UserInfoViewSet(APIView):
+    """
+    UserInfo
+    """
+    # 权限相关
+    permission_classes = [IsAuthenticated]
+    module_perms = ['user:userinfo']
+
+    def get(self,request,format=None):
+        re = {'results' : ''}
+        userinfo = {}
+        if (request.user):
+            userinfo['username'] = request.user.username
+            userinfo['mobile'] = request.user.mobile
+            userinfo['webcat'] = request.user.webcat
+        re['results'] = userinfo
+        return Response(re)
+    def post(self,request,format=None):
+        username = request.user.username
+        edit_type =  request.data['edit_type']
+        edit_data = request.data['edit_data']
+        # 修改基本信息
+        if (edit_type == 'info'):
+            user_id = request.user.id
+            mobile = edit_data['mobile']
+            webcat = edit_data['webcat']
+            try:
+                Users.objects.filter(Q(id=user_id)).update(mobile=mobile,webcat=webcat)
+                return Response({'status': 'ok'}, status=status.HTTP_200_OK)
+            except:
+                return Response({'status': 'fail'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        # 修改密码
+        elif (edit_type == 'pwd'):
+            # 获取请求中的旧密码，新密码
+            old_pwd = edit_data['old_pwd']
+            new_pwd = edit_data['new_pwd']
+            # 获取settings中ldap基本信息
+            ldap_uri = settings.LDAP_URI
+            base_dn = settings.LADP_BASE_DN
+            username = 'gutest'
+            # 要修改密码的dn
+            dn = 'CN=%s,%s' % (username,base_dn)
+            print (dn)
+            # 初始化ldap连接
+            my_ldap = ldap.initialize(ldap_uri)
+            my_ldap.protocol_version = 3
+            my_ldap.set_option(ldap.OPT_REFERRALS, 0)
+            try:
+                # 使用旧密码bind
+                my_ldap.simple_bind_s(dn, old_pwd)
+                my_ldap.passwd_s(dn,old_pwd,new_pwd)
+                print ('1111')
+                return Response({'status': 'ok'}, status=status.HTTP_200_OK)
+            except ldap.LDAPError as e:
+                print ('2222',e)
+                return Response({'status': 'fail','message':str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            # Users.objets.filter(id=1).update()
+        

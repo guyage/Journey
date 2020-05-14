@@ -5,12 +5,13 @@ from apps.user.views import *
 
 router = routers.DefaultRouter()
 
-router.register(r'user', UsersViewSet, base_name="user")
-router.register(r'usergroup', UserGroupViewSet, base_name="usergroup")
-router.register(r'role', RoleViewSet, base_name="role")
-router.register(r'menu', MenuViewSet, base_name="menu")
-router.register(r'perms', PermsViewSet, base_name="perms")
+router.register(r'user', UsersViewSet, basename="user")
+router.register(r'usergroup', UserGroupViewSet, basename="usergroup")
+router.register(r'role', RoleViewSet, basename="role")
+router.register(r'menu', MenuViewSet, basename="menu")
+router.register(r'perms', PermsViewSet, basename="perms")
 
 urlpatterns = [
     url(r'^', include(router.urls)),
+    url(r'userinfo', UserInfoViewSet.as_view()),
 ]

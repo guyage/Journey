@@ -5,12 +5,12 @@ from apps.db.views import *
 
 router = routers.DefaultRouter()
 
-router.register(r'mysqlinst', MySQLInstViewSet, base_name="mysqlinst")
-router.register(r'mongodbinst', MongoDBInstViewSet, base_name="mongodbinst")
-router.register(r'redisinst', RedisInstViewSet, base_name="redisinst")
-router.register(r'useraccessmysql', UserAccessMySQLViewSet, base_name="useraccessmysql")
-router.register(r'useraccessmongodb', UserAccessMongoDBViewSet, base_name="useraccessmongodb")
-router.register(r'useraccessredis', UserAccessRedisViewSet, base_name="useraccessredis")
+router.register(r'mysqlinst', MySQLInstViewSet, basename="mysqlinst")
+router.register(r'mongodbinst', MongoDBInstViewSet, basename="mongodbinst")
+router.register(r'redisinst', RedisInstViewSet, basename="redisinst")
+router.register(r'useraccessmysql', UserAccessMySQLViewSet, basename="useraccessmysql")
+router.register(r'useraccessmongodb', UserAccessMongoDBViewSet, basename="useraccessmongodb")
+router.register(r'useraccessredis', UserAccessRedisViewSet, basename="useraccessredis")
 
 urlpatterns = [
     url(r'^', include(router.urls)),

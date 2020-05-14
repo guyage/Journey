@@ -6,6 +6,7 @@ from django.db.models import Q
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from user.permissions import CustomerPremission
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly, AllowAny
 from workorder.models.sqlorder import *
 from workorder.serializers.sqlorder import *
 from db.models import MySQLInst
@@ -38,7 +39,7 @@ class SqlOrderTypeViewSet(viewsets.ModelViewSet):
     search_fields = ('ordertype',)
     ordering_fields = ('id',)
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['sqlorder:sqlordertype']
 
 class SqlTextViewSet(viewsets.ModelViewSet):
@@ -59,7 +60,7 @@ class SqlTextViewSet(viewsets.ModelViewSet):
     # search_fields = ('ordertype',)
     # ordering_fields = ('id',)
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['sqlorder:sqltext']
 
 class SqlFileViewSet(viewsets.ModelViewSet):
@@ -80,7 +81,7 @@ class SqlFileViewSet(viewsets.ModelViewSet):
     # search_fields = ('ordertype',)
     # ordering_fields = ('id',)
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['sqlorder:sqlfile']
 
 class SqlOrderViewSet(viewsets.ModelViewSet):
@@ -101,7 +102,7 @@ class SqlOrderViewSet(viewsets.ModelViewSet):
     search_fields = ('ordertype',)
     ordering_fields = ('id',)
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['sqlorder:sqlorder']
 
     def create(self, request, *args, **kwargs):
@@ -274,7 +275,7 @@ class SqlOrderViewSet(viewsets.ModelViewSet):
         
 class MySqlOrderViewSet(APIView):
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['sqlorder:mysqlorder']
     def get(self,request,format=None):
         username = self.request.user.username
@@ -289,7 +290,7 @@ class MySqlOrderViewSet(APIView):
 
 class ToDoSqlOrderViewSet(APIView):
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['sqlorder:todosqlorder']
     def get(self,request,format=None):
         userinfo = self.request.user
@@ -311,7 +312,7 @@ class ToDoSqlOrderViewSet(APIView):
 
 class SqlOrderDetailViewSet(APIView):
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['sqlorder:sqlorderdetail']
     def post(self,request,format=None):
         # username = request.data['username']
@@ -324,7 +325,7 @@ class SqlOrderDetailViewSet(APIView):
 
 class InceptionViewSet(APIView):
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['sqlorder:inception']
     def post(self,request,format=None):
         result = { 'col': '', 'results': ''}
@@ -362,7 +363,7 @@ class InceptionViewSet(APIView):
 
 class AllSqlOrderViewSet(APIView):
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['sqlorder:allsqlorder']
     def get(self,request,format=None):
         userinfo = self.request.user

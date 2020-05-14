@@ -53,6 +53,11 @@ export const addUser = params => { return request.post('/user/',params) };
 export const delUser = params => { return request.delete('/user/'+params.id+'/') };
 export const editUser = params => { return request.patch('/user/'+params.id+'/',params) };
 
+// userinfo
+// role
+export const getUserInfo = () => {{return request.get('/userinfo/');}};
+export const editUserInfo = params => { return request.post('/userinfo/',params)};
+
 // 用户组
 export const getUserGroup = params => {
     if (params) {

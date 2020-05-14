@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from django.db.models.query import QuerySet
 from rest_framework import status
 from user.permissions import CustomerPremission
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly, AllowAny
 from utils.cryption import decypt
 import os
 
@@ -32,7 +33,7 @@ class MySQLInstViewSet(viewsets.ModelViewSet):
     search_fields = ('inst_name','inst_host','inst_port','role','services','comment')
     ordering_fields = ('id',)
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['db:mysqlinst']
     
     def create(self, request, *args, **kwargs):
@@ -88,7 +89,7 @@ class MongoDBInstViewSet(viewsets.ModelViewSet):
     search_fields = ('inst_name','inst_host','inst_port','role','services','comment')
     ordering_fields = ('id',)
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['db:mongodbinst']
 
     def create(self, request, *args, **kwargs):
@@ -143,7 +144,7 @@ class RedisInstViewSet(viewsets.ModelViewSet):
     search_fields = ('inst_name','inst_host','inst_port','role','services','comment')
     ordering_fields = ('id',)
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['db:redisinst']
 
     def create(self, request, *args, **kwargs):
@@ -187,7 +188,7 @@ class UserAccessMySQLViewSet(viewsets.ModelViewSet):
     search_fields = ('username','user_access_db','comment','status')
     ordering_fields = ('id',)
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['db:useraccessmysql']
 
     def create(self, request, *args, **kwargs):
@@ -224,7 +225,7 @@ class UserAccessMySQLViewSet(viewsets.ModelViewSet):
 class MySQLMetaViewSet(APIView):
 
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['db:mysqlmeta']
 
     def post(self,request,format=None):
@@ -257,7 +258,7 @@ class MySQLMetaViewSet(APIView):
 class UserAccessDbViewSet(APIView):
 
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['db:useraccessdb']
 
     def post(self,request,format=None):
@@ -320,7 +321,7 @@ class UserAccessDbViewSet(APIView):
 
 class MySQLUserViewSet(APIView):
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['db:mysqluser']
 
     def post(self,request,format=None):
@@ -369,7 +370,7 @@ class MySQLUserViewSet(APIView):
 
 class MySQLStatusViewSet(APIView):
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['db:mysqlstatus']
 
     def post(self,request,format=None):
@@ -421,7 +422,7 @@ class UserAccessMongoDBViewSet(viewsets.ModelViewSet):
     ordering_fields = ('id',)
 
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['db:useraccessmongodb']
 
     def create(self, request, *args, **kwargs):
@@ -464,7 +465,7 @@ class UserAccessRedisViewSet(viewsets.ModelViewSet):
     search_fields = ('username','comment','status')
     ordering_fields = ('id',)
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['db:useraccessredis']
 
 

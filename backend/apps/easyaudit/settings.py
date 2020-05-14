@@ -1,5 +1,7 @@
+
 from importlib import import_module
 
+import django.db.utils
 from django.apps import apps
 from django.conf import settings
 from django.contrib.auth.models import Permission
@@ -7,7 +9,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.sessions.models import Session
 from django.db.migrations import Migration
 from django.db.migrations.recorder import MigrationRecorder
-from django.utils import six
 
 from easyaudit.models import CRUDEvent, LoginEvent, RequestEvent
 
@@ -19,7 +20,7 @@ def get_model_list(class_list):
     it ignores it.
     """
     for idx, item in enumerate(class_list):
-        if isinstance(item, six.string_types):
+        if isinstance(item, (str,)):
             model_class = apps.get_model(item)
             class_list[idx] = model_class
 
@@ -32,6 +33,8 @@ REMOTE_ADDR_HEADER = getattr(settings, 'DJANGO_EASY_AUDIT_REMOTE_ADDR_HEADER', '
 
 USER_DB_CONSTRAINT = bool(getattr(settings, 'DJANGO_EASY_AUDIT_USER_DB_CONSTRAINT', True))
 
+# logging backend settings
+LOGGING_BACKEND = getattr(settings, 'DJANGO_EASY_AUDIT_LOGGING_BACKEND', 'easyaudit.backends.ModelBackend')
 
 # Models which Django Easy Audit will not log.
 # By default, all but some models will be audited.
@@ -84,11 +87,18 @@ ADMIN_SHOW_REQUEST_EVENTS = getattr(settings, 'DJANGO_EASY_AUDIT_ADMIN_SHOW_REQU
 # project defined callbacks
 CRUD_DIFFERENCE_CALLBACKS = []
 CRUD_DIFFERENCE_CALLBACKS = getattr(settings, 'DJANGO_EASY_AUDIT_CRUD_DIFFERENCE_CALLBACKS', CRUD_DIFFERENCE_CALLBACKS)
+DATABASE_ALIAS = getattr(settings, 'DJANGO_EASY_AUDIT_DATABASE_ALIAS', django.db.utils.DEFAULT_DB_ALIAS)
 # the callbacks could come in as an iterable of strings, where each string is the package.module.function
 for idx, callback in enumerate(CRUD_DIFFERENCE_CALLBACKS):
     if not callable(callback):  # keep as is if it is callable
         CRUD_DIFFERENCE_CALLBACKS[idx] = getattr(import_module('.'.join(callback.split('.')[:-1])),
                                                  callback.split('.')[-1], None)
+
+# although this setting "exists" here we do not intend to use it anywhere due to test run issues
+# maybe we can properly solve this at a latter time. instead, anything inside of this library
+# should do the same getattr check here, bsaed on normal `settings` from `django.conf`.
+CRUD_EVENT_NO_CHANGED_FIELDS_SKIP = getattr(settings, "DJANGO_EASY_AUDIT_CRUD_EVENT_NO_CHANGED_FIELDS_SKIP", False)
+
 
 # Purge table optimization:
 # If TRUNCATE_TABLE_SQL_STATEMENT is not empty, we use it as custom sql statement
@@ -103,3 +113,8 @@ TRUNCATE_TABLE_SQL_STATEMENT = getattr(settings, 'DJANGO_EASY_AUDIT_TRUNCATE_TAB
 CRUD_EVENT_LIST_FILTER = getattr(settings, 'DJANGO_EASY_AUDIT_CRUD_EVENT_LIST_FILTER', ['event_type', 'content_type', 'user', 'datetime', ])
 LOGIN_EVENT_LIST_FILTER = getattr(settings, 'DJANGO_EASY_AUDIT_LOGIN_EVENT_LIST_FILTER', ['login_type', 'user', 'datetime', ])
 REQUEST_EVENT_LIST_FILTER = getattr(settings, 'DJANGO_EASY_AUDIT_REQUEST_EVENT_LIST_FILTER', ['method', 'user', 'datetime', ])
+
+# Search fields configuration
+CRUD_EVENT_SEARCH_FIELDS = getattr(settings, 'DJANGO_EASY_AUDIT_CRUD_EVENT_SEARCH_FIELDS', ['=object_id', 'object_json_repr', ])
+LOGIN_EVENT_SEARCH_FIELDS = getattr(settings, 'DJANGO_EASY_AUDIT_LOGIN_EVENT_SEARCH_FIELDS', ['=remote_ip', 'username', ])
+REQUEST_EVENT_SEARCH_FIELDS = getattr(settings, 'DJANGO_EASY_AUDIT_REQUEST_EVENT_SEARCH_FIELDS', ['=remote_ip', 'user__username', 'url', 'query_string', ])

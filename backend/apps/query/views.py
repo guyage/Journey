@@ -14,6 +14,7 @@ from query.serializers import *
 import re
 from utils.cryption import decypt
 from user.permissions import CustomerPremission
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly, AllowAny
 import logging
 # 生成一个以当前文件名为名字的logger实例
 logger = logging.getLogger(__name__)
@@ -27,7 +28,7 @@ class QuerySqlLogViewSet(viewsets.ModelViewSet):
         SQL查询日志表.
     """
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['query:querysqllog']
     
     queryset = QuerySqlLog.objects.all().order_by('id')
@@ -42,7 +43,7 @@ class QuerySqlViewSet(APIView):
     """
 
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['query:querysql']
     def post(self,request,format=None):
         de = decypt(saltkey=None)
@@ -129,7 +130,7 @@ class QuerySqlViewSet(APIView):
 
 class QueryMongodbViewSet(APIView):
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['query:querymongodb']
     def post(self,request,format=None):
         de = decypt(saltkey=None)
@@ -182,7 +183,7 @@ class QueryMongodbViewSet(APIView):
 
 class QueryRedisViewSet(APIView):
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['query:queryredis']
     def post(self,request,format=None):
         de = decypt(saltkey=None)

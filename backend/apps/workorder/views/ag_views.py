@@ -1,11 +1,13 @@
 # coding=utf-8
 from rest_framework.response import Response
 from rest_framework import filters
-from utils.baseviews import BaseModelViewSet
+from rest_framework import viewsets
 from workorder.serializers.ag_serializers import *
 from workorder.models.approvalgroup import *
+from user.permissions import CustomerPremission
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly, AllowAny
 
-class ApprovalGroupViewSet(BaseModelViewSet):
+class ApprovalGroupViewSet(viewsets.ModelViewSet):
     """
     list:
         工单审批组列表.
@@ -23,6 +25,7 @@ class ApprovalGroupViewSet(BaseModelViewSet):
     search_fields = ('approver_group_name',)
     ordering_fields = ('id',)
     # 权限相关
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['workorder:approvergroup']
 
     def update(self, request, *args, **kwargs):

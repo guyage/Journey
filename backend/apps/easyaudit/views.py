@@ -1,19 +1,20 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
-from utils.baseviews import BaseApiViewSet
 from rest_framework.response import Response
 from django.db.models import Q
 from user.permissions import CustomerPremission
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly, AllowAny
 import time,datetime
 from easyaudit.models import *
 from easyaudit.serializers import *
 from user.models import *
 
-class CRUDEventViewSet(BaseApiViewSet):
+class CRUDEventViewSet(APIView):
     """
     获取系统操作日志
     """
     # 权限相关
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['easyaudit:crudevent']
 
     def post(self,request,format=None):
@@ -54,3 +55,4 @@ class CRUDEventViewSet(BaseApiViewSet):
         re = { 'results': '',}
         re['results'] = results
         return Response(re)
+

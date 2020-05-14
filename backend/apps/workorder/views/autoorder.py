@@ -9,11 +9,12 @@ from rest_framework import status
 from rest_framework import filters
 from workorder.models.autoorder import *
 from user.permissions import CustomerPremission
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly, AllowAny
 from workorder.serializers.autoorder import *
 from utils.git_api import GitLabAPI
 from utils.autoorder_api import exec_cmd
 import json
-from utils.send_mail import send_mail
+# from utils.send_mail import send_mail
 
 class AutoOrderTypeViewSet(viewsets.ModelViewSet):
     """
@@ -33,7 +34,7 @@ class AutoOrderTypeViewSet(viewsets.ModelViewSet):
     search_fields = ('ordertype',)
     ordering_fields = ('id',)
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['workorder:autoordertype']
 
     def create(self, request, *args, **kwargs):
@@ -94,7 +95,7 @@ class AutoOrderStepViewSet(viewsets.ModelViewSet):
     search_fields = ('step_id',)
     ordering_fields = ('id',)
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['workorder:autoorderstep']
 
     def create(self, request, *args, **kwargs):
@@ -118,7 +119,7 @@ class AutoOrderViewSet(viewsets.ModelViewSet):
     search_fields = ('title')
     ordering_fields = ('id',)
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['workorder:autoorder']
 
     def create(self, request, *args, **kwargs):
@@ -139,7 +140,7 @@ class AutoOrderViewSet(viewsets.ModelViewSet):
             for user in userlist:
                 mailtolist.append(user.email)
             maildata = json.loads(serializer.data['content'])
-            send_mail(mailtolist,4,maildata)
+            # send_mail(mailtolist,4,maildata)
         except:
             pass
         # 插入创建工单步骤记录
@@ -210,7 +211,7 @@ class AutoOrderViewSet(viewsets.ModelViewSet):
 
 class AutoOrderDetailViewSet(APIView):
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['workorder:autoorderdetail']
     def post(self,request,format=None):
         # username = request.data['username']
@@ -223,7 +224,7 @@ class AutoOrderDetailViewSet(APIView):
 
 class GitLabInfoViewSet(APIView):
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['workorder:gitlabinfo']
     def post(self,request,format=None):
         git_api = GitLabAPI()

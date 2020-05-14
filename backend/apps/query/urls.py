@@ -4,7 +4,7 @@ from apps.query.views import *
 from rest_framework import routers
 
 router = routers.DefaultRouter()
-router.register(r'querysqllog', QuerySqlLogViewSet, base_name="querysqllog")
+router.register(r'querysqllog', QuerySqlLogViewSet, basename="querysqllog")
 
 urlpatterns = [
     # 

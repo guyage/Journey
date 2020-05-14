@@ -21,8 +21,8 @@ class LogoutViewSet(viewsets.ViewSet):
 
 class LdapAuthViewSet(APIView):
     # jwt_response_payload_handler = api_settings.JWT_RESPONSE_PAYLOAD_HANDLER
-    authentication_classes = ()
-    permission_classes = ()
+    authentication_classes = []
+    permission_classes = []
     def post(self,request,format=None):
         username = request.data['username']
         password = request.data['password']

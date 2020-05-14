@@ -10,6 +10,7 @@ from rest_framework import filters
 from rest_framework.response import Response
 from utils.send_mail import send_mail
 from user.permissions import CustomerPremission
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly, AllowAny
 
 
 # Create your views here.
@@ -22,7 +23,7 @@ class MailConfigViewSet(viewsets.ModelViewSet):
     # pagination_class = PageNumberPagination
     ordering_fields = ('id',)
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['conf:mailconfig']
     
 
@@ -35,7 +36,7 @@ class QueryLimitViewSet(viewsets.ModelViewSet):
     # pagination_class = PageNumberPagination
     ordering_fields = ('id',)
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['conf:querylimit']
 
 class DumpWhiteListViewSet(viewsets.ModelViewSet):
@@ -49,14 +50,14 @@ class DumpWhiteListViewSet(viewsets.ModelViewSet):
     search_fields = ('white_user',)
     ordering_fields = ('id',)
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['conf:dumpwhite']
 
 
 class MailTestViewSet(APIView):
 
     # 权限相关
-    permission_classes = [CustomerPremission,]
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['conf:mailtest']
 
     def post(self,request,format=None):

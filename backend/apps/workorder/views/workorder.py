@@ -1,10 +1,12 @@
 # -*- coding: UTF-8 -*-
 from django.db.models import Q
-from utils.baseviews import BaseApiViewSet
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from workorder.models.sqlorder import *
 from workorder.models.autoorder import *
 from workorder.serializers.workorder import *
+from user.permissions import CustomerPremission
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly, AllowAny
 import time,datetime
 import pytz
 
@@ -12,9 +14,10 @@ import logging
 # 生成一个以当前文件名为名字的logger实例
 logger = logging.getLogger('default')
 
-class AllWorkOrderViewSet(BaseApiViewSet):
+class AllWorkOrderViewSet(APIView):
 
     # 权限相关标识
+    permission_classes = [CustomerPremission,IsAuthenticated]
     module_perms = ['workorder:allworkorder']
 
     def get(self,request,format=None):

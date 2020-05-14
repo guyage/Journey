@@ -31,6 +31,12 @@ const UserRouter = [
         name: 'usergroup',
         meta: { tag: '用户组', title: ['用户权限','用户组']},
     },
+    { 
+        path: '/userinfo', 
+        component: resolve => require(['@/components/user/user/UserInfo.vue'],resolve), 
+        name: 'userinfo',
+        meta: { tag: '个人信息', title: ['用户权限','个人信息']},
+    },
 ]
 
 export default UserRouter;

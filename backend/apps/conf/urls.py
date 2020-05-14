@@ -5,9 +5,9 @@ from apps.conf.views import *
 
 router = routers.DefaultRouter()
 
-router.register(r'mailconfig', MailConfigViewSet, base_name="mailconfig")
-router.register(r'querylimit', QueryLimitViewSet, base_name="querylimit")
-router.register(r'dumpwhitelist', DumpWhiteListViewSet, base_name="dumpwhitelist")
+router.register(r'mailconfig', MailConfigViewSet, basename="mailconfig")
+router.register(r'querylimit', QueryLimitViewSet, basename="querylimit")
+router.register(r'dumpwhitelist', DumpWhiteListViewSet, basename="dumpwhitelist")
 
 urlpatterns = [
     url(r'^', include(router.urls)),
