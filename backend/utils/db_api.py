@@ -96,13 +96,13 @@ class db_api():
         elif (flag == 8):
             sql = "show engine innodb status;"
             col, results = self.mysql_query(connectinfo,sql)
-        # show master status
+        # show main status
         elif (flag == 9):
-            sql = "show master status;"
+            sql = "show main status;"
             col, results = self.mysql_query(connectinfo,sql)
         # show salve status
         elif (flag == 10):
-            sql = "show slave status;"
+            sql = "show subordinate status;"
             col, results = self.mysql_query(connectinfo,sql)
         return (col,results)
 
