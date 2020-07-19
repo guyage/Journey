@@ -396,9 +396,9 @@ class MySQLStatusViewSet(APIView):
             col,results = dbapi.get_metadata(7,connectinfo)
         elif ( str(request_type) == 'innodb'):
             col,results = dbapi.get_metadata(8,connectinfo)
-        elif ( str(request_type) == 'master'):
+        elif ( str(request_type) == 'main'):
             col,results = dbapi.get_metadata(9,connectinfo)
-        elif ( str(request_type) == 'slave'):
+        elif ( str(request_type) == 'subordinate'):
             col,results = dbapi.get_metadata(10,connectinfo)
         elif ( str(request_type) == 'kill'):
             sessionid = request.data['sessionid']
